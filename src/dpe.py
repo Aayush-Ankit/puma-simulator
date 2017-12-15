@@ -23,8 +23,13 @@ import time
 
 ## Import constituent modeles/dependencies
 import sys, getopt, os
-sys.path.insert (0, '/home/aa/dpe_emulate/include/')
-sys.path.insert (0, '/home/aa/dpe_emulate/src/')
+
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+src_dir = os.path.join(root_dir, "src")
+include_dir = os.path.join(root_dir, "include")
+
+sys.path.insert (0, include_dir)
+sys.path.insert (0, src_dir)
 
 # import torch as tf # if using pytorch (for wt storage)
 import torchfile as tf # if using torch (for wt storage)
@@ -49,9 +54,11 @@ import node_metrics
 
 ## Set the instruction & trace paths (create the folder hierarchy)
 # Assumption: All instructions for all TILEs and IMAs have already been generated
-net = 'large'
-instrndir = '/home/aa/dpe_compiler/src/' + net
-tracedir = '/home/aa/dpe_emulate/test/traces/' + net
+test_dir = os.path.join(root_dir, "test")
+
+net = 'char_rnn'
+instrndir =  os.path.join(os.path.join(test_dir, 'testasm'), net)
+tracedir =  os.path.join(os.path.join(test_dir, 'traces'), net)
 
 assert (os.path.exists(instrndir) == 1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
 '''if not os.path.exists(instrndir):
