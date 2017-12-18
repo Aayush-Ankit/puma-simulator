@@ -1,4 +1,3 @@
-#adium-theme-ubuntu==0.3.4
 backports.functools-lru-cache==1.4
 backports.weakref==1.0.post1
 bleach==1.5.0
@@ -24,10 +23,4 @@ pytz==2017.3
 PyYAML==3.12
 six==1.11.0
 subprocess32==3.2.7
-#tensorflow==1.4.1
-#tensorflow-tensorboard==0.4.0rc3
-#torch==0.3.0.post4
-#torchfile==0.1.0
-#torchvision==0.2.0
-#unity-lens-photos==1.0
 Werkzeug==0.13
