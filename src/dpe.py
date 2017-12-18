@@ -32,7 +32,7 @@ sys.path.insert (0, include_dir)
 sys.path.insert (0, src_dir)
 
 # import torch as tf # if using pytorch (for wt storage)
-import torchfile as tf # if using torch (for wt storage)
+#import torchfile as tf # if using torch (for wt storage)
 from data_convert import *
 from node_dump import *
 from record_xbar import *
