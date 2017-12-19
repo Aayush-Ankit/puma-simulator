@@ -22,7 +22,7 @@ from multiprocessing import Pool
 import time
 
 ## Import constituent modeles/dependencies
-import sys, getopt, os
+import sys, os
 
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src_dir = os.path.join(root_dir, "src")
@@ -39,6 +39,7 @@ from record_xbar import *
 from hw_stats import *
 import numpy as np
 
+import argparse
 import config as cfg
 import constants
 import ima_modules
@@ -57,6 +58,14 @@ import node_metrics
 test_dir = os.path.join(root_dir, "test")
 
 net = 'char_rnn'
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--net", help="The net name as it is in test/testasm.")
+args = parser.parse_args()
+net = args.net
+
+print 'Input net is {}'.format(net)
+
 instrndir =  os.path.join(os.path.join(test_dir, 'testasm'), net)
 tracedir =  os.path.join(os.path.join(test_dir, 'traces'), net)
 
