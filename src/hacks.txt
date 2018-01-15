@@ -1,0 +1,2 @@
+1. Removed xb_nma from mvm, so all mvms run always now
+2. Receive buffer virtually has num_tile_max entries

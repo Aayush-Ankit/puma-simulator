@@ -1,0 +1,12 @@
+1. Xbar_size: Increasing the xbar size leads to "ce" reduction returns as adc area (larger bit resolution as well as higher sampling rate) and xbar latency become bottleneck.
+
+2. Num_vfu: Increasing the vfu beyond a certain point just impacts area, without contributing much to computations.
+
+3. Num_xbar: Overall effect, larger number of xbars in a core can improve performance which comes with an additional area/power costs of adding ADCs to make MVM-ADC throughput is balanced.
+	     More ADCs can be added to support more MVM throughput in the core but comes with larger datamemory size, limits bandwidth (large and slow).
+	     Goal: When parallelism isn't enough that xbars can share inputs >> move to core hierarchy. 
+	     Core level peripherals: area increase (these are meant to feed to xbars)
+	     Tile level peripherals: area reduction (these are meant to support communication with external tiles) [For a isoxbar node comparison]
+
+4. Num_core: increases parallelism (hierarchial architecture into play).
+ 	     Beyond a certain point, EDRAM bandwidth (EDRAM will become large to support more core and will eventuall becoming slower) >> hierachial archietcture (form multiple tiles to make a node)

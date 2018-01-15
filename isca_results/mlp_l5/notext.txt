@@ -1,0 +1,1 @@
+1. Increased tile_instrn_memory size to 1024 entries to fit all instructions

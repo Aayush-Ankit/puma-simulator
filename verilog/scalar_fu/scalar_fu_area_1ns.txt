@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : scalar_fu
+Version: L-2016.03-SP2
+Date   : Mon Jul 17 23:16:39 2017
+****************************************
+
+Library(s) Used:
+
+    sc12_base_v31_hvt_soi12s0_ff_nominal_min_0p99v_m40c_mns (File: /package/cae3/mosispdk/ARMLIBS/IBM/IBM12SOI/sc12_base_v31_hvt/2009q2v1/db/sc12_base_v31_hvt_soi12s0_ff_nominal_min_0p99v_m40c_mns.db)
+
+Number of ports:                          104
+Number of nets:                           518
+Number of cells:                          382
+Number of combinational cells:            380
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                         39
+Number of references:                      26
+
+Combinational area:                859.267580
+Buf/Inv area:                       24.897601
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                   859.267580
+Total area:                 undefined
+1

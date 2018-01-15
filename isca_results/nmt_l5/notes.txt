@@ -1,0 +1,4 @@
+1. Increased tile_instrn_memory size to 1024 entries to fit all instructions
+2. Increased datamemory size to 1024 entries to cope with register allocation in compiler
+3. Note these numbers will be multiplied by sequence size for time and energy
+4. Inter-node transfers are buffered (to avoid having multiple inter-node transfers of same data across multiple utput neurons)

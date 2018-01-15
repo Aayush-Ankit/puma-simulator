@@ -1,0 +1,118 @@
+******************** CNN on DPE-ISA *****************************
+// Initializations
+set $r1, img_size
+set $r2, kernel_size
+set $r3, pool_size
+set $r4, stride
+
+set $r5, curr_x
+set $r6, curr_y
+
+L0: // Compute load address based on curr_x, curr_y
+    alu $r7, <curr_x, curr_y>
+    alu $r8, <curr_x, curr_y>
+    alu $r9, <curr_x, curr_y>
+
+    // Move data to core (IMA) - Loading 3 rows of image
+    load $xr1, #($r7), vec_width
+    load $xr2, #($r8), vec_width
+    load $xr3, #($r9), vec_width
+
+    // Compututation
+    mvm FF, $r2, $r4
+    alu_relu $xr2, $xr1, vec_width
+
+    // Max-pool if applicable & store the output
+    beq <check if odd row & col>
+    alu_mp $xr2, $xr1, vec_width
+    store $xr2, #(100)
+
+    // Goto next convoltion (curr_x if row changes - Not-shown here)
+    alu_addi $r6, 1
+    jmp L0
+
+
+
+******************** MLP on DPE-ISA *****************************
+// Move data (input and bias) to core (IMA)
+load $r1, #(0), vec_width
+load $xr1, #(16), vec_width
+
+// Computation
+mvm FF
+alu_add $r1, $xr1, $r1, vec_width
+alu_sig $xr1, $xr1, vec_width
+
+// Move output to tile_memory
+store $xr1, (#100), vec_width
+
+
+
+******************** LSTM on DPE-ISA *****************************
+// Move data (input, h_prev, c_prev) to core (IMA)
+load $xr1, #(0), vw
+load $xr2, #(10), vw
+load $r1, #(20), vw
+
+// Computation
+mvm FF
+alu_add $xr1, $xr1, $xr2, 16
+alu_sig $r16, $xr1, 4
+alu_sig $r20, $(xr1+4), 4
+alu_sig $r24, $(xr1+8), 4
+alu_tanh $r28, $(xr1+12), 4
+alu_mul $r16, $r16, $r28, 4
+alu_mul $r20, $r20, $r1, 4
+alu_add $r16, $r16, $r20, 4 // c_next
+alu_tanh $r32, $r16, 4
+alu_mul $r32, $r32, $r24, 4 //h_next
+
+// Store h_next, c_next in tile-memory
+store $r16, (#30), vw
+store $r32, (#40), vw
+
+
+
+******************** RNN on DPE-ISA *****************************
+// Move data (input, h_prev) to core (IMA)
+load $xr1, #(0), vw
+load $xr2, #(10), vw
+
+// Computation
+mvm FF
+alu_add $xr1, $xr1, $xr2, 16
+alu_sig $r1, $xr1, 16
+
+// Store h_next in tile-memory
+store $r1, (#10), vw
+
+
+
+******************** BM on DPE-ISA (computationally resembles RNN) *****************************
+load $xr1, #(0), vw // load visible vector (v)
+load $xr2, #(10), vw // load hidden vector (h)
+
+// Computation
+mvm FF
+alu_add $xr1, $xr1, $xr2, 16 //Wv + Lh
+alu_sig $r1, $xr1, 16
+alu_rv $r2 // generate random vectors
+alu_cmpge $r1, $r2, $r1 // compare
+
+// Store h_next in tile-memory
+store $r1, (#10), vw
+
+
+
+******************** RBM on DPE-ISA (computationally resembles MLP) *****************************
+load $xr1, #(0), vw // load visible vector (v)
+load $xr2, #(10), vw // load hidden vector (h)
+
+// Computation
+mvm FF // Wx
+alu_sig $r1, $xr1, 16
+alu_rv $r2 // generate random vectors
+alu_cmpge $r1, $r2, $r1 // compare
+
+// Store h_next in tile-memory
+store $r1, (#10), vw

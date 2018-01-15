@@ -1,0 +1,15 @@
+**********Synopsys Design Compiler*********
+Toggle rate specified in the tcl file sets the switching activity.
+Toggle rate is the number of logic 0-1 and 1-0 transitions in 1 clocl cycle.
+Default value used by DC is 0.1
+
+>> Use dc: dc_shell-xg-t , source <.tcl file>
+
+**********Questa Sim (verilog Simulator)*********
+>> Use queta: vlog <.sv files>, vsim -novopt <name of testbench without the extension>
+
+**********Copy files from windows to linux***********
+From cygwin: (-r for copying files recursively)
+ >> Use pscp: pscp -r <source_username>@<hostname>:<file location> <destination_username>@<hostname>:<file location>
+
+
