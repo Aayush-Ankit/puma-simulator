@@ -49,7 +49,7 @@ import node_metrics
 
 ## Set the instruction & trace paths (create the folder hierarchy)
 # Assumption: All instructions for all TILEs and IMAs have already been generated
-net = 'vggLa'
+net = 'large'
 instrndir = '/home/aa/dpe_compiler/src/' + net
 tracedir = '/home/aa/dpe_emulate/test/traces/' + net
 
