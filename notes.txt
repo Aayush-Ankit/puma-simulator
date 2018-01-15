@@ -12,4 +12,23 @@ Default value used by DC is 0.1
 From cygwin: (-r for copying files recursively)
  >> Use pscp: pscp -r <source_username>@<hostname>:<file location> <destination_username>@<hostname>:<file location>
 
+**********Run compiler puma codes (dpe_compiler) on dpe_emulate***********
+1. dpe_compiler (use master branch)
+    a. add <net-name>.test in Makefile
+    b. run net.test to generate <net***>.dpe files on src folder
+    c. run generate-py_aa.sh to generate the '.npy' files in the directory structure
+    d. make sure you have input files, tile instruction and core isntruction
+    files in appropriate locations
+    e. look at the <net> folder; n = number of tiles used - 2 (number of tiles
+used is 4 if tile0, tile1, tile2 and tile3 directories get created)
+
+2. dpe_emulate (use master branch)
+    a. make sure the parameter - xbar_size  and num_ima in include/config.py are
+same as used in compiler
+    b. specify number of tile (compute_tiles) in include/config.py file (look
+towards end)
+        >> simulator needs to know how many tiles are being simulated
+    c. specify the network name in src/dpe.dpy
+        >> simulator needs to know where to look for instruction files
+
 
