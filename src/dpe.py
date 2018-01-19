@@ -58,7 +58,7 @@ import node_metrics
 
 class DPE:
 
-    def __init__(self, net):
+    def run(self, net):
         instrndir = os.path.join(os.path.join(test_dir, 'testasm'), net)
         tracedir = os.path.join(os.path.join(test_dir, 'traces'), net)
 
@@ -80,7 +80,6 @@ class DPE:
         self.instrnpath = instrndir + '/'
         self.tracepath = tracedir + '/'
 
-    def run(self):
         # Instantiate the node under test
         # A physical node consists of several logical nodes equal to the actual node size
         node_dut = node.node()
