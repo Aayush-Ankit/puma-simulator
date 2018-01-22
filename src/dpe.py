@@ -185,9 +185,9 @@ class DPE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-n", "--net", help="The net name as it is in test/testasm.", default='char_rnn')
+        "-n", "--net", help="The net name as it is in test/testasm.", default='large')
     args = parser.parse_args()
     net = args.net
 
     print('Input net is {}'.format(net))
-    DPE(net).run()
+    DPE().run(net)
