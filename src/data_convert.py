@@ -6,6 +6,8 @@
 import numpy as np
 
 def bin2int (binary_string, bits):
+    #if binary_string == '':
+    #    return 0
     val = int (binary_string,2)
     if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         val = val - (1 << bits)        # compute negative value

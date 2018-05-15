@@ -41,7 +41,7 @@ class xbar (object):
         size_max = cfg.xbar_size
         assert (val_size[0] <= size_max and val_size[1] <= size_max), \
                     'Xbar values format should be a numpy array of the xbar dimensions'
-        #self.xbar_value[0:val_size[0], 0:val_size[1]] = xbar_value.copy ()
+        self.xbar_value[0:val_size[0], 0:val_size[1]] = xbar_value.copy()
 
     def getLatency (self):
         return self.latency
@@ -381,7 +381,8 @@ class memory (object):
         assert (type(addr) == int), 'addr type should be int'
         assert (self.addr_start <= addr <= self.addr_end), 'addr exceeds the memory bounds'
         #print 'length of data ' + str(len(data))
-        assert ((type(data) ==  str) and (len(data) == cfg.data_width)), 'data should be a string with mem_width bits'
+        #assert ((type(data) ==  str) and (len(data) == cfg.data_width)), 'data should be a string with mem_width bits'
+        assert ((type(data) ==  str)), 'data should be a string with mem_width bits'
         self.memfile[addr - self.addr_start] = data
 
     def reset (self):

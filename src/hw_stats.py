@@ -21,11 +21,11 @@ hw_comp_energy = {'xbar':param.xbar_pow_dyn*100, 'dac':param.dac_pow_dyn, 'snh':
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
         'alu_sna': param.sna_pow_dyn, \
-        'imem':param.instrnMem_pow_dyn, 'dmem':param.dataMem_pow_dyn, 'xbInmem_rd':param.xbar_inMem_pow_dyn_read, \
-        'xbInmem_wr':param.xbar_inMem_pow_dyn_write, 'xbOutmem':param.xbar_outMem_pow_dyn, \
+        'imem':param.instrnMem_pow_dyn, 'dmem':(cfg.num_bits/16)*param.dataMem_pow_dyn, 'xbInmem_rd':param.xbar_inMem_pow_dyn_read, \
+        'xbInmem_wr':(cfg.num_bits/16)*param.xbar_inMem_pow_dyn_write, 'xbOutmem':(cfg.num_bits/16)*param.xbar_outMem_pow_dyn, \
         'imem_t':param.tile_instrnMem_pow_dyn, 'rbuff':param.receive_buffer_pow_dyn,\
-        'edram':param.edram_pow_dyn, 'edctrl':param.edram_ctrl_pow_dyn, \
-        'edram_bus':param.edram_bus_pow_dyn, 'edctrl_counter':param.counter_buff_pow_dyn, \
+        'edram':(cfg.num_bits/16)*param.edram_pow_dyn, 'edctrl':param.edram_ctrl_pow_dyn, \
+        'edram_bus':(cfg.num_bits/16)*param.edram_bus_pow_dyn, 'edctrl_counter':param.counter_buff_pow_dyn, \
         'noc_intra':param.noc_intra_pow_dyn,
         'noc_inter':param.noc_inter_pow_dyn*5, # HT takes 5 ns per packet transfer
         # Added new components
@@ -67,10 +67,10 @@ def get_hw_stats (fid, node_dut, cycle):
         sum_num_cycle_tile += node_dut.tile_list[i].cycle_count # used for leakage energy of tiles
 
         hw_comp_access['imem_t'] += node_dut.tile_list[i].instrn_memory.num_access
-        hw_comp_access['rbuff'] += node_dut.tile_list[i].receive_buffer.num_access
+        hw_comp_access['rbuff'] += node_dut.tile_list[i].receive_buffer.num_access 
         hw_comp_access['edram'] += node_dut.tile_list[i].edram_controller.mem.num_access
         hw_comp_access['edram_bus'] += node_dut.tile_list[i].edram_controller.mem.num_access
-        hw_comp_access['edctrl'] += node_dut.tile_list[i].edram_controller.num_access
+        hw_comp_access['edctrl'] += node_dut.tile_list[i].edram_controller.num_access 
         hw_comp_access['edctrl_counter'] += node_dut.tile_list[i].edram_controller.num_access_counter
 
         for j in range (cfg.num_ima):
@@ -120,7 +120,7 @@ def get_hw_stats (fid, node_dut, cycle):
 
             for k in range (cfg.num_xbar/(cfg.data_width/cfg.xbar_bits)):
                 hw_comp_access['xbOutmem'] += node_dut.tile_list[i].ima_list[j].xb_outMem_list[k].num_access
-
+ 
 
     # Added for core and tile control units
     hw_comp_access['core_control'] = sum_num_cycle_tile

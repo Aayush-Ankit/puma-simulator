@@ -103,24 +103,26 @@ class DPE:
                 inp['counter'][i])
             node_dut.tile_list[inp_tileId].edram_controller.valid[i] = int(
                 inp['valid'][i])
+        
+        # import pdb; pdb.set_trace()
 
         # Program DNN weights on the xbars
         # torch table in file - (tracepath/tile<>/weights/ima<>_xbar<>.t7)
-        #for i in range(1, cfg.num_tile - 1):
-        #    print ('Programming tile no: ', i)
-        #    for j in range(cfg.num_ima):
-        #        print ('Programming ima no: ', j)
-        #        for k in range(cfg.num_xbar):
-        #            wt_filename = self.instrnpath + 'tile' + str(i) + '/weights/' + \
-        #                'ima' + str(j) + '_xbar' + str(k) + '.npy'
-        #            #'ima' + str(j) + '_xbar' + str(k) + '.t7'
-        #            if (os.path.exists(wt_filename)):  # check if weights for the xbar exist
-        #                print ('wtfile exits: ' + 'tile ' + str(i) +
-        #                       'ima ' + str(j) + 'xbar ' + str(k))
-        #                #wt_temp = tf.load (wt_filename)
-        #                wt_temp = np.load(wt_filename)
-        #                node_dut.tile_list[i].ima_list[j].xbar_list[k].program(
-        #                    wt_temp)
+        for i in range(1, cfg.num_tile - 1):
+            #print ('Programming tile no: ', i)
+            for j in range(cfg.num_ima):
+                #print ('Programming ima no: ', j)
+                for k in range(cfg.num_xbar):
+                    wt_filename = self.instrnpath + 'tile' + str(i) + '/weights/' + \
+                        'core' + str(j) + '_xbar' + str(k) + '.npy'
+                    #'ima' + str(j) + '_xbar' + str(k) + '.t7'
+                    if (os.path.exists(wt_filename)):  # check if weights for the xbar exist
+                        print ('Programming tile ' + str(i) +
+                               ' core ' + str(j) + ' xbar ' + str(k))
+                        #wt_temp = tf.load (wt_filename)
+                        wt_temp = np.load(wt_filename)
+                        node_dut.tile_list[i].ima_list[j].xbar_list[k].program(
+                            wt_temp)
 
         #raw_input ('Press Enter')
 

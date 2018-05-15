@@ -7,7 +7,7 @@ debug = 1
 xbar_record = 1
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
-num_bits = 16
+num_bits = 64
 int_bits = 4
 frac_bits = num_bits - int_bits
 
@@ -30,7 +30,7 @@ instrn_width = 48 # (in bits)
 
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_xbar = 16
+num_xbar = num_bits #16
 xbar_size = 128
 dac_res = 1
 adc_res = 8
@@ -51,14 +51,14 @@ instrnMem_size = 512 #in entries
 
 # Fixed parameters
 instrn_width = 48 # bits (op-2, vtile_id-6, send/receive_width-8, target_addr/counter-16, vw-8, mem_addr-16)
-edram_buswidth = 256 # in bits
+edram_buswidth = (num_bits/16)*256 # in bits
 #receive_buffer_depth = 16
 receive_buffer_depth = 150 #set equal to num_tile_max
 receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entry (in terms of number of neurons)
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 64 # in Kilobytes (64 KB - same as issac)
+edram_size = (num_bits/16)*64 # in Kilobytes (64 KB - same as issac)
 tile_instrnMem_size = 2048 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)

@@ -271,6 +271,8 @@ class ima (object):
 
             elif (dec_op == 'mvm'):
                 xb_nma = self.fd_instrn['xb_nma']
+                if xb_nma > cfg.num_xbar:
+                    xb_nma = cfg.num_xbar
                 assert (0 <= xb_nma <= cfg.num_xbar), 'unsupported xbar configuration'
                 self.de_xb_nma = xb_nma
                 # adding a value for stride at the end of mvm processing (for input sharing across strides)
@@ -333,6 +335,7 @@ class ima (object):
 
         # Define what to do in execute (done for conciseness)
         def do_execute (self, ex_op, fid):
+            #import pdb; pdb.set_trace()
             if (ex_op == 'ld'):
                 self.ldAccess_done = 0
                 data = self.mem_interface.ramload
