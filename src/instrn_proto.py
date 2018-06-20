@@ -1,14 +1,16 @@
 # Define the instruction prototypes which will be used by the generate_instrn.py file
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/include')
+sys.path.insert (0, '/home/aankit/dpe_emulate/')
 
 import numpy as np
-from data_convert import *
-import config as cfg
-import constants as param
+from src.data_convert import *
+import include.configTest as cfg
+import include.constants as param
 
 # Define nstruction prototypes
 # generate load prototype - load data from edram to (datamem/xbinmem)
+phy2log_ratio = cfg.num_bits/cfg.xbar_bits
+
 def i_load (d1, r1, load_width = 1, vec = 1):
     assert (load_width <= (cfg.edram_buswidth/cfg.data_width)), 'Load width must be smaller than \
     edram_buswidth/data_width'
@@ -55,7 +57,7 @@ def i_set (d1, imm, vec = 1):
     return i_temp
 
 # generate alu prototype - arithmrtic, logical, non-linear opearrions
-def i_alu (aluop, d1, r1, r2=0, imm = 0, vec = 1):
+def i_alu (aluop, d1, r1, r2=0, imm=0, vec = 1):
     i_temp = param.dummy_instrn.copy()
     i_temp['opcode'] = 'alu'
     i_temp['aluop'] = aluop
@@ -78,12 +80,13 @@ def i_alui (aluop, d1, r1, imm, vec = 1):
     return i_temp
 
 # generate mvm prototype - xbar isntrn
-def i_mvm (xb_nma = cfg.num_xbar, r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+def i_mvm (xb_nma = (cfg.num_xbar/phy2log_ratio)*['01'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+    assert (len(xb_nma) == cfg.num_xbar/phy2log_ratio) #00 - inactive, 01-ip, 10-op, 11-undefined
     i_temp = param.dummy_instrn.copy()
     i_temp['opcode'] = 'mvm'
     i_temp['r1'] = r1
     i_temp['r2'] = r2
-    i_temp['xb_nma'] = cfg.num_xbar
+    i_temp['xb_nma'] = xb_nma
     return i_temp
 
 # generate halt prototype

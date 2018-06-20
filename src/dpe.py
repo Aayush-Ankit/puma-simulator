@@ -62,8 +62,7 @@ class DPE:
         instrndir = os.path.join(os.path.join(test_dir, 'testasm'), net)
         tracedir = os.path.join(os.path.join(test_dir, 'traces'), net)
 
-        assert (os.path.exists(instrndir) ==
-                1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
+        assert (os.path.exists(instrndir) ==1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
         '''if not os.path.exists(instrndir):
             os.makedirs(instrndir)
             for i in range (cfg.num_tile):

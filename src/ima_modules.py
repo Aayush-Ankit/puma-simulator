@@ -4,7 +4,7 @@
 # 'Update' - (NOT BEING USED CURRENTLY!) is the flip fop evaluation (for clocked elements of the circuit only)
 
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/include')
+sys.path.insert (0, '/home/aankit/dpe_emulate/include')
 
 import numpy as np
 import constants as param
@@ -42,6 +42,7 @@ class xbar (object):
         assert (val_size[0] <= size_max and val_size[1] <= size_max), \
                     'Xbar values format should be a numpy array of the xbar dimensions'
         #self.xbar_value[0:val_size[0], 0:val_size[1]] = xbar_value.copy ()
+        self.xbar_value = xbar_value.copy()
 
     def getLatency (self):
         return self.latency
@@ -75,7 +76,41 @@ class xbar (object):
         out_fixed  = [''] * self.xbar_size
         for i in range(len(out_fixed)):
             out_fixed[i] = float2fixed(out_float[i], cfg.int_bits, cfg.frac_bits)
-        return out_fixed
+
+        #return out_fixed
+        return out_float
+
+
+# xbar_op class supports both mvm (inner-product) and vvo (outer-product) operations
+class xbar_op (xbar):
+    # add function for outer_product computation
+    def propagate_op_dummy (self, inp1 = 'nil', inp2 = 'nil'):
+        # inner-product and outer_product functions should have different energies (and other metrics) - NEEDS UPDATE
+        self.num_access += 1
+        # check both data inputs
+        assert (inp1 != 'nil' and inp2 != 'nil'), 'propagate needs a non-nil inputs'
+        assert ((len(inp1) == self.xbar_size) and (len(inp1[0]) == cfg.dac_res)), 'inp1 size mismatch - should be \
+            xbar_sized list with each element being a string of dac_res length'
+        assert ((len(inp2) == self.xbar_size) and (len(inp2[0]) == cfg.xbar_bits)), 'inp2 size mismatch - should be \
+            xbar_sized list with each element being a string of xbar_bits length'
+
+        # convert inp1 (dac_res bits) abd inp2 (xbar_bits) from fixed point binary string to float
+        inp1_float = [0.0] * self.xbar_size
+        inp2_float = [0.0] * self.xbar_size
+        for i in range(len(self.xbar_size)):
+            # extend data to num_bits for computation (sign extended)
+            temp_inp1 = (cfg.num_bits - cfg.dac_res) * '0' + inp1[i]
+            temp_inp2 = (cfg.num_bits - cfg.xbar_bits) * '0' + inp2[i]
+            inp1_float[i] = fixed2float(temp_inp1, cfg.int_bits, cfg.frac_bits)
+            inp2_float[i] = fixed2float(temp_inp2, cfg.int_bits, cfg.frac_bits)
+        inp1_float = np.asarray (inp1_float)
+        inp2_float = np.asarray (inp2_float)
+
+        # compute outer product and accumulate
+        delta = np.outer (inp1_float, inp2_float)
+        self.xbar_value += delta
+        # return delta calculated fro debug only
+        return delta
 
 
 class dac (object):
@@ -303,6 +338,25 @@ class alu (object):
         out = float2fixed (out, cfg.int_bits, cfg.frac_bits)
         return [out, ovf]
 
+    # for functionality define a propagate float for use in inter-xbar shift-and-adds
+    # Note: xbar_propagate uses np.dot to compute dot product in float
+    # here float to fixed conversion of xbar output (and subsequent alu.propagate) cannot be used
+    # unless np.dot is implement using fixed point computation
+    def propagate_float (self, a, b, aluop, c=0):
+        assert ((type(aluop) == str) and (aluop in self.options.keys())), 'Invalid alu_op'
+        assert (type(c) == int or (type(c) == str and len(c) == cfg.num_bits)), 'ALU sna: shift = int/ num_bit str'
+        if (type(c) == str):
+            c = bin2int (c, cfg.num_bits)
+        if (b == ''):
+            b = 0
+        else:
+            if (aluop == 'sna'): # shift left - multiply by power of 2
+                b = b * (2**c)
+        out = self.options[aluop] (a, b)
+        # overflow needs to be detected while conversion
+        ovf = 0
+        return [out, ovf]
+
 
 # Integer ALU
 class alu_int (object):
@@ -363,6 +417,12 @@ class memory (object):
         # memfile will store half-word (16 bits digital data) length strings
         self.size = size
         self.memfile = [''] * size
+
+        # for debug
+        self.memfile_float = np.random.rand(cfg.xbar_size)
+        for i in range (cfg.xbar_size):
+            self.memfile[i] = float2fixed(self.memfile_float[i], cfg.int_bits, cfg.frac_bits)
+
         self.addr_start = addr_offset
         self.addr_end = self.addr_start + self.size -1
 
@@ -470,6 +530,18 @@ class xb_outMem (xb_inMem):
         assert (type(addr) == int), 'addr type should be int'
         assert (-1 < addr < self.xbar_size), 'addr exceeds the memory bounds'
         return self.memfile[addr]
+
+    # reads inputs from xbar_out_mem in parallel (alike xbar_in_mem)
+    def read_p (self, num_bits):
+        # Fix self.num_access_read ??
+        #self.num_access_read += 1
+        out_list = []
+        for i in xrange(self.xbar_size):
+            value = self.memfile[i]
+            #self.memfile[i] = '0'*num_bits + value[:-1*num_bits]
+            self.memfile[i] = value[-1*num_bits:] + value[:-1*num_bits]
+            out_list.append(value[-1*num_bits:])
+        return out_list
 
     def write (self, data):
         self.num_access += 1

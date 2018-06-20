@@ -2,16 +2,19 @@
 
 # add the folder location for include files
 import sys, json
-sys.path.insert (0, '/home/aa/dpe_emulate/include')
+sys.path.insert (0, '/home/aankit/dpe_emulate/')
 
 # import dependancy files
 import numpy as np
 import math
-import config as cfg
-import constants as param
-import ima_modules as imod
+#import config as cfg
+import include.configTest as cfg
+import include.constants as param
+import src.ima_modules as imod
 
 from data_convert import *
+
+phy2log_ratio = cfg.num_bits / cfg.xbar_bits # ratio of physical to logical xbar
 
 class ima (object):
 
@@ -29,10 +32,23 @@ class ima (object):
         ######################################################################
         ## Parametrically instantiate different physical IMA hardware modules
         ######################################################################
-        # Instantiate crossbars
+        # Instantiate crossbars (first 2/3 of total_xbars have can do mvm only, last 1/3 can do mvm, vvo):
+        #if (cfg.sim_mode == 'infer'):
+        #    assert ((cfg.num_xbar % phy2log_ratio) ==  0), 'non-compatible num_xbar value in config for inference'
+        #elif (cfg.sim_mode == 'train'):
+        #    assert ((cfg.num_xbar % (3*phy2log_ratio)) ==  0), 'non-compatible num_xbar value in config for training'
+        #else:
+        #    print ('unsupported sim_mode option in config')
+        #    exit()
+
         self.xbar_list = []
         for i in xrange(cfg.num_xbar):
-            temp_xbar = imod.xbar (cfg.xbar_size)
+            # for training accelerator the last 1/3rd xbars are xbar_op (do both inner/outer product)
+            #if ((cfg.sim_mode == 'train') and (i>cfg.num_xbar/3*2)):
+            if (cfg.sim_mode == 'train'):
+                temp_xbar = imod.xbar_op (cfg.xbar_size)
+            else:
+                temp_xbar = imod.xbar (cfg.xbar_size)
             self.xbar_list.append(temp_xbar)
 
         # Instantiate DACs
@@ -271,7 +287,7 @@ class ima (object):
 
             elif (dec_op == 'mvm'):
                 xb_nma = self.fd_instrn['xb_nma']
-                assert (0 <= xb_nma <= cfg.num_xbar), 'unsupported xbar configuration'
+                assert (len(xb_nma) == (cfg.num_xbar/phy2log_ratio)), 'unsupported xbar configuration'
                 self.de_xb_nma = xb_nma
                 # adding a value for stride at the end of mvm processing (for input sharing across strides)
                 self.de_val1 = self.fd_instrn['r1']
@@ -340,9 +356,9 @@ class ima (object):
                 data_addr = self.de_d1 + self.ex_vec_count * self.de_r2
                 # check if data is a list
                 if (type(data) != list):
-                    print ('data', data)
-                    print ('ld data not list, check ima_id', self.ima_id)
-                    print ('ld width', self.de_r2)
+                    #print ('data', data)
+                    #print ('ld data not list, check ima_id', self.ima_id)
+                    #print ('ld width', self.de_r2)
                     data = ['0'*cfg.data_width]*self.de_r2
                 for i in range (self.de_r2):
                     if (data_addr+i >= datamem_off):
@@ -374,6 +390,7 @@ class ima (object):
                     src_addr = self.de_r1 + i
                     # based on address read from dataMem or xb_inMem
                     if (src_addr >= datamem_off):
+                        #print (src_addr)
                         ex_val1 = self.dataMem.read (src_addr)
                     else:
                         xb_id = src_addr / cfg.xbar_size
@@ -459,64 +476,87 @@ class ima (object):
 
             elif (ex_op == 'mvm'):
                 # traverse through the xbars - (nma is the number of crossbars which will evaluate)
-                for i in xrange (self.de_xb_nma/(cfg.data_width/cfg.xbar_bits)): # this 'for' across xbar outs to next mux can happen via mux
-                    # reset the xb out memory before starting to accumulate
-                    self.xb_outMem_list[i].reset ()
+                #for i in xrange (self.de_xb_nma/(cfg.data_width/cfg.xbar_bits)): # this 'for' across xbar outs to next mux can happen via mux
+                for i in xrange (cfg.num_xbar/phy2log_ratio): # this 'for' across xbar outs to next mux can happen via mux
+                    #assert (self.de_xb_nma[i] != '11', 'xb_nma mask 11 not supported')
 
-                    ## Loop to cover all bits of inputs
-                    for k in xrange (cfg.xbdata_width / cfg.dac_res):
-                        # read the values from the xbar's input register
-                        out_xb_inMem = self.xb_inMem_list[i].read (cfg.dac_res)
+                    # inner-product operation
+                    if (self.de_xb_nma[i] == '01'):
+                        # reset the xb out memory before starting to accumulate
+                        self.xb_outMem_list[i].reset ()
 
-                        #*************************************** HACK *********************************************
-                        ###### CAUTION: Not replicated exact "functional" circuit behaviour for analog parts
-                        ###### Use propagate (not propagate_hack) for DAC, Xbar, TIA, SNH, ADC when above is done
-                        #*************************************** HACK *********************************************
+                        ## Loop to cover all bits of inputs
+                        for k in xrange (cfg.xbdata_width / cfg.dac_res):
+                            # read the values from the xbar's input register
+                            out_xb_inMem = self.xb_inMem_list[i].read (cfg.dac_res)
 
-                        # convert digital values to analog
-                        out_dac = self.dacArray_list[i].propagate_dummy (out_xb_inMem) #pass through
+                            #*************************************** HACK *********************************************
+                            ###### CAUTION: Not replicated exact "functional" circuit behaviour for analog parts
+                            ###### Use propagate (not propagate_hack) for DAC, Xbar, TIA, SNH, ADC when above is done
+                            #*************************************** HACK *********************************************
 
-                        # Do for (data_width/xbar_bits) xbars
-                        num_xb = cfg.data_width / cfg.xbar_bits
-                        out_xbar = [[] for x in range(num_xb)]
-                        out_snh = [[] for x in range(num_xb)]
-                        for m in range (num_xb):
-                            # compute dot-product
-                            out_xbar[m] = self.xbar_list[i*num_xb+m].propagate_dummy (out_dac)
-                            # do sampling and hold
-                            out_snh[m] = self.snh_list[i*num_xb+m].propagate_dummy (out_xbar[m])
+                            # convert digital values to analog
+                            out_dac = self.dacArray_list[i].propagate_dummy (out_xb_inMem) #pass through
 
-                        # each of the num_xb produce shifted bits of output (weight bits have been distributed)
-                        for j in xrange (cfg.xbar_size): # this 'for' across xbar outs to adc happens via mux
-                            out_sna = '0'*cfg.data_width # a zero for first sna
+                            # Do for (data_width/xbar_bits) xbars
+                            num_xb = cfg.data_width / cfg.xbar_bits
+                            out_xbar = [[] for x in range(num_xb)]
+                            out_snh = [[] for x in range(num_xb)]
                             for m in range (num_xb):
-                                # convert from analog to digital
-                                adc_id = (i*num_xb + m) % cfg.num_adc
-                                out_mux1 = self.mux1_list[i].propagate_dummy (out_snh[m][j]) # i is the ith xbar
-                                out_mux2 = self.mux2_list[i % cfg.num_adc].propagate_dummy (out_mux1)
-                                out_adc = self.adc_list[adc_id].propagate_dummy (out_mux2)
+                                # compute dot-product
+                                out_xbar[m] = self.xbar_list[i*num_xb+m].propagate_dummy (out_dac)
+                                # do sampling and hold
+                                out_snh[m] = self.snh_list[i*num_xb+m].propagate_dummy (out_xbar[m])
 
-                                # shift and add outputs from difefrent wt_bits
+                            # each of the num_xb produce shifted bits of output (weight bits have been distributed)
+                            for j in xrange (cfg.xbar_size): # this 'for' across xbar outs to adc happens via mux
+                                #out_sna = '0'*cfg.data_width # a zero for first sna
+                                out_sna = 0.0 # a zero for first sna
+                                for m in range (num_xb):
+                                    # convert from analog to digital
+                                    adc_id = (i*num_xb + m) % cfg.num_adc
+                                    out_mux1 = self.mux1_list[i].propagate_dummy (out_snh[m][j]) # i is the ith xbar
+                                    out_mux2 = self.mux2_list[i % cfg.num_adc].propagate_dummy (out_mux1)
+                                    out_adc = self.adc_list[adc_id].propagate_dummy (out_mux2)
+
+                                    # shift and add outputs from difefrent wt_bits
+                                    alu_op = 'sna'
+                                    #[out_sna, ovf] = self.alu_list[0].propagate (out_sna, out_adc, alu_op, \
+                                    #        m * cfg.xbar_bits)
+                                    [out_sna, ovf] = self.alu_list[0].propagate_float (out_sna, out_adc, alu_op, \
+                                            m*cfg.xbar_bits)
+
+                                # convert the inter-xbar sna output to fixed hereon
+                                out_sna = float2fixed(out_sna, cfg.int_bits, cfg.frac_bits)
+                                # read from xbar's output register
+                                out_xb_outMem = self.xb_outMem_list[i].read (j)
+                                # shift and add - make a dedicated sna unit -- PENDING
                                 alu_op = 'sna'
-                                [out_sna, ovf] = self.alu_list[0].propagate (out_sna, out_adc, alu_op, \
-                                        m * cfg.xbar_bits)
+                                # modify (len(out_adc) to adc_res) when ADC functionality is implemented
+                                [out_sna, ovf] = self.alu_list[0].propagate (out_xb_outMem, out_sna, alu_op, k*cfg.dac_res)
+                                if (cfg.debug and ovf):
+                                    fid.write ('IMA: ' + str(self.ima_id) + ' ALU Overflow Exception ' +\
+                                            self.de_aluop + ' allowed to run')
+                                # store back to xbar's output register & restart it
+                                self.xb_outMem_list[i].write (out_sna)
 
-                            # read from xbar's output register
-                            out_xb_outMem = self.xb_outMem_list[i].read (j)
-                            # shift and add - make a dedicated sna unit -- PENDING
-                            alu_op = 'sna'
-                            # modify (len(out_adc) to adc_res) when ADC functionality is implemented
-                            [out_sna, ovf] = self.alu_list[0].propagate (out_xb_outMem, out_sna, alu_op, k * cfg.dac_res)
-                            if (cfg.debug and ovf):
-                                fid.write ('IMA: ' + str(self.ima_id) + ' ALU Overflow Exception ' +\
-                                        self.de_aluop + ' allowed to run')
-                            # store back to xbar's output register & restart it
-                            self.xb_outMem_list[i].write (out_sna)
+                            self.xb_outMem_list[i].restart()
+                        #if (i == 0):
+                        #print ('ima_id', self.ima_id)
+                        self.xb_inMem_list[i].stride(self.de_val1, self.de_val2)
 
-                        self.xb_outMem_list[i].restart()
-                    #if (i == 0):
-                    #print ('ima_id', self.ima_id)
-                    self.xb_inMem_list[i].stride(self.de_val1, self.de_val2)
+                    ## outer-product operation
+                    elif (self.de_xb_nma == '10'):
+                        ## Loop to cover all bits of inputs - bit-streamed inputs across rows
+                        for j in xrange (cfg.xbdata_width / cfg.dac_res):
+                            # stream the (fw-activations) input bits across the rows
+                            inp1 = self.xb_inMem_list[i].read (cfg.dac_res)
+                            # do outer product on all physical xbars (for a logical xbar)
+                            num_xb = cfg.data_width / cfg.xbar_bits
+                            for m in xrange (num_xb):
+                                # read inputs (bw-local_error) for the phy xbar
+                                inp2 = xb_outMem_list[i].read_p (cfg.xbar_bits)
+                                xbar_list[i*phy2log_ratio + m].propagate_op_dummy (inp1, inp2)
 
             elif (ex_op == 'jmp'):
                 self.fd_instrn['opcode'] = 'nop'
@@ -573,7 +613,12 @@ class ima (object):
             # Cycle4 - SnA + xbar_outMem
             num_stage = 4
             lat1 = self.xbar_list[0].getLatency() # due to xbar access
-            lat2 = lat1 * int(np.ceil(float(self.de_xb_nma)/cfg.num_adc)) * (cfg.xbar_size / 128) # due to adc sharing - \
+            # find number of active xbars
+            num_xbar = 0
+            for mask in self.de_xb_nma:
+                if (mask != '00'):
+                    num_xbar += cfg.num_xbar
+            lat2 = lat1 * int(np.ceil(float(num_xbar)/cfg.num_adc)) * (cfg.xbar_size / 128) # due to adc sharing - \
                     #(Assumption - 1ADC can process 128 xbar columns in xbar access time)
             latency_out = max (lat1, lat2) * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1)
             return latency_out
@@ -679,6 +724,7 @@ class ima (object):
                   (self.de_opcode == 'st' and self.mem_interface.wait == 0 and self.ex_vec_count == (self.de_vec-1) and update_ready) or \
                   (self.de_opcode == 'ld' and self.stage_cycle[sId] >= self.stage_latency[sId]-1 and self.ex_vec_count == (self.de_vec-1) and update_ready)):
                 ex_op = self.de_opcode
+                #print ("doing exe stage for op: " + ex_op)
                 do_execute (self, ex_op, fid)
                 self.stage_done[sId] = 1
                 self.stage_cycle[sId] = 0

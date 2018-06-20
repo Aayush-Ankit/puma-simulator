@@ -16,3 +16,7 @@
 *swk
 *swl
 traces/
+
+/src/junk/
+/test/*.txt
+/test/*.npy
