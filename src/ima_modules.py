@@ -109,7 +109,7 @@ class xbar_op (xbar):
         # compute outer product and accumulate
         delta = np.outer (inp1_float, inp2_float)
         self.xbar_value += delta
-        # return delta calculated fro debug only
+        # return delta calculated for debug only
         return delta
 
 
@@ -418,7 +418,7 @@ class memory (object):
         self.size = size
         self.memfile = [''] * size
 
-        # for debug
+        # for debug - initialized DataMemory
         self.memfile_float = np.random.rand(cfg.xbar_size)
         for i in range (cfg.xbar_size):
             self.memfile[i] = float2fixed(self.memfile_float[i], cfg.int_bits, cfg.frac_bits)

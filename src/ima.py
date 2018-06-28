@@ -551,10 +551,13 @@ class ima (object):
                         for j in xrange (cfg.xbdata_width / cfg.dac_res):
                             # stream the (fw-activations) input bits across the rows
                             inp1 = self.xb_inMem_list[i].read (cfg.dac_res)
+                            # inp1 needs to pass through a dac+ - needs UPDATE
                             # do outer product on all physical xbars (for a logical xbar)
                             num_xb = cfg.data_width / cfg.xbar_bits
                             for m in xrange (num_xb):
                                 # read inputs (bw-local_error) for the phy xbar
+                                # inp2 needs to pass through a dac - needs UPDATE
+                                # read_p needs an energy/latency model - needs UPDATE
                                 inp2 = xb_outMem_list[i].read_p (cfg.xbar_bits)
                                 xbar_list[i*phy2log_ratio + m].propagate_op_dummy (inp1, inp2)
 
