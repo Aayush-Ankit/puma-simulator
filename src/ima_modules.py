@@ -531,16 +531,14 @@ class xb_outMem (xb_inMem):
         assert (-1 < addr < self.xbar_size), 'addr exceeds the memory bounds'
         return self.memfile[addr]
 
-    # reads inputs from xbar_out_mem in parallel (alike xbar_in_mem)
-    def read_p (self, num_bits):
+    # reads entire xbar_out_mem in parallel
+    def read_p (self):
         # Fix self.num_access_read ??
         #self.num_access_read += 1
         out_list = []
         for i in xrange(self.xbar_size):
             value = self.memfile[i]
-            #self.memfile[i] = '0'*num_bits + value[:-1*num_bits]
-            self.memfile[i] = value[-1*num_bits:] + value[:-1*num_bits]
-            out_list.append(value[-1*num_bits:])
+            out_list.append(value)
         return out_list
 
     def write (self, data):
@@ -555,7 +553,8 @@ class xb_outMem (xb_inMem):
 
     def reset (self):
         # self.num_access += 1
-        self.memfile = ['0' * cfg.xbdata_width] * self.xbar_size
+        #self.memfile = ['0' * cfg.xbdata_width] * self.xbar_size
+        self.memfile = ['0110' * cfg.xbdata_width/4] * self.xbar_size
         self.wr_pointer = 0
 
 

@@ -476,8 +476,8 @@ class ima (object):
 
             elif (ex_op == 'mvm'):
                 # traverse through the xbars - (nma is the number of crossbars which will evaluate)
-                #for i in xrange (self.de_xb_nma/(cfg.data_width/cfg.xbar_bits)): # this 'for' across xbar outs to next mux can happen via mux
-                for i in xrange (cfg.num_xbar/phy2log_ratio): # this 'for' across xbar outs to next mux can happen via mux
+                # Needs UPDATE - factor of 2 added for outer-product only
+                for i in xrange (cfg.num_xbar/(2*phy2log_ratio)): # this 'for' across xbar outs to next mux can happen via mux
                     #assert (self.de_xb_nma[i] != '11', 'xb_nma mask 11 not supported')
 
                     # inner-product operation
@@ -548,18 +548,43 @@ class ima (object):
                     ## outer-product operation
                     elif (self.de_xb_nma == '10'):
                         ## Loop to cover all bits of inputs - bit-streamed inputs across rows
+                        # read the bw-error to provide inputs across columns - read_a needs an energy/latency model - needs UPDATE
+                        self.xb_outMem_list[i].reset()
+                        out_xb_outMem = self.xb_outMem_list[i].read_a() # read entire xb_outMem
+                        out_xb_outMem_temp = out_xb_outMem.copy()
                         for j in xrange (cfg.xbdata_width / cfg.dac_res):
-                            # stream the (fw-activations) input bits across the rows
-                            inp1 = self.xb_inMem_list[i].read (cfg.dac_res)
-                            # inp1 needs to pass through a dac+ - needs UPDATE
+
+                            # read the fw-activations to provide inputs across the rows
+                            out_xb_inMem = self.xb_inMem_list[i].read (cfg.dac_res)
+
+                            # left shift the bw-error values for subsequent bit-streamed computation (jth loop) to make a list of
+                            # 32-bit values
+                            for k in range(out_xb_outMem):
+                                out_xb_outMem_temp[k] = (cfg.num_bits-j)*'0' + out_xb_outMem[k] + j*'0'
+
+
                             # do outer product on all physical xbars (for a logical xbar)
-                            num_xb = cfg.data_width / cfg.xbar_bits
+                            # Note: 2X delta xbars than fw/bw xbars
+                            num_xb = (2*cfg.data_width) / cfg.xbar_bits
                             for m in xrange (num_xb):
-                                # read inputs (bw-local_error) for the phy xbar
-                                # inp2 needs to pass through a dac - needs UPDATE
-                                # read_p needs an energy/latency model - needs UPDATE
-                                inp2 = xb_outMem_list[i].read_p (cfg.xbar_bits)
-                                xbar_list[i*phy2log_ratio + m].propagate_op_dummy (inp1, inp2)
+                                out_dac1 = self.dacArray_list[i].propagate_dummy (out_xb_inMem)
+                                if (m == 0):
+                                    out_dac2 = out_xb_outMem_temp[-((m+1)*cfg.xbar_bits):]
+                                else:
+                                    out_dac2 = out_xb_outMem_temp[-((m+1)*cfg.xbar_bits):-(m*cfg.xbar_bits)]
+                                # UPDATE - update how xbars are addressed
+                                xbar_list[m].propagate_op_dummy (out_dac1, out_dac2)
+
+                        # xbar CRS operation - UPDATE - Add as separate instruction
+                        num_xb = (2*cfg.data_width) / cfg.xbar_bits
+                        for k in range (cfg.xbar_size):
+                            for l in range (cfg.xbar_size):
+                                # read 7-bit values from all 16 xbars and write back a 16-bit value to the first 8 xbar
+                                wt_new = 0.0
+                                for m in range (num_xb):
+                                    # UPDATE - update how xbars are addressed
+                                    wt_new =+ xbar_list[m].xbar_value[k][l] * (2 ** (2*m)) # left shift by 2m
+
 
             elif (ex_op == 'jmp'):
                 self.fd_instrn['opcode'] = 'nop'
