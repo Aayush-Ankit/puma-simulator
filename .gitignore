@@ -19,4 +19,8 @@ traces/
 
 /src/junk/
 /test/*.txt
-/test/*.npy
+/test/coreMvm_test/*.npy
+/test/coreMvm_test/*.txt
+/test/coreOther_test/*.npy
+/test/coreOther_test/*.txt
+

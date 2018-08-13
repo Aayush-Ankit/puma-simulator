@@ -2,7 +2,7 @@
 ## All user specified parameters are provided by this file only
 
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
-cycles_max = 5000 # Put both these to very large numbers (when design is bug-free)!
+cycles_max = 10000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
 
@@ -10,9 +10,6 @@ xbar_record = 1
 num_bits = 16
 int_bits = 4
 frac_bits = num_bits - int_bits
-
-## Simulator mode - inference, training
-sim_mode = 'train'
 
 ## IMA configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by xbar_bits, num_xbar, xbar_size.
@@ -33,14 +30,19 @@ instrn_width = 48 # (in bits)
 
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_xbar = 8
+num_matrix = 1 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
 adc_res = 8
-num_adc = num_xbar
+num_adc = 2 * num_matrix
 num_ALU = 1
-dataMem_size = 128
+dataMem_size = 4 * (2*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 instrnMem_size = 512 #in entries
+
+# This depends on above parameters
+datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar
+lr = 0.25 # learning rate for updates to d-xbar
 
 ## Tile configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_ima

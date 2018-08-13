@@ -43,7 +43,6 @@ def i_copy (d1, r1, vec = 1, src_type = 0):
     i_temp['opcode'] = 'cp'
     i_temp['d1'] = d1
     i_temp['r1'] = r1
-    i_temp['r2'] = src_type
     i_temp['vec'] = vec
     return i_temp
 
@@ -80,12 +79,22 @@ def i_alui (aluop, d1, r1, imm, vec = 1):
     return i_temp
 
 # generate mvm prototype - xbar isntrn
-def i_mvm (xb_nma = (cfg.num_xbar/phy2log_ratio)*['01'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
-    assert (len(xb_nma) == cfg.num_xbar/phy2log_ratio) #00 - inactive, 01-ip, 10-op, 11-undefined
+# for each matrix, the three bits initiate fw, bw and delta crossbar
+def i_mvm (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+    assert (len(xb_nma) == cfg.num_matrix) # each matrix in a core has a 3-bit mask
     i_temp = param.dummy_instrn.copy()
     i_temp['opcode'] = 'mvm'
     i_temp['r1'] = r1
     i_temp['r2'] = r2
+    i_temp['xb_nma'] = xb_nma
+    return i_temp
+
+# generate crs instruction
+# for each matrix, one bit to specify whether to do crs or not
+def i_crs (xb_nma = cfg.num_matrix*['0']):
+    assert (len(xb_nma) == cfg.num_matrix) # each matrix in a core has a 1-bit mask
+    i_temp = param.dummy_instrn.copy()
+    i_temp['opcode'] = 'crs'
     i_temp['xb_nma'] = xb_nma
     return i_temp
 
@@ -120,3 +129,4 @@ def i_alu_int (aluop, d1, r1, r2):
     i_temp['r1'] = r1
     i_temp['r2'] = r2
     return i_temp
+

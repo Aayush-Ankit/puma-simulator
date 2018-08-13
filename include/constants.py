@@ -30,7 +30,7 @@ dummy_instrn_tile = {'opcode' : op_list_tile[0],
                      'vec': 0} # vector width
 
 # List of supported opcodes/aluops for IMA - cp will copy data (from data memory of ima to xbarInmem)
-op_list = ['ld', 'cp', 'st', 'set', 'nop', 'alu', 'alui', 'mvm', 'vvo', 'hlt', 'jmp', 'beq', 'alu_int']
+op_list = ['ld', 'cp', 'st', 'set', 'nop', 'alu', 'alui', 'mvm', 'vvo', 'hlt', 'jmp', 'beq', 'alu_int', 'crs']
 aluop_list = ['add', 'sub', 'sna', 'mul', 'sigmoid'] # sna is also used by mvm isntruction
 
 # Instruction format for IMA

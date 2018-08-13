@@ -23,7 +23,8 @@ class xbar (object):
 
         # xbar_value is the weights meant for one crossbar
         self.xbar_size = xbar_size
-        self.xbar_value = np.random.randn(xbar_size, xbar_size)
+        #self.xbar_value = np.random.randn(xbar_size, xbar_size)
+        self.xbar_value = np.zeros((xbar_size, xbar_size))
         # unprogrammed xbar contains zeros
         if (xbar_value != 'nil'):
             self.xbar_value = xbar_value
@@ -35,6 +36,7 @@ class xbar (object):
     def record (self, xb_out):
         self.xb_record.append(xb_out)
 
+    # programs the entire xbar during configuration phase
     def program (self, xbar_value = ''):
         # programs the crossbar with given matrix values
         val_size = np.shape (xbar_value)
@@ -43,6 +45,19 @@ class xbar (object):
                     'Xbar values format should be a numpy array of the xbar dimensions'
         #self.xbar_value[0:val_size[0], 0:val_size[1]] = xbar_value.copy ()
         self.xbar_value = xbar_value.copy()
+
+    # writes to a location on xbar
+    def write (self, k, l, value):
+        assert (k < cfg.xbar_size), 'row entry exceeds xbar size'
+        assert (l < cfg.xbar_size), 'col entry exceeds xbar size'
+        assert (type(value) == float), 'value written to xbar should be float'
+        self.xbar_value[k][l] = value
+
+    # reads a location on xbar
+    def read (self, k, l):
+        assert (k < cfg.xbar_size), 'row entry exceeds xbar size'
+        assert (l < cfg.xbar_size), 'col entry exceeds xbar size'
+        return self.xbar_value[k][l]
 
     def getLatency (self):
         return self.latency
@@ -84,30 +99,30 @@ class xbar (object):
 # xbar_op class supports both mvm (inner-product) and vvo (outer-product) operations
 class xbar_op (xbar):
     # add function for outer_product computation
-    def propagate_op_dummy (self, inp1 = 'nil', inp2 = 'nil'):
+    def propagate_op_dummy (self, inp1 = 'nil', inp2 = 'nil', lr=1, in1_bit=cfg.dac_res, in2_bit=cfg.xbar_bits):
         # inner-product and outer_product functions should have different energies (and other metrics) - NEEDS UPDATE
         self.num_access += 1
         # check both data inputs
         assert (inp1 != 'nil' and inp2 != 'nil'), 'propagate needs a non-nil inputs'
-        assert ((len(inp1) == self.xbar_size) and (len(inp1[0]) == cfg.dac_res)), 'inp1 size mismatch - should be \
+        assert ((len(inp1) == self.xbar_size) and (len(inp1[0]) == in1_bit)), 'inp1 size mismatch - should be \
             xbar_sized list with each element being a string of dac_res length'
-        assert ((len(inp2) == self.xbar_size) and (len(inp2[0]) == cfg.xbar_bits)), 'inp2 size mismatch - should be \
+        assert ((len(inp2) == self.xbar_size) and (len(inp2[0]) == in2_bit)), 'inp2 size mismatch - should be \
             xbar_sized list with each element being a string of xbar_bits length'
 
-        # convert inp1 (dac_res bits) abd inp2 (xbar_bits) from fixed point binary string to float
+        # convert inp1 (dac_res bits) and inp2 (xbar_bits) from fixed point binary string to float
         inp1_float = [0.0] * self.xbar_size
         inp2_float = [0.0] * self.xbar_size
-        for i in range(len(self.xbar_size)):
+        for i in range(self.xbar_size):
             # extend data to num_bits for computation (sign extended)
-            temp_inp1 = (cfg.num_bits - cfg.dac_res) * '0' + inp1[i]
-            temp_inp2 = (cfg.num_bits - cfg.xbar_bits) * '0' + inp2[i]
+            temp_inp1 = (cfg.num_bits - in1_bit) * '0' + inp1[i]
+            temp_inp2 = (cfg.num_bits - in2_bit) * '0' + inp2[i]
             inp1_float[i] = fixed2float(temp_inp1, cfg.int_bits, cfg.frac_bits)
             inp2_float[i] = fixed2float(temp_inp2, cfg.int_bits, cfg.frac_bits)
         inp1_float = np.asarray (inp1_float)
         inp2_float = np.asarray (inp2_float)
 
-        # compute outer product and accumulate
-        delta = np.outer (inp1_float, inp2_float)
+        # compute outer product and accumulate (scaled by learning rate - lr)
+        delta = lr * np.outer (inp1_float, inp2_float)
         self.xbar_value += delta
         # return delta calculated for debug only
         return delta
@@ -418,8 +433,8 @@ class memory (object):
         self.size = size
         self.memfile = [''] * size
 
-        # for debug - initialized DataMemory
-        self.memfile_float = np.random.rand(cfg.xbar_size)
+        ## for debug only - initialized DataMemory
+        self.memfile_float = (np.random.rand(cfg.xbar_size))
         for i in range (cfg.xbar_size):
             self.memfile[i] = float2fixed(self.memfile_float[i], cfg.int_bits, cfg.frac_bits)
 
@@ -541,6 +556,13 @@ class xb_outMem (xb_inMem):
             out_list.append(value)
         return out_list
 
+    def write_n (self, addr, data):
+        self.num_access += 1
+        assert (type(addr) == int), 'addr type should be int'
+        assert (-1 < addr < self.xbar_size), 'addr exceeds the memory bounds'
+        assert ((type(data) ==  str) and (len(data) == cfg.xbdata_width)), 'data should be a string with xbdata_width bits'
+        self.memfile[addr] = data
+
     def write (self, data):
         self.num_access += 1
         assert ((type(data) ==  str) and (len(data) == cfg.xbdata_width)), 'data should be a string with xbdata_width bits'
@@ -553,8 +575,7 @@ class xb_outMem (xb_inMem):
 
     def reset (self):
         # self.num_access += 1
-        #self.memfile = ['0' * cfg.xbdata_width] * self.xbar_size
-        self.memfile = ['0110' * cfg.xbdata_width/4] * self.xbar_size
+        self.memfile = ['0' * cfg.xbdata_width] * self.xbar_size
         self.wr_pointer = 0
 
 

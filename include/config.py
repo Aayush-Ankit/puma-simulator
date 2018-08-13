@@ -11,17 +11,14 @@ num_bits = 16
 int_bits = 4
 frac_bits = num_bits - int_bits
 
-## Simulator mode - inference, training
-sim_mode = 'train'
-
 ## IMA configurable parameters (permissible values for each parameter provided here)
-## Instruction generation - affected by xbar_bits, num_xbar, xbar_size.
+## Instruction generation - affected by xbar_bits, num_matrix, xbar_size.
 # xbar_bits: 2, 4, 6
-# num_xbar: positive integer
+# num_matrix: positive integer
 # xbar_size: 32, 64, 128, 256
 # dac_res: positive integer <= num_bits
 # adc_res: positive integer <= num_bits
-# num_adc: positive integer <= num_xbar (doesn't allow more than one ADC per xbar)
+# num_adc: positive integer <= 2*num_matrix (doesn't allow more than one ADC per xbar)
 # num_ALU: positive integer
 # dataMem_size: (in Bytes) - 256, 512, 1024, 2048 (affects instrn width, hence capped)
 # instrnMem_size: (in Bytes) - 512, 1024, 2048
@@ -33,14 +30,15 @@ instrn_width = 48 # (in bits)
 
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_xbar = 16
+num_matrix = 2 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
 adc_res = 8
-num_adc = num_xbar
+num_adc = 2 * num_matrix # 2ADCs - one for fw, and bw xbar each
 num_ALU = 1
-dataMem_size = 1024
+dataMem_size = 4 * (2*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 instrnMem_size = 512 #in entries
+
 
 ## Tile configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_ima

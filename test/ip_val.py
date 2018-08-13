@@ -1,4 +1,4 @@
-# API for testing MVM outer product operation
+# API for testing MVM inner product operation
 import sys
 import os
 import numpy as np
@@ -11,11 +11,15 @@ import src.ima as ima
 from src.instrn_proto import *
 import include.configTest as cfg
 
-wt_path = 'coreMvm_test/'
-inst_file = 'imem1.npy'
-trace_file = 'trace.txt'
-dump_file = 'memsim.txt'
 
+path = 'coreMvm_test/'
+wt_path = path
+inst_file = path + 'imem1.npy'
+trace_file = path + 'trace.txt'
+dump_file = path + 'memsim.txt'
+
+datamem_off = cfg.datamem_off # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+phy2log_ratio = cfg.phy2log_ratio # ratio of physical to logical xbar
 
 ## Create memory dump function for an ima
 def dump (ima, filename = ''):
@@ -33,11 +37,17 @@ def dump (ima, filename = ''):
     fid = open (filename, 'w')
     # dump the datamemory
     mem_dump (ima.dataMem.memfile, 'DataMemory')
-    for i in range (cfg.num_xbar/phy2log_ratio):
-        # dump the xbar input memory
-        mem_dump (ima.xb_inMem_list[i].memfile, 'Xbar Input Memory')
-        # dump the xbar output memory
-        mem_dump (ima.xb_outMem_list[i].memfile, 'Xbar Output Memory')
+    # traverse the matrices in an ima
+    mvmu_list = ['f', 'b', 'd']
+    for i in range(cfg.num_matrix):
+        # traverse mvmus in a matrix
+        for mvmu_t in mvmu_list:
+            # dump the xbar input memory
+            mem_dump (ima.xb_inMem_list[i][mvmu_t].memfile, 'Xbar Input Memory: matrixId: ' + str(i) + 'mvmu_type: '
+                    + mvmu_t)
+            # dump the xbar output memory
+            mem_dump (ima.xb_outMem_list[i][mvmu_t].memfile, 'Xbar Output Memory: matrixId: ' + str(i) + 'mvmu_type: '
+                    + mvmu_t)
     fid.close()
 
 
@@ -70,21 +80,20 @@ def dump (ima, filename = ''):
 
 ## Setup files
 phy2log_ratio = cfg.num_bits/cfg.xbar_bits
-inst_refresh = 0
+inst_refresh = 1
 
 ## Create core instruction stream for testing
 if (inst_refresh):
     num_inst = 0 # track number of instructions generated
-    datamem_off = (cfg.num_xbar/phy2log_ratio) * cfg.xbar_size
 
     # instructions for IMA1
     dict_list = []
-    # Load data to xbar_in_memory
+    # Load data to xbar_in_memory - first Matrix - 'f' MVMU
     i_temp = i_copy (0, datamem_off+0, cfg.xbar_size)
     dict_list.append (i_temp.copy())
 
     # MVM instruction to populate xbar_out_memory
-    i_temp = i_mvm(['01'])
+    i_temp = i_mvm(['100'])
     dict_list.append (i_temp.copy())
 
     ## MVM_op instruction
@@ -105,32 +114,37 @@ ima = ima.ima ()
 fid = open(trace_file, "w+")
 ima.pipe_init(inst_file, fid)
 
-# program the xbars
-for i in range (cfg.num_xbar):
+# program the xbars for matrix0_fw xbar (for functionality check of mvm, using just one matrix is fine)
+for i in range (phy2log_ratio):
     wt_temp = np.load(wt_path+'phy_xbar'+str(i)+'.npy')
-    ima.xbar_list[i].program(wt_temp)
+    ima.matrix_list[0]['f'][i].program(wt_temp)
 
 cycle = 0
 while (ima.halt != 1 and cycle < cfg.cycles_max):
     ima.pipe_run (cycle, fid) # fid points to tracefile
+    #print (cycle)
     cycle += 1
 
 fid.close ()
 dump (ima, dump_file)
 
 
-## Debug
+## Testcases for Functionality Debug of MVM (1,2,3,4)
 # 1. compare golden output to ima output
 wt_gold = np.load(wt_path+'log_xbar.npy')
 out_gold = np.dot (ima.dataMem.memfile_float, wt_gold)
 
 out_exp = ['']*cfg.xbar_size
 for i in range (cfg.xbar_size):
-    out_exp[i] = fixed2float(ima.xb_outMem_list[0].memfile[i], cfg.int_bits, cfg.frac_bits)
+    out_exp[i] = fixed2float(ima.xb_outMem_list[0]['f'].memfile[i], cfg.int_bits, cfg.frac_bits)
 out_exp = np.asarray(out_exp)
 
-print (out_gold)
-print (out_exp)
+#print (out_gold)
+#print (out_exp)
+
+err = np.tanh(out_gold) - np.tanh(out_exp)
+print ("error has mean " + str(np.average(err)) + " and stdev " + \
+        str(np.std(err)))
 
 ## 2. individual xbar MVM check (no shift-and-add) - PASSED
 #wt_gold = np.load (wt_path+'phy_xbar4.npy')
@@ -151,12 +165,4 @@ print (out_exp)
 #    out_exp[i] = fixed2float(ima.xb_outMem_list[0].memfile[i], cfg.int_bits, cfg.frac_bits)
 #out_exp = np.asarray(out_exp)
 #
-
-# 4. inter-input bits shifit and add - Same as 1
-
-err = np.tanh(out_gold) - np.tanh(out_exp)
-print ("error has mean " + str(np.average(err)) + " and stdev " + \
-        str(np.std(err)))
-
-
 
