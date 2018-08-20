@@ -19,8 +19,8 @@
 
 ## Import constituent modeles/dependencies
 import sys, getopt, os
-sys.path.insert (0, '/home/aa/dpe_emulate/include/')
-sys.path.insert (0, '/home/aa/dpe_emulate/src/')
+sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/include')
+sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/src/')
 
 import torchfile as tf
 from data_convert import *

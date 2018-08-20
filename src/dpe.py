@@ -191,7 +191,7 @@ class DPE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-n", "--net", help="The net name as it is in test/testasm.")
+        "-n", "--net", help="The net name as it is in test/testasm.", default='large')
 
     #Flags to make data handling easier 
     parser.add_argument("-xs", "--xbar_size", default='0')

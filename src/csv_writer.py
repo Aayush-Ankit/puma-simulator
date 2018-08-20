@@ -3,10 +3,12 @@ import os
 sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/include/')
 import csv
 import config as cfg
-#Example input: python dpe.py --net "wlmBp(128-2-8)" -xs 128 -nxpc 2 -ncpt 8
 
 def write_as_csv(testpath, modelname, mydict, configs):
+	# if there is an existing .csv file, read, else make new one 
+	#If no inputs, write header and row, else write row
 	outputfile = testpath + 'runs.csv'
+
 
 	mydict['model_name'] = modelname
 
@@ -49,5 +51,5 @@ def write_as_csv(testpath, modelname, mydict, configs):
 			w = csv.DictWriter(csv_file, fieldnames=fieldnames)
 			w.writeheader() #If no inputs, write header and row, else write row
 			w.writerow(mydict)
-	print("Wrote to CSV")
-
+	print("Wrote CSV File!")
+##Maybe add more methods for manipulation of csv runs reading etc
