@@ -1,0 +1,37 @@
+
+BUILDING MODELS
+Compiler Configurations are found in common.h
+Example: Xbar Size 128, Xbars per Core (MVMU) 2, 8 Cores per Tile
+
+1. Add a new testcase to under TEST in the Makefile
+	Example: TEST= mlp_l4.test mlp_l5.test
+2. From console: make
+3. ./<test>.test or select run
+	Example ./mlp_l4.test
+	PUMA files should be generated in the /src directory.
+4. run ./generate-py_aa.sh to create python files for emulator (be sure to set to dpe_emulate path) 
+5. move model folder to emulate/test/testasm of the emulator
+
+SIMULATOR
+Ensure all requirements are installed (See Quick Start in README)
+
+Check that config.py matches model parameters
+1.num_xbar must be equal to num_bits/xbar_bits * Xbars per Core (MVMU)
+	for 2 Xbars per core it would be 16
+	for 4 Xbars per core it would be 32
+2.Xbar_Size must be set to same as compiler
+3. ln 60 - num_ima is the number of Cores per Tile
+4. ln 79 - num_tile_compute this must be equal to the number of generated tiles minus 2
+	For example, if there are 0-3 tiles in the mlp folder, this would be set to 2
+5. num_tile_max - some results (such as area) use this value rather then the actual number of tiles used. If you'd like to have a set max, set to 138.0 tiles (this number is used to make the PUMA comparable to the DaDianNao). Note that this parameter is set to specify when a chip-to-chip
+or node-to-node connection will occur.
+
+
+OPERATING SIM
+1. from /src, python dpe.py --net "mlpB"
+
+	To use simulator with CSV writer script: 
+	python dpe.py --net "wlm(128-2-8)" -xs 128 -nxpc 2 -ncpt 8
+	CSV output found in /traces/runs.csv 
+
+2. Output found in trace folder

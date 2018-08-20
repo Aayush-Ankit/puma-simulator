@@ -55,6 +55,7 @@ import ima_metrics
 import tile_metrics
 import node_metrics
 
+from csv_writer import *
 
 class DPE:
 
@@ -141,7 +142,7 @@ class DPE:
             cycle = cycle + 1
 
         end = time.time()
-        print ('simulation time: ' + str(end-start) + 'secs')
+        print ('Simulation Time: ' + str(end-start) + ' secs')
 
         # For DEBUG only - dump the contents of all tiles
         # NOTE: Output and input tiles are dummy tiles to enable self-contained simulation
@@ -158,11 +159,16 @@ class DPE:
         print('Output Tile dump finished')
 
         # Dump the harwdare access traces (For now - later upgrade to actual energy numbers)
-        hwtrace_file = self.tracepath + 'harwdare_stats.txt'
+        hwtrace_file = self.tracepath + 'hardware_stats.txt'
         fid = open(hwtrace_file, 'w')
         metric_dict = get_hw_stats(fid, node_dut, cycle)
+
+        tracedir = os.path.join(test_dir, 'traces') +'/'
+
+        write_as_csv(tracedir, net, metric_dict, configs_list)
+
         fid.close()
-        print('Success: Hadrware results compiled!!')
+        print('Success! Hardware results compiled for net: {}'.format(net))
 
         '''# Compare with GPU results (dynamic energy only)
         dpe_energy_l1 = metric_dict['total_energy']
@@ -185,9 +191,21 @@ class DPE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-n", "--net", help="The net name as it is in test/testasm.", default='large')
+        "-n", "--net", help="The net name as it is in test/testasm.")
+
+    #Flags to make data handling easier 
+    parser.add_argument("-xs", "--xbar_size", default='0')
+    parser.add_argument("-nxpc", "--n_xbars_per_core", default='0')
+    parser.add_argument("-ncpt", "--n_cores_per_tile", default='0')
+    parser.add_argument("-mlsw", "--max_load_store_width", default='0')
+    parser.add_argument("-msrw", "--max_set_recv_width", default='0')
+    parser.add_argument("-dmpc", "--data_mem_per_core", default='0')
+
     args = parser.parse_args()
     net = args.net
+
+    #To be passed to csv writer
+    configs_list = [args.xbar_size, args.n_xbars_per_core, args.n_cores_per_tile, args.max_load_store_width, args.max_set_recv_width, args.data_mem_per_core]
 
     print('Input net is {}'.format(net))
     DPE().run(net)
