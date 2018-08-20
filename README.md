@@ -74,13 +74,13 @@ Output Tile dump finished
 Success: Hardware results compiled!!
 ```
 ## Config.py
--xbar_size must be set to the value used in the compiler (default is 128)
--num_xbar must be equal to (num_bits/xbar_bits) * MVMUs per Core
-	(16/2) * 2 = 16 
--num_ima must match the number of cores per tile from the compiler (can also be found by counting the number of core directories in the model)
--num_tile_compute : this is equal to the number of tiles the model produces minus 2 (since two tiles are set for instructions)
+xbar_size must be set to the value used in the compiler (default is 128)
+num_xbar must be equal to (num_bits/xbar_bits) * MVMUs per Core
+	For example: (16/2) * 2 = 16 
+num_ima must match the number of cores per tile from the compiler (can also be found by counting the number of core directories in the model)
+num_tile_compute : this is equal to the number of tiles the model produces minus 2 (since two tiles are set for instructions)
 	If the mlp model creates 3 tiles, the value would be 1
--num_tile_max : this value is used to calculate node area and also signifies when the chip-to-chip interconnection will occur (if the model uses
+num_tile_max : this value is used to calculate node area and also signifies when the chip-to-chip interconnection will occur (if the model uses
 more tiles that are able to fit on a node.) Set this value to 138.0 tiles for a comparable value to the DaDianNao accelerator. 
 
 ## Authors
