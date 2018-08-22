@@ -152,37 +152,45 @@ def get_hw_stats (fid, node_dut, cycle):
 
     # Write the leakage energy(J), total_energy(J), average_power (mW), peak_power (mW),
     # area (mm2), cycles and time (seconds) to a dict & file
-    metric_dict = {'leakage_energy':0.0,
-            'dynamic_energy':0.0,
-            'total_energy':0.0,
-            'average_power':0.0,
-            'peak_power':0.0,
-            'leakage_power':0.0,
-            'node_area':0.0,
-            'tile_area':0.0,
-            'core_area':0.0,
+    metric_dict = {'leakage_energy(J)':0.0,
+            'dynamic_energy(J)':0.0,
+            'total_energy(J)':0.0,
+            'average_power(mW)':0.0,
+            'peak_power(mW)':0.0,
+            'leakage_power(mW)':0.0,
+            'node_area(mm^2)':0.0,
+            'tile_area(mm^2)':0.0,
+            'core_area(mm^2)':0.0,
             'cycles':0,
-            'time':0.0}
+            'time(sec)':0.0,
+            'network_packet_inj_rate':0.0,
+            'num_tiles':0}
 
-    metric_dict['leakage_power'] = node_metrics.compute_pow_leak () # in mW
-    metric_dict['peak_power'] = node_metrics.compute_pow_peak () # in mW
-    metric_dict['node_area'] = node_metrics.compute_area () # in mm2
-    metric_dict['tile_area'] = tile_metrics.compute_area ()# in mm2
-    metric_dict['core_area'] = ima_metrics.compute_area ()# in mm2
+    metric_dict['leakage_power(mW)'] = node_metrics.compute_pow_leak () # in mW
+    metric_dict['peak_power(mW)'] = node_metrics.compute_pow_peak () # in mW
+    metric_dict['node_area(mm^2)'] = node_metrics.compute_area () # in mm2
+    metric_dict['tile_area(mm^2)'] = tile_metrics.compute_area ()# in mm2
+    metric_dict['core_area(mm^2)'] = ima_metrics.compute_area ()# in mm2
     metric_dict['cycles'] = cycle
-    metric_dict['time'] = cycle * param.cycle_time * (10**(-9)) # in sec
-    metric_dict['dynamic_energy'] = total_energy * ns * mw # in joule
+    metric_dict['time(sec)'] = cycle * param.cycle_time * (10**(-9)) # in sec
+    metric_dict['dynamic_energy(J)'] = total_energy * ns * mw # in joule
     #metric_dict['leakage_enegy'] = metric_dict['leakage_power'] * mw * metric_dict['time'] # in joule
-    metric_dict['leakage_energy'] =  leakage_energy * ns * mw # in joule
-    metric_dict['total_energy'] = metric_dict['dynamic_energy'] + metric_dict['leakage_energy']
-    metric_dict['average_power'] = metric_dict['total_energy'] / metric_dict['time'] * (10**(3)) # in mW
-
-    for key, value in metric_dict.items():
-        fid.write (key + ': ' + str (value) + '\n')
+    metric_dict['leakage_energy(J)'] =  leakage_energy * ns * mw # in joule
+    metric_dict['total_energy(J)'] = metric_dict['dynamic_energy(J)'] + metric_dict['leakage_energy(J)']
+    metric_dict['average_power(mW)'] = metric_dict['total_energy(J)'] / metric_dict['time(sec)'] * (10**(3)) # in mW
 
     packet_inj_rate = node_dut.noc.num_access_intra/ (metric_dict['cycles'] * cfg.num_inj_max)
-    fid.write ('network packet injection rate: ' + str(packet_inj_rate) + '\n')
-    fid.write ('number of tiles mapped: ' + str(cfg.num_tile_compute))
+
+    metric_dict['network_packet_inj_rate'] = str(packet_inj_rate)
+    metric_dict['num_tiles'] = str(cfg.num_tile_compute)
+
+    ordered_key_list = ['leakage_energy(J)','dynamic_energy(J)','total_energy(J)',
+                        'leakage_power(mW)','average_power(mW)','peak_power(mW)',
+                        'node_area(mm^2)','tile_area(mm^2)','core_area(mm^2)',
+                        'cycles','time(sec)','network_packet_inj_rate','num_tiles']
+                        
+    for key in ordered_key_list:
+        fid.write(key + ': ' + str(metric_dict.get(key)) + '\n')
 
     return metric_dict
 

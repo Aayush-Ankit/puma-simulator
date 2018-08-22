@@ -42,6 +42,19 @@ cd <dpe_emulate>/src
 
 python dpe.py
 ```
+____________________________________________________________
+To specify model name and use CSV writer
+```sh
+python dpe.py --net "mlp(128-2-8)" -xs 128 -nxpc 2 -ncpt 8
+```
+These values should be entered based on what parameters were set for the compiler before building the model.  
+
+- xs : Crossbar Size  
+- nxpc : Number of MVMUs per Core  
+- ncpt 8 : Cores per Tile  
+
+Compiled models should be moved to the emulate/test/testasm directory. Outputs and trace of execution folder will be found in /traces
+____________________________________________________________
 
 Then, you should see some results like:
 
@@ -59,8 +72,21 @@ Finally node halted | PS: max_cycles 10000
 ('Dumping tile num: ', 2)
 ('Dumping tile num: ', 3)
 Output Tile dump finished
-Success: Hadrware results compiled!!
+Success: Hardware results compiled!!
 ```
+## Config.py
+- xbar_size must be set to the value used in the compiler (default is 128)  
+- num_xbar must be equal to (num_bits/xbar_bits) * MVMUs per Core  
+	
+	For example: (16/2) * 2 = 16
+
+- num_ima must match the number of cores per tile from the compiler (can also be found by counting the number of core directories in the model)  
+- num_tile_compute : this is equal to the number of tiles the model produces minus 2 (since two tiles are set for instructions)  
+	
+	For example: If the mlp model creates 3 tiles, the value would be 1
+
+- num_tile_max : this value is used to calculate node area and also signifies when the chip-to-chip interconnection will occur (if the model uses  
+- more tiles that are able to fit on a node.) Set this value to 138.0 tiles for a comparable value to the DaDianNao accelerator.  
 
 ## Authors
 

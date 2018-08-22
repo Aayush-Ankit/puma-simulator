@@ -7,7 +7,7 @@
 #   4. IMA's xbar output memory
 
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/src/')
+sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/include')
 
 from data_convert import *
 import config as cfg
@@ -35,7 +35,7 @@ def mem_dump (fid, memfile, name, node = '', tile_id = ''):
 def node_dump (node, filepath = ''):
     assert (filepath != ''), 'Debug flag is set, filepath cannot be nil'
     for i in range(len(node.tile_list)):
-        print ('Dumping tile num: ', i)
+        print('Dumping tile #{}'.format(i))
         filename = filepath + 'tile' + str(i) + '/memsim1.txt'
         fid = open (filename, 'w')
 
