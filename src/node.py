@@ -1,7 +1,7 @@
 # Defines a configurable node with its methods
 import sys, getopt
-sys.path.insert (0, '/home/aa/dpe_emulate/include/')
-sys.path.insert (0, '/home/aa/dpe_emulate/src/')
+sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/include')
+sys.path.insert (0, '/home/michael/hp_dpe/dpe_emulate-br/src')
 
 import numpy as np
 import config as cfg
@@ -122,13 +122,14 @@ class node (object):
                         self.noc.propagate_count (target_addr, i)
 
         # For DEBUG
-        #if (cycle%5000 == 0):
-        print ('Cycle: ', cycle, 'Tile halt list', self.tile_halt_list)
+        if (cycle%5000 == 0):
+            #print ('Cycle: ', cycle, 'Tile halt list', self.tile_halt_list)
+            print('Cycle: {} | Tile halt list: {}'.format(cycle, self.tile_halt_list))
 
         # check if node halted
         if (all (self.tile_halt_list)):
             self.node_halt = 1
             for tr_id in self.tile_fid_list:
                 tr_id.close ()
-            print ('cycle: ' + str (cycle) + ' Node Halted')
+            print ('Cycle: ' + str (cycle) + ' Node Halted')
 
