@@ -347,8 +347,8 @@ class tile (object):
                     self.stall = 0 # Doesn't matter as this was the last cycle
 
                 # Update the tile trace
-                if (cfg.debug):
-                    fid.write ('Tile ran for ' + str(cycle) + ' cycles')
+                #if (cfg.debug):
+                fid.write ('Tile ran for ' + str(cycle) + ' cycles\n')
             else:
                 # prevent new instructions to befetched
                 self.stall = 1
@@ -358,6 +358,11 @@ class tile (object):
 
         ## for DEBUG only
         if (cfg.debug and (not self.tile_halt)):
+            fid.write ('cycle: ' + str(cycle) + '   |   instrn: ' + self.instrn['opcode'] + '   |   \
+addr: ' + str(self.instrn['mem_addr']) + '   |   vtileId: ' + str(self.instrn['vtile_id']) + '   |   ima_halt_list: ')
+            json.dump (self.halt_list, fid)
+            fid.write ('\n')
+        elif self.instrn['opcode'] == 'halt':
             fid.write ('cycle: ' + str(cycle) + '   |   instrn: ' + self.instrn['opcode'] + '   |   \
 addr: ' + str(self.instrn['mem_addr']) + '   |   vtileId: ' + str(self.instrn['vtile_id']) + '   |   ima_halt_list: ')
             json.dump (self.halt_list, fid)
