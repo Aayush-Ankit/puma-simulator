@@ -12,13 +12,13 @@ int_bits = 4
 frac_bits = num_bits - int_bits
 
 ## IMA configurable parameters (permissible values for each parameter provided here)
-## Instruction generation - affected by xbar_bits, num_matrix, xbar_size.
+## Instruction generation - affected by xbar_bits, num_xbar, xbar_size.
 # xbar_bits: 2, 4, 6
-# num_matrix: positive integer
+# num_xbar: positive integer
 # xbar_size: 32, 64, 128, 256
 # dac_res: positive integer <= num_bits
 # adc_res: positive integer <= num_bits
-# num_adc: positive integer <= 2*num_matrix (doesn't allow more than one ADC per xbar)
+# num_adc: positive integer <= num_xbar (doesn't allow more than one ADC per xbar)
 # num_ALU: positive integer
 # dataMem_size: (in Bytes) - 256, 512, 1024, 2048 (affects instrn width, hence capped)
 # instrnMem_size: (in Bytes) - 512, 1024, 2048
@@ -34,11 +34,15 @@ num_matrix = 2 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
 adc_res = 8
-num_adc = 2 * num_matrix # 2ADCs - one for fw, and bw xbar each
+num_adc = 2 * num_matrix
 num_ALU = 1
-dataMem_size = 4 * (2*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
+dataMem_size = num_matrix*(4*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 instrnMem_size = 512 #in entries
 
+# This depends on above parameters
+datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar
+lr = 0.25 # learning rate for updates to d-xbar
 
 ## Tile configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_ima
@@ -58,7 +62,7 @@ receive_buffer_depth = 150 #set equal to num_tile_max
 receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entry (in terms of number of neurons)
 
 # Change here - Specify the Tile parameters here
-num_ima = 8
+num_ima = 1
 edram_size = 64 # in Kilobytes (64 KB - same as issac)
 tile_instrnMem_size = 2048 # in entries
 
@@ -77,7 +81,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 2 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 1 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
@@ -87,5 +91,5 @@ noc_num_port = 4
 num_node = 1
 
 # Do not change this - total number of tiles
-num_tile = num_node * num_tile_compute + 2 # +2 for first & last tiles - dummy, others - compute
+num_tile = num_node * num_tile_compute + 1 # +1 for first tile (I/O tile) - dummy, others - compute
 

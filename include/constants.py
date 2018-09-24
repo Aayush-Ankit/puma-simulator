@@ -62,7 +62,7 @@ last_stage = 'ex'
 #############################################################################################################
 
 # IMA component latency/power/area dictionary (all values in ns, mw, mm2)
-# XBAR - Discuss exact values/trends from Gary
+# XBAR - Models from ISAAC paper
 xbar_lat_dict = {'2': {'32' : 32,   # first indexed by xbar_bits then by xbar_size
                        '64' : 64,
                        '128': 128,
@@ -101,6 +101,26 @@ xbar_area_dict = {'2': {'32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)}}
+
+## New values added for xbar MVM, OP (parallel write), serial read/write
+# Numbers taken from "Multiscale Co-Design" Analysis of Energy, Latency, Area and Accuracyof ReRAM Analog Neural
+# Training Accelerator", Sandia Paper - Table 3,5 - gives for 1MB ReRAM (scaled for our size)
+# Converting energy values from paper to power values for consistency with other numbers
+xbar_op_lat = (xbar_lat_dict['2']['128']/10.0) # xbar writes aren't limited by ADC speed, hence
+                                       # parallel writes considered 4X faster than MVM (write latency can be even
+                                       # faster)
+# the following is lumped power for xbar outer-product - includes peripherals
+xbar_op_pow = 2.2 * 1000 * (1/32.0) / xbar_op_lat # energy scaled based on size (128*128*16)/(1024*1024*8) and divided by latency
+                                        #above for power
+xbar_ip_lat = xbar_lat_dict['2']['128']
+# the following is lumped power for xbar inner-product - includes peripherals
+xbar_ip_pow = 12.8 * 1000 * (1/32.0) / xbar_ip_lat
+# Note the read and write lat/pow are for entire xbar
+xbar_rd_lat = 328.0 * 1000 * (1/32.0)
+xbar_wr_lat = 351.0 * 1000 * (1/32.0)
+# the following is lumped power for xbar rd/wr (for whole array) - includes peripherals
+xbar_rd_pow = 208.0 * 1000 * (1/32.0) / xbar_rd_lat
+xbar_wr_pow = 676.0 * 1000 * (1/32.0) / xbar_rd_lat
 
 # DAC - Discuss exact values with ISSAC authors
 dac_lat_dict = {'1' : 1,
@@ -301,7 +321,11 @@ xbar_outMem_area_dict = {'32'  : 0.00015,
 
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
-xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+#xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+xbar_ip_lat = xbar_ip_lat
+xbar_op_lat = xbar_op_lat
+xbar_rd_lat = xbar_rd_lat
+xbar_wr_lat = xbar_wr_lat
 dac_lat = dac_lat_dict [str(cfg.dac_res)]
 adc_lat = adc_lat_dict [str(cfg.adc_res)]
 xbar_inMem_lat = xbar_inMem_lat_dict[str(cfg.xbar_size)]
@@ -319,7 +343,11 @@ instrnMem_area =  instrnMem_area_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #a
 dataMem_area =  dataMem_area_dict[str(cfg.dataMem_size)]
 
 # Chosen dyn_power based on config file - only for components whose latency is parameter dependent
-xbar_pow_dyn = xbar_pow_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+#xbar_pow_dyn = xbar_pow_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+xbar_ip_pow_dyn = xbar_ip_pow
+xbar_op_pow_dyn = xbar_op_pow
+xbar_rd_pow_dyn = xbar_rd_pow
+xbar_wr_pow_dyn = xbar_wr_pow
 dac_pow_dyn = dac_pow_dyn_dict [str(cfg.dac_res)]
 adc_pow_dyn = adc_pow_dyn_dict [str(cfg.adc_res)]
 xbar_inMem_pow_dyn_read = xbar_inMem_pow_dyn_read_dict[str(cfg.xbar_size)]

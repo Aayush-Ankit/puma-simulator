@@ -3,18 +3,10 @@ import sys
 sys.path.insert (0, '/home/aa/dpe_emulate/include')
 
 import numpy as np
-import config as cfg
-import constants as param
+import include.config as cfg
+import include.constants as param
 
 # Define instruction prototypes
-# generate compute prototype
-ima_nma_dummy = '1' + (cfg.num_ima-1)*'0'
-def i_compute (ima_nma = ima_nma_dummy):
-    i_temp = param.dummy_instrn_tile.copy()
-    i_temp['opcode'] = 'compute'
-    i_temp['ima_nma'] = ima_nma
-    return i_temp
-
 # generate receive prototype
 def i_receive (mem_addr, vtile_id, receive_width, counter, vec = 1):
     i_temp = param.dummy_instrn_tile.copy()

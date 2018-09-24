@@ -88,13 +88,13 @@ class DPE:
         # tracepath is where all tile & ima traces will be stored
         node_dut.node_init(self.instrnpath, self.tracepath)
 
-        # Read the input data (input.t7) into the input tile's edram(controller)
+        # Read the input data (input.t7) into the input tile's edram
         inp_filename = self.instrnpath + 'input.npy'
         inp_tileId = 0
         assert (os.path.exists(inp_filename)
-                ), 'Input Error: Provide inputbefore running the DPE'
+                ), 'Input Error: Provide input before running the DPE'
         inp = np.load(inp_filename).item()
-        print (len(inp['data']))
+        print ('length of input data:', len(inp['data']))
         for i in range(len(inp['data'])):
             data = float2fixed(inp['data'][i], cfg.int_bits, cfg.frac_bits)
             node_dut.tile_list[inp_tileId].edram_controller.mem.memfile[i] = data
@@ -103,23 +103,21 @@ class DPE:
             node_dut.tile_list[inp_tileId].edram_controller.valid[i] = int(
                 inp['valid'][i])
 
-        # Program DNN weights on the xbars
-        # torch table in file - (tracepath/tile<>/weights/ima<>_xbar<>.t7)
-        #for i in range(1, cfg.num_tile - 1):
-        #    print ('Programming tile no: ', i)
-        #    for j in range(cfg.num_ima):
-        #        print ('Programming ima no: ', j)
-        #        for k in range(cfg.num_xbar):
-        #            wt_filename = self.instrnpath + 'tile' + str(i) + '/weights/' + \
-        #                'ima' + str(j) + '_xbar' + str(k) + '.npy'
-        #            #'ima' + str(j) + '_xbar' + str(k) + '.t7'
-        #            if (os.path.exists(wt_filename)):  # check if weights for the xbar exist
-        #                print ('wtfile exits: ' + 'tile ' + str(i) +
-        #                       'ima ' + str(j) + 'xbar ' + str(k))
-        #                #wt_temp = tf.load (wt_filename)
-        #                wt_temp = np.load(wt_filename)
-        #                node_dut.tile_list[i].ima_list[j].xbar_list[k].program(
-        #                    wt_temp)
+        ## Program DNN weights on the xbars
+        for i in range(1, cfg.num_tile):
+            print ('Programming weights of tile no: ', i)
+            for j in range(cfg.num_ima):
+                print ('Programming ima no: ', j)
+                for k in range(cfg.num_matrix):
+                    for l in range(cfg.phy2log_ratio):
+                        wt_filename = self.instrnpath + 'weights/tile' + str(i) + '/core'+str(j)+\
+                                '/mat'+str(k)+'-phy_xbar'+str(l)+'.npy'
+                        if (os.path.exists(wt_filename)):  # check if weights for the xbar exist
+                            print ('wtfile exits: ' + 'tile ' + str(i) +
+                                   'ima ' + str(j) + 'matrix ' + str(k) + 'xbar' + str(l))
+                            wt_temp = np.load(wt_filename)
+                            node_dut.tile_list[i].ima_list[j].matrix_list[k]['f'][l].program(wt_temp)
+                            node_dut.tile_list[i].ima_list[j].matrix_list[k]['b'][l].program(wt_temp)
 
         #raw_input ('Press Enter')
 
@@ -127,16 +125,7 @@ class DPE:
         cycle = 0
         start = time.time()
         while (not node_dut.node_halt and cycle < cfg.cycles_max):
-            ## run tiles in parallel
-            #tile_func = partial(node_dut.node_tile_run, cycle)
-            #print ('tile proc running')
-            #iterable = range(cfg.num_tile)
-            #pool = Pool()
-            #pool.map (tile_func, iterable)
-            #pool.join()
-            #print ('tile proc finished')
-
-            node_dut.node_run (cycle)
+            node_dut.node_run(cycle)
             cycle = cycle + 1
 
         end = time.time()
@@ -163,23 +152,6 @@ class DPE:
         fid.close()
         print('Success: Hadrware results compiled!!')
 
-        '''# Compare with GPU results (dynamic energy only)
-        dpe_energy_l1 = metric_dict['total_energy']
-        print (str (dpe_energy_l1) + ' joules')
-
-        gpu_leak = 16 #watt
-        gpu_tot = 51
-        gpu_time_l1 = 0.629 / 1000
-        dpe_time_l1 = metric_dict['time']
-        gpu_energy_l1 = (gpu_tot)*gpu_time_l1
-
-        print ('energyX', str (gpu_energy_l1/dpe_energy_l1))
-        print ('timeX', str (gpu_time_l1/dpe_time_l1))'''
-
-        # Analyze the recorder xbar currents
-        #print ('Analyzing recorded xbar currents')
-        #record_xbar (node_dut)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -190,3 +162,4 @@ if __name__ == '__main__':
 
     print('Input net is {}'.format(net))
     DPE().run(net)
+

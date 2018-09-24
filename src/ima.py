@@ -7,8 +7,8 @@ sys.path.insert (0, '/home/aankit/dpe_emulate/')
 # import dependancy files
 import numpy as np
 import math
-#import config as cfg
-import include.configTest as cfg
+import config as cfg
+#import include.configTest as cfg
 import include.constants as param
 import src.ima_modules as imod
 
@@ -285,7 +285,7 @@ class ima (object):
                 # source value will be read in execute stage
 
             elif (dec_op == 'st'):
-                assert (self.fd_instrn['r1'] >= datamem_off), 'store address for tile memory comes from data memory'
+                assert (self.fd_instrn['d1'] >= datamem_off), 'store address for tile memory comes from data memory'
                 self.de_d1 = bin2int(self.dataMem.read(self.fd_instrn['d1']), cfg.num_bits) #absolute mem addr
                 self.de_r1 = self.fd_instrn['r1'] # reg addr
                 self.de_vec = self.fd_instrn['vec']
@@ -386,48 +386,47 @@ class ima (object):
     def execute (self, update_ready, fid):
         sId = 2
 
+        # define some common functions use dto address xbar memory spaces
+        # xbar memory spaces are addressed as num_mvmu, f,b/d, i/o order
+        # find [num_matrix, xbar_type, mem_addr, xbar_addr]
+        def getXbarAddr (data_addr):
+            # find matrix id
+            num_matrix = data_addr / (6*cfg.xbar_size)
+            # find xbar_type (f, b, d)
+            matrix_addr = data_addr % (6*cfg.xbar_size) # address within the matrix
+            if (matrix_addr < 2*cfg.xbar_size):
+                xbar_type = 'f'
+            elif (matrix_addr >= 4*cfg.xbar_size):
+                xbar_type = 'd'
+            else:
+                xbar_type = 'b'
+            # find in/out memory
+            mem_addr = matrix_addr % (2*cfg.xbar_size)
+            xbar_addr = matrix_addr % cfg.xbar_size
+            return [num_matrix, xbar_type, mem_addr, xbar_addr]
+
+        # write to the xbar memory (in/out) space depending on the address
+        def writeToXbarMem (self, data_addr, data):
+            [matrix_id, xbar_type, mem_addr, xbar_addr] = getXbarAddr (data_addr)
+            if (mem_addr < cfg.xbar_size):
+                # this is the xbarInMem
+                self.xb_inMem_list[matrix_id][xbar_type].write (xbar_addr, data)
+            else:
+                # this is the xbarOutMem
+                self.xb_outMem_list[matrix_id][xbar_type].write_n (xbar_addr,data)
+
+        # read from xbar memory (in/out) depending on the address
+        def readFromXbarMem (self, data_addr):
+            [matrix_id, xbar_type, mem_addr, xbar_addr] = getXbarAddr (data_addr)
+            if (mem_addr < cfg.xbar_size):
+                # this is the xbarInMem
+                return self.xb_inMem_list[matrix_id][xbar_type].read_n (xbar_addr)
+            else:
+                # this is the xbarOutMem
+                return self.xb_outMem_list[matrix_id][xbar_type].read (xbar_addr)
+
         # Define what to do in execute (done for conciseness)
         def do_execute (self, ex_op, fid):
-
-            # define some common functions use dto address xbar memory spaces
-            # xbar memory spaces are addressed as num_mvmu, f,b/d, i/o order
-            # find [num_matrix, xbar_type, mem_addr, xbar_addr]
-            def getXbarAddr (data_addr):
-                # find matrix id
-                num_matrix = data_addr / (6*cfg.xbar_size)
-                # find xbar_type (f, b, d)
-                matrix_addr = data_addr % (6*cfg.xbar_size) # address within the matrix
-                if (matrix_addr < 2*cfg.xbar_size):
-                    xbar_type = 'f'
-                elif (matrix_addr >= 4*cfg.xbar_size):
-                    xbar_type = 'd'
-                else:
-                    xbar_type = 'b'
-                # find in/out memory
-                mem_addr = matrix_addr % (2*cfg.xbar_size)
-                xbar_addr = matrix_addr % cfg.xbar_size
-                return [num_matrix, xbar_type, mem_addr, xbar_addr]
-
-            # write to the xbar memory (in/out) space depending on the address
-            def writeToXbarMem (self, data_addr, data):
-                [matrix_id, xbar_type, mem_addr, xbar_addr] = getXbarAddr (data_addr)
-                if (mem_addr < cfg.xbar_size):
-                    # this is the xbarInMem
-                    self.xb_inMem_list[matrix_id][xbar_type].write (xbar_addr, data)
-                else:
-                    # this is the xbarOutMem
-                    self.xb_outMem_list[matrix_id][xbar_type].write_n (xbar_addr,data)
-
-            # read from xbar memory (in/out) depending on the address
-            def readFromXbarMem (self, data_addr):
-                [matrix_id, xbar_type, mem_addr, xbar_addr] = getXbarAddr (data_addr)
-                if (mem_addr < cfg.xbar_size):
-                    # this is the xbarInMem
-                    return self.xb_inMem_list[matrix_id][xbar_type].read_n (xbar_addr)
-                else:
-                    # this is the xbarOutMem
-                    return self.xb_outMem_list[matrix_id][xbar_type].read (xbar_addr)
-
 
             if (ex_op == 'ld'):
                 self.ldAccess_done = 0
@@ -438,10 +437,11 @@ class ima (object):
                 if (type(data) != list):
                     data = ['0'*cfg.data_width]*self.de_r2
                 for i in range (self.de_r2):
-                    if (data_addr+i >= datamem_off):
-                        self.dataMem.write (data_addr+i, data[i])
+                    dst_addr = data_addr + i
+                    if (dst_addr >= datamem_off):
+                        self.dataMem.write (dst_addr, data[i])
                     else:
-                        writeToXbarMem (self, data_addr, data[i])
+                        writeToXbarMem (self, dst_addr, data[i])
 
             elif (ex_op == 'st'): #nothing to be done by ima for st here
                 return 1
@@ -685,15 +685,32 @@ class ima (object):
 
 
         # Computes the latency for mvm instruction based on DPE configuration
-        def xbComputeLatency (self):
-            ## Updated - MVM goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
+        def xbComputeLatency (self, mask):
+            #Parse out the mask to find if f/b/d xbars operations will be computed
+            fb_found = 0
+            d_found = 0
+            for temp in mask:
+                if ((temp[0] == '1') or (temp[1] == '1')):
+                    fb_found += 1
+                    break
+                elif (temp[2] == '1'):
+                    d_found += 1
+                    break
+
+            ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
             # Cycle1 - xbar_inMem + DAC + XBar
             # Cycle2 - SnH + ADC
             # Cycle3 - SnA + xbar_outMem
             # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
             num_stage = 3
-            lat1 = self.matrix_list[0]['f'][0].getLatency() # due to xbar access
-            latency_out = lat1 * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1)
+            lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
+            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
+            ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
+            num_phase = 4
+            lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
+            latency_op = lat_temp * num_phase * d_found
+            ## output latency should be the max of ip/op operation
+            latency_out = max(latency_ip, latency_op)
             return latency_out
 
 
@@ -733,11 +750,13 @@ class ima (object):
                     self.stage_latency[sId] = int (math.ceil(self.de_vec / cfg.num_ALU)) * unit_lat
 
                 elif (ex_op == 'mvm'):
-                    self.stage_latency[sId] = xbComputeLatency (self)
+                    mask_temp = self.de_xb_nma
+                    self.stage_latency[sId] = xbComputeLatency (self, mask_temp) # mask tells which of ip/op or both is occurring
 
                 # Needs update - use xbar serial read latency
                 elif (ex_op == 'crs'):
-                    self.stage_latency[sId] = xbComputeLatency (self)
+                    temp_lat = max(self.matrix_list[0]['f'][0].getWrLatency(), self.matrix_list[0]['f'][0].getRdLatency())
+                    self.stage_latency[sId] = temp_lat
 
                 elif (ex_op in ['beq', 'alu_int']):
                     self.stage_latency[sId] = self.alu_int.getLatency ()

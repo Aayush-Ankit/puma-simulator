@@ -4,7 +4,7 @@ sys.path.insert (0, '/home/aankit/dpe_emulate/')
 
 import numpy as np
 from src.data_convert import *
-import include.configTest as cfg
+import include.config as cfg
 import include.constants as param
 
 # Define nstruction prototypes

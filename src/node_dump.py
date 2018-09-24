@@ -23,36 +23,40 @@ def mem_dump (fid, memfile, name, node = '', tile_id = ''):
             temp_val = fixed2float (memfile[addr], cfg.int_bits, cfg.frac_bits)
             # use this for debugging/viewing addresses
             #temp_val = bin2int (memfile[addr], cfg.num_bits)
-        else:
-            temp_val = 0.0
-        if (name == 'EDRAM' and (node != '') and (tile_id != '')): # for EDRAM also show counter/valid
-            fid.write ('valid: ' + str(node.tile_list[tile_id].edram_controller.valid[addr]) \
-                    + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
-        fid.write(str(temp_val) + '\n')
-        # to print in fixed forrmat (binary) -- use this
-        #fid.write(entry + '\n')
+        #else: # not printing zero values for ease of view
+        #    temp_val = 0.0
+            if (name == 'EDRAM' and (node != '') and (tile_id != '')): # for EDRAM also show counter/valid
+                fid.write ('valid: ' + str(node.tile_list[tile_id].edram_controller.valid[addr]) \
+                        + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
+            fid.write(str(temp_val) + '\n')
 
 def node_dump (node, filepath = ''):
     assert (filepath != ''), 'Debug flag is set, filepath cannot be nil'
     for i in range(len(node.tile_list)):
         print ('Dumping tile num: ', i)
-        filename = filepath + 'tile' + str(i) + '/memsim1.txt'
+        filename = filepath + 'tile' + str(i) + '/memsim.txt'
         fid = open (filename, 'w')
 
         # dump the edram - one per tile
         mem_dump (fid, node.tile_list[i].edram_controller.mem.memfile, 'EDRAM', node, i)
 
         # dump the memory components of IMA
-        for j in range (len(node.tile_list[0].ima_list)):
+        for j in range (cfg.num_ima):
             # dump the datamemory
             fid.write ('IMA id: ' + str(j) + '\n')
             mem_dump (fid, node.tile_list[i].ima_list[j].dataMem.memfile, 'DataMemory')
 
-            for k in range (len(node.tile_list[0].ima_list[0].xb_inMem_list)):
-                # dump the xbar input memory
-                mem_dump (fid, node.tile_list[i].ima_list[j].xb_inMem_list[k].memfile, 'Xbar Input Memory')
-                # dump the xbar output memory
-                mem_dump (fid, node.tile_list[i].ima_list[j].xb_outMem_list[k].memfile, 'Xbar Output Memory')
+            # traverse the matrices in an ima
+            mvmu_list = ['f', 'b', 'd']
+            for k in range (cfg.num_matrix):
+                # traverse mvmus in a matrix
+                for mvmu_t in mvmu_list:
+                    # dump the xbar input memory
+                    mem_dump (fid, node.tile_list[i].ima_list[j].xb_inMem_list[k][mvmu_t].memfile, \
+                            'Xbar Input Memory: matrixId: ' + str(k) + 'mvmu_type: ' + mvmu_t, 'Xbar Input Memory')
+                    # dump the xbar output memory
+                    mem_dump (fid, node.tile_list[i].ima_list[j].xb_outMem_list[k][mvmu_t].memfile, \
+                            'Xbar Output Memory: matrixId: ' + str(k) + 'mvmu_type: ' + mvmu_t, 'Xbar Output Memory')
 
         fid.close()
 

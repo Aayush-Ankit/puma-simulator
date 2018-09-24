@@ -16,7 +16,9 @@ nj = 10 ** (-9)
 
 # Copied from /include/constants.py file
 # Enlists components at core, tile, and node levels
-hw_comp_energy = {'xbar':param.xbar_pow_dyn*100, 'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
+hw_comp_energy = {'xbar_ip':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':param.xbar_op_pow_dyn*param.xbar_op_lat,
+        'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, 'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
+        'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
         'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, 'adc':param.adc_pow_dyn, \
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
@@ -37,7 +39,9 @@ hw_comp_energy = {'xbar':param.xbar_pow_dyn*100, 'dac':param.dac_pow_dyn, 'snh':
 def get_hw_stats (fid, node_dut, cycle):
 
     # List of all components that dissipate power
-    hw_comp_access = {'xbar':0, 'dac':0, 'snh':0, \
+    hw_comp_access = {'xbar_ip':0, 'xbar_op':0,
+            'xbar_rd':0, 'xbar_wr':0,
+            'dac':0, 'snh':0, \
             'mux1':0, 'mux2':0, 'adc':0, \
             'alu_div':0, 'alu_mul':0, \
             'alu_act':0, 'alu_other':0, \
@@ -63,7 +67,7 @@ def get_hw_stats (fid, node_dut, cycle):
     sum_num_cycle_noc = node_dut.noc.num_cycles_intra
 
 
-    for i in range (2, cfg.num_tile): # ignore dummy (input & output) tiles
+    for i in range (1, cfg.num_tile): # ignore dummy (input & output) tiles
         sum_num_cycle_tile += node_dut.tile_list[i].cycle_count # used for leakage energy of tiles
 
         hw_comp_access['imem_t'] += node_dut.tile_list[i].instrn_memory.num_access
@@ -76,21 +80,39 @@ def get_hw_stats (fid, node_dut, cycle):
         for j in range (cfg.num_ima):
             sum_num_cycle_ima += node_dut.tile_list[i].ima_list[j].cycle_count # used for leakage energy of imas
 
-            for k in range (cfg.num_xbar):
-                hw_comp_access['xbar'] += node_dut.tile_list[i].ima_list[j].xbar_list[k].num_access
+            mvmu_type = ['f', 'b', 'd']
+            for k in range (cfg.num_matrix):
+                for mvmu_t in mvmu_type:
+                    # Xbar accesses
+                    for m in range(cfg.phy2log_ratio):
+                        if (mvmu_t == 'd'):
+                            hw_comp_access['xbar_op'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
+                        else:
+                            hw_comp_access['xbar_ip'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
+                        hw_comp_access['xbar_rd'] += \
+                        node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access_rd / (cfg.xbar_size**2)
+                        hw_comp_access['xbar_wr'] += \
+                        node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access_wr / (cfg.xbar_size**2)
+                    # Xb_InMem accesses
+                    hw_comp_access['xbInmem_rd'] += node_dut.tile_list[i].ima_list[j].xb_inMem_list[k][mvmu_t].num_access_read
+                    hw_comp_access['xbInmem_wr'] += node_dut.tile_list[i].ima_list[j].xb_inMem_list[k][mvmu_t].num_access_write
+                    # Xb_OutMem accesses
+                    hw_comp_access['xbOutmem'] += node_dut.tile_list[i].ima_list[j].xb_outMem_list[k][mvmu_t].num_access
 
-            for k in range (cfg.num_xbar/(cfg.data_width/cfg.xbar_bits)):
-                for l in range (cfg.xbar_size):
-                    hw_comp_access['dac'] += node_dut.tile_list[i].ima_list[j].dacArray_list[k].dac_list[l].num_access
+            for k in range(cfg.num_matrix):
+                dac_type = ['f', 'b', 'd_r', 'd_c']
+                for dac_t in dac_type:
+                    for l in range(cfg.xbar_size):
+                        hw_comp_access['dac'] += node_dut.tile_list[i].ima_list[j].dacArray_list[k][dac_t].dac_list[l].num_access
 
-            for k in range (cfg.num_xbar):
+            for k in range (2*cfg.num_matrix*cfg.phy2log_ratio):
                 hw_comp_access['snh'] += (node_dut.tile_list[i].ima_list[j].snh_list[k].num_access * cfg.xbar_size) # each snh is
                 # basically an array of multiple snhs (individual power in constants file must be for one discerete snh)
 
-            for k in range (cfg.num_xbar):
+            for k in range (2*cfg.num_matrix):
                 hw_comp_access['mux1'] += node_dut.tile_list[i].ima_list[j].mux1_list[k].num_access
 
-            for k in range (cfg.num_xbar / cfg.num_adc):
+            for k in range (cfg.num_adc):
                 hw_comp_access['mux2'] += node_dut.tile_list[i].ima_list[j].mux1_list[k].num_access
 
             for k in range (cfg.num_adc):
@@ -113,14 +135,6 @@ def get_hw_stats (fid, node_dut, cycle):
             hw_comp_access['imem'] += node_dut.tile_list[i].ima_list[j].instrnMem.num_access
 
             hw_comp_access['dmem'] += node_dut.tile_list[i].ima_list[j].dataMem.num_access
-
-            for k in range (cfg.num_xbar/(cfg.data_width/cfg.xbar_bits)):
-                hw_comp_access['xbInmem_rd'] += node_dut.tile_list[i].ima_list[j].xb_inMem_list[k].num_access_read
-                hw_comp_access['xbInmem_wr'] += node_dut.tile_list[i].ima_list[j].xb_inMem_list[k].num_access_write
-
-            for k in range (cfg.num_xbar/(cfg.data_width/cfg.xbar_bits)):
-                hw_comp_access['xbOutmem'] += node_dut.tile_list[i].ima_list[j].xb_outMem_list[k].num_access
-
 
     # Added for core and tile control units
     hw_comp_access['core_control'] = sum_num_cycle_tile

@@ -15,11 +15,16 @@ from data_convert import *
 
 class xbar (object):
     def __init__ (self, xbar_size, xbar_value = 'nil'):
-        # define num_access
-        self.num_access = 0
+        # define num_accesses for different operations
+        self.num_access = 0 # parallel reads (inner-product)
+        self.num_access_rd = 0 # serial reads
+        self.num_access_wr = 0 # serial writes
 
-        # define latency
-        self.latency = param.xbar_lat
+        # define latency for various xbar operations
+        self.latency_ip = param.xbar_ip_lat
+        self.latency_op = param.xbar_op_lat
+        self.latency_rd = param.xbar_rd_lat
+        self.latency_wr = param.xbar_wr_lat
 
         # xbar_value is the weights meant for one crossbar
         self.xbar_size = xbar_size
@@ -51,16 +56,27 @@ class xbar (object):
         assert (k < cfg.xbar_size), 'row entry exceeds xbar size'
         assert (l < cfg.xbar_size), 'col entry exceeds xbar size'
         assert (type(value) == float), 'value written to xbar should be float'
+        self.num_access_wr += 1
         self.xbar_value[k][l] = value
 
     # reads a location on xbar
     def read (self, k, l):
         assert (k < cfg.xbar_size), 'row entry exceeds xbar size'
         assert (l < cfg.xbar_size), 'col entry exceeds xbar size'
+        self.num_access_rd += 1
         return self.xbar_value[k][l]
 
-    def getLatency (self):
-        return self.latency
+    def getIpLatency (self):
+        return self.latency_ip
+
+    def getOpLatency (self):
+        return self.latency_op
+
+    def getRdLatency (self):
+        return self.latency_rd
+
+    def getWrLatency (self):
+        return self.latency_wr
 
     def propagate (self, inp = 'nil'):
         self.num_access += 1
@@ -70,10 +86,10 @@ class xbar (object):
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp = 'nil'):
-        self.num_access += 1
         # data input is list of bit strings (of length dac_res) - fixed point binary
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
+        self.num_access += 1
         # convert input from fixed point binary (string) to float
         inp_float = [0.0] * self.xbar_size
         for i in range(len(inp)):
@@ -149,7 +165,7 @@ class dac (object):
         return analog_max * frac
 
     def propagate (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         if (inp == ''):
             inp = '0' * cfg.dac_res
         assert ((type(inp) == str) and (len(inp) == self.dac_res)), 'dac input type/size (bits) mismatch (string expected)'
@@ -218,14 +234,14 @@ class adc (object):
         return ('0'*(num_bits - len(bin_value)) + bin_value)
 
     def propagate (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         assert (type(inp) in [float, np.float32, np.float64]), 'adc input type mismatch (float, np.float32, np.float64 expected)'
         num_bits = self.adc_res
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
@@ -244,7 +260,7 @@ class sampleNhold (object):
 
     # propagate needs to be updated withe xact analog functionaloty if any
     def propagate (self, inp_list):
-        self.num_access += 1
+        #self.num_access += 1
         assert (len(inp_list) == len(self.hold_latch)), 'sample&hold input size mismatch'
         for i in xrange(len(inp_list)):
             self.hold_latch[i] = inp_list[i]
@@ -287,7 +303,6 @@ class mux (object):
 ## Needs to add ALU overflow check/mitigation
 class alu (object):
     def __init__ (self):
-        # define num_access
         self.num_access_div = 0
         self.num_access_mul = 0
         self.num_access_act = 0
@@ -376,7 +391,6 @@ class alu (object):
 # Integer ALU
 class alu_int (object):
     def __init__ (self):
-        # define num_access
         self.num_access_div = 0
         self.num_access_mul = 0
         self.num_access_other = 0
@@ -432,11 +446,6 @@ class memory (object):
         # memfile will store half-word (16 bits digital data) length strings
         self.size = size
         self.memfile = [''] * size
-
-        ## for debug only - initialized DataMemory
-        self.memfile_float = (np.random.rand(cfg.xbar_size))
-        for i in range (cfg.xbar_size):
-            self.memfile[i] = float2fixed(self.memfile_float[i], cfg.int_bits, cfg.frac_bits)
 
         self.addr_start = addr_offset
         self.addr_end = self.addr_start + self.size -1
