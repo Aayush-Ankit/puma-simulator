@@ -1,0 +1,1295 @@
+EDRAM contents
+valid: 1 | counter: 9 | 0.93359375
+valid: 1 | counter: 9 | 0.163818359375
+valid: 1 | counter: 9 | 0.22607421875
+valid: 1 | counter: 9 | 0.06494140625
+valid: 1 | counter: 9 | 0.7236328125
+valid: 1 | counter: 9 | 0.708984375
+valid: 1 | counter: 9 | 0.7373046875
+valid: 1 | counter: 9 | 0.931640625
+valid: 1 | counter: 9 | 0.64794921875
+valid: 1 | counter: 9 | 0.650634765625
+valid: 1 | counter: 9 | 0.84130859375
+valid: 1 | counter: 9 | 0.833251953125
+valid: 1 | counter: 9 | 0.864013671875
+valid: 1 | counter: 9 | 0.608642578125
+valid: 1 | counter: 9 | 0.463134765625
+valid: 1 | counter: 9 | 0.337646484375
+valid: 1 | counter: 9 | 0.868896484375
+valid: 1 | counter: 9 | 0.15869140625
+valid: 1 | counter: 9 | 0.662109375
+valid: 1 | counter: 9 | 0.232177734375
+valid: 1 | counter: 9 | 0.879150390625
+valid: 1 | counter: 9 | 0.702880859375
+valid: 1 | counter: 9 | 0.031005859375
+valid: 1 | counter: 9 | 0.535400390625
+valid: 1 | counter: 9 | 0.128173828125
+valid: 1 | counter: 9 | 0.83642578125
+valid: 1 | counter: 9 | 0.3857421875
+valid: 1 | counter: 9 | 0.83251953125
+valid: 1 | counter: 9 | 0.92578125
+valid: 1 | counter: 9 | 0.35595703125
+valid: 1 | counter: 9 | 0.55126953125
+valid: 1 | counter: 9 | 0.5205078125
+valid: 1 | counter: 9 | 0.252197265625
+valid: 1 | counter: 9 | 0.607177734375
+valid: 1 | counter: 9 | 0.469970703125
+valid: 1 | counter: 9 | 0.980712890625
+valid: 1 | counter: 9 | 0.94287109375
+valid: 1 | counter: 9 | 0.3408203125
+valid: 1 | counter: 9 | 0.57666015625
+valid: 1 | counter: 9 | 0.00830078125
+valid: 1 | counter: 9 | 0.557373046875
+valid: 1 | counter: 9 | 0.162353515625
+valid: 1 | counter: 9 | 0.8916015625
+valid: 1 | counter: 9 | 0.73046875
+valid: 1 | counter: 9 | 0.7763671875
+valid: 1 | counter: 9 | 0.94287109375
+valid: 1 | counter: 9 | 0.115966796875
+valid: 1 | counter: 9 | 0.6572265625
+valid: 1 | counter: 9 | 0.336181640625
+valid: 1 | counter: 9 | 0.325927734375
+valid: 1 | counter: 9 | 0.2353515625
+valid: 1 | counter: 9 | 0.809326171875
+valid: 1 | counter: 9 | 0.353515625
+valid: 1 | counter: 9 | 0.87109375
+valid: 1 | counter: 9 | 0.25439453125
+valid: 1 | counter: 9 | 0.738525390625
+valid: 1 | counter: 9 | 0.401123046875
+valid: 1 | counter: 9 | 0.0126953125
+valid: 1 | counter: 9 | 0.559814453125
+valid: 1 | counter: 9 | 0.1630859375
+valid: 1 | counter: 9 | 0.267578125
+valid: 1 | counter: 9 | 0.74365234375
+valid: 1 | counter: 9 | 0.189208984375
+valid: 1 | counter: 9 | 0.604248046875
+valid: 1 | counter: 9 | 0.468505859375
+valid: 1 | counter: 9 | 0.905517578125
+valid: 1 | counter: 9 | 0.17822265625
+valid: 1 | counter: 9 | 0.464599609375
+valid: 1 | counter: 9 | 0.041015625
+valid: 1 | counter: 9 | 0.873046875
+valid: 1 | counter: 9 | 0.80615234375
+valid: 1 | counter: 9 | 0.782470703125
+valid: 1 | counter: 9 | 0.957763671875
+valid: 1 | counter: 9 | 0.01025390625
+valid: 1 | counter: 9 | 0.73828125
+valid: 1 | counter: 9 | 0.640625
+valid: 1 | counter: 9 | 0.85693359375
+valid: 1 | counter: 9 | 0.6083984375
+valid: 1 | counter: 9 | 0.360107421875
+valid: 1 | counter: 9 | 0.906494140625
+valid: 1 | counter: 9 | 0.8232421875
+valid: 1 | counter: 9 | 0.267578125
+valid: 1 | counter: 9 | 0.996826171875
+valid: 1 | counter: 9 | 0.671142578125
+valid: 1 | counter: 9 | 0.38134765625
+valid: 1 | counter: 9 | 0.634521484375
+valid: 1 | counter: 9 | 0.0048828125
+valid: 1 | counter: 9 | 0.442138671875
+valid: 1 | counter: 9 | 0.88818359375
+valid: 1 | counter: 9 | 0.31591796875
+valid: 1 | counter: 9 | 0.61572265625
+valid: 1 | counter: 9 | 0.710693359375
+valid: 1 | counter: 9 | 0.72900390625
+valid: 1 | counter: 9 | 0.919921875
+valid: 1 | counter: 9 | 0.73193359375
+valid: 1 | counter: 9 | 0.6044921875
+valid: 1 | counter: 9 | 0.55224609375
+valid: 1 | counter: 9 | 0.881103515625
+valid: 1 | counter: 9 | 0.147216796875
+valid: 1 | counter: 9 | 0.333740234375
+valid: 1 | counter: 9 | 0.2197265625
+valid: 1 | counter: 9 | 0.044921875
+valid: 1 | counter: 9 | 0.041015625
+valid: 1 | counter: 9 | 0.712890625
+valid: 1 | counter: 9 | 0.121826171875
+valid: 1 | counter: 9 | 0.650390625
+valid: 1 | counter: 9 | 0.3271484375
+valid: 1 | counter: 9 | 0.08203125
+valid: 1 | counter: 9 | 0.0634765625
+valid: 1 | counter: 9 | 0.9326171875
+valid: 1 | counter: 9 | 0.236083984375
+valid: 1 | counter: 9 | 0.252685546875
+valid: 1 | counter: 9 | 0.092041015625
+valid: 1 | counter: 9 | 0.6484375
+valid: 1 | counter: 9 | 0.156005859375
+valid: 1 | counter: 9 | 0.60693359375
+valid: 1 | counter: 9 | 0.5830078125
+valid: 1 | counter: 9 | 0.579833984375
+valid: 1 | counter: 9 | 0.198974609375
+valid: 1 | counter: 9 | 0.62548828125
+valid: 1 | counter: 9 | 0.025634765625
+valid: 1 | counter: 9 | 0.40283203125
+valid: 1 | counter: 9 | 0.115234375
+valid: 1 | counter: 9 | 0.322509765625
+valid: 1 | counter: 9 | 0.69775390625
+valid: 1 | counter: 9 | 0.405029296875
+valid: 1 | counter: 9 | 0.633056640625
+valid: 1 | counter: 9 | 0.237548828125
+valid: 1 | counter: 10 | 0.814453125
+valid: 1 | counter: 10 | 0.791259765625
+valid: 1 | counter: 10 | 0.4404296875
+valid: 1 | counter: 10 | 0.435302734375
+valid: 1 | counter: 10 | 0.908203125
+valid: 1 | counter: 10 | 0.74951171875
+valid: 1 | counter: 10 | 0.410888671875
+valid: 1 | counter: 10 | 0.224853515625
+valid: 1 | counter: 10 | 0.2978515625
+valid: 1 | counter: 10 | 0.90478515625
+valid: 1 | counter: 10 | 0.11767578125
+valid: 1 | counter: 10 | 0.147216796875
+valid: 1 | counter: 10 | 0.6240234375
+valid: 1 | counter: 10 | 0.774169921875
+valid: 1 | counter: 10 | 0.151123046875
+valid: 1 | counter: 10 | 0.375732421875
+valid: 1 | counter: 10 | 0.48193359375
+valid: 1 | counter: 10 | 0.15673828125
+valid: 1 | counter: 10 | 0.782470703125
+valid: 1 | counter: 10 | 0.595458984375
+valid: 1 | counter: 10 | 0.323974609375
+valid: 1 | counter: 10 | 0.162109375
+valid: 1 | counter: 10 | 0.35107421875
+valid: 1 | counter: 10 | 0.884765625
+valid: 1 | counter: 10 | 0.366943359375
+valid: 1 | counter: 10 | 0.43017578125
+valid: 1 | counter: 10 | 0.706298828125
+valid: 1 | counter: 10 | 0.934814453125
+valid: 1 | counter: 10 | 0.94775390625
+valid: 1 | counter: 10 | 0.96435546875
+valid: 1 | counter: 10 | 0.40673828125
+valid: 1 | counter: 10 | 0.376220703125
+valid: 1 | counter: 10 | 0.22265625
+valid: 1 | counter: 10 | 0.611083984375
+valid: 1 | counter: 10 | 0.587646484375
+valid: 1 | counter: 10 | 0.85009765625
+valid: 1 | counter: 10 | 0.056884765625
+valid: 1 | counter: 10 | 0.646240234375
+valid: 1 | counter: 10 | 0.90673828125
+valid: 1 | counter: 10 | 0.73193359375
+valid: 1 | counter: 10 | 0.39697265625
+valid: 1 | counter: 10 | 0.205810546875
+valid: 1 | counter: 10 | 0.7783203125
+valid: 1 | counter: 10 | 0.337158203125
+valid: 1 | counter: 10 | 0.733154296875
+valid: 1 | counter: 10 | 0.188720703125
+valid: 1 | counter: 10 | 0.456787109375
+valid: 1 | counter: 10 | 0.663818359375
+valid: 1 | counter: 10 | 0.691650390625
+valid: 1 | counter: 10 | 0.736328125
+valid: 1 | counter: 10 | 0.2880859375
+valid: 1 | counter: 10 | 0.72607421875
+valid: 1 | counter: 10 | 0.6240234375
+valid: 1 | counter: 10 | 0.8896484375
+valid: 1 | counter: 10 | 0.748779296875
+valid: 1 | counter: 10 | 0.21142578125
+valid: 1 | counter: 10 | 0.784423828125
+valid: 1 | counter: 10 | 0.41796875
+valid: 1 | counter: 10 | 0.645263671875
+valid: 1 | counter: 10 | 0.394775390625
+valid: 1 | counter: 10 | 0.942626953125
+valid: 1 | counter: 10 | 0.75537109375
+valid: 1 | counter: 10 | 0.2294921875
+valid: 1 | counter: 10 | 0.74169921875
+valid: 1 | counter: 10 | 0.41650390625
+valid: 1 | counter: 10 | 0.695068359375
+valid: 1 | counter: 10 | 0.727294921875
+valid: 1 | counter: 10 | 0.15087890625
+valid: 1 | counter: 10 | 0.936279296875
+valid: 1 | counter: 10 | 0.234130859375
+valid: 1 | counter: 10 | 0.99951171875
+valid: 1 | counter: 10 | 0.822509765625
+valid: 1 | counter: 10 | 0.9375
+valid: 1 | counter: 10 | 0.15380859375
+valid: 1 | counter: 10 | 0.444580078125
+valid: 1 | counter: 10 | 0.73388671875
+valid: 1 | counter: 10 | 0.2568359375
+valid: 1 | counter: 10 | 0.8720703125
+valid: 1 | counter: 10 | 0.96728515625
+valid: 1 | counter: 10 | 0.28076171875
+valid: 1 | counter: 10 | 0.717041015625
+valid: 1 | counter: 10 | 0.97705078125
+valid: 1 | counter: 10 | 0.868408203125
+valid: 1 | counter: 10 | 0.13134765625
+valid: 1 | counter: 10 | 0.7451171875
+valid: 1 | counter: 10 | 0.70849609375
+valid: 1 | counter: 10 | 0.204833984375
+valid: 1 | counter: 10 | 0.3173828125
+valid: 1 | counter: 10 | 0.205078125
+valid: 1 | counter: 10 | 0.70556640625
+valid: 1 | counter: 10 | 0.80078125
+valid: 1 | counter: 10 | 0.315673828125
+valid: 1 | counter: 10 | 0.263427734375
+valid: 1 | counter: 10 | 0.195556640625
+valid: 1 | counter: 10 | 0.09619140625
+valid: 1 | counter: 10 | 0.709716796875
+valid: 1 | counter: 10 | 0.8359375
+valid: 1 | counter: 10 | 0.610595703125
+valid: 1 | counter: 10 | 0.7099609375
+valid: 1 | counter: 10 | 0.884521484375
+valid: 1 | counter: 10 | 0.33251953125
+valid: 1 | counter: 10 | 0.903564453125
+valid: 1 | counter: 10 | 0.739013671875
+valid: 1 | counter: 10 | 0.400146484375
+valid: 1 | counter: 10 | 0.400634765625
+valid: 1 | counter: 10 | 0.098388671875
+valid: 1 | counter: 10 | 0.78076171875
+valid: 1 | counter: 10 | 0.40234375
+valid: 1 | counter: 10 | 0.663330078125
+valid: 1 | counter: 10 | 0.34716796875
+valid: 1 | counter: 10 | 0.568115234375
+valid: 1 | counter: 10 | 0.626220703125
+valid: 1 | counter: 10 | 0.09033203125
+valid: 1 | counter: 10 | 0.13232421875
+valid: 1 | counter: 10 | 0.31201171875
+valid: 1 | counter: 10 | 0.29150390625
+valid: 1 | counter: 10 | 0.10693359375
+valid: 1 | counter: 10 | 0.749755859375
+valid: 1 | counter: 10 | 0.98046875
+valid: 1 | counter: 10 | 0.376953125
+valid: 1 | counter: 10 | 0.962646484375
+valid: 1 | counter: 10 | 0.94091796875
+valid: 1 | counter: 10 | 0.657470703125
+valid: 1 | counter: 10 | 0.152099609375
+valid: 1 | counter: 10 | 0.617431640625
+valid: 1 | counter: 10 | 0.14208984375
+valid: 1 | counter: 10 | 0.181884765625
+valid: 1 | counter: 10 | 0.62060546875
+valid: 1 | counter: 10 | 0.19091796875
+valid: 1 | counter: 10 | 0.5654296875
+valid: 1 | counter: 10 | 0.747802734375
+valid: 1 | counter: 10 | 0.010009765625
+valid: 1 | counter: 10 | 0.98486328125
+valid: 1 | counter: 10 | 0.150146484375
+valid: 1 | counter: 10 | 0.03515625
+valid: 1 | counter: 10 | 0.234619140625
+valid: 1 | counter: 10 | 0.4443359375
+valid: 1 | counter: 10 | 0.765869140625
+valid: 1 | counter: 10 | 0.667724609375
+valid: 1 | counter: 10 | 0.75048828125
+valid: 1 | counter: 10 | 0.034423828125
+valid: 1 | counter: 10 | 0.62890625
+valid: 1 | counter: 10 | 0.85693359375
+valid: 1 | counter: 10 | 0.252685546875
+valid: 1 | counter: 10 | 0.341796875
+valid: 1 | counter: 10 | 0.994140625
+valid: 1 | counter: 10 | 0.693359375
+valid: 1 | counter: 10 | 0.134033203125
+valid: 1 | counter: 10 | 0.234619140625
+valid: 1 | counter: 10 | 0.15087890625
+valid: 1 | counter: 10 | 0.4091796875
+valid: 1 | counter: 10 | 0.47802734375
+valid: 1 | counter: 10 | 0.8857421875
+valid: 1 | counter: 10 | 0.874755859375
+valid: 1 | counter: 10 | 0.659423828125
+valid: 1 | counter: 10 | 0.001953125
+valid: 1 | counter: 10 | 0.20556640625
+valid: 1 | counter: 10 | 0.625
+valid: 1 | counter: 10 | 0.5810546875
+valid: 1 | counter: 10 | 0.013916015625
+valid: 1 | counter: 10 | 0.517822265625
+valid: 1 | counter: 10 | 0.128173828125
+valid: 1 | counter: 10 | 0.322998046875
+valid: 1 | counter: 10 | 0.00146484375
+valid: 1 | counter: 10 | 0.000244140625
+valid: 1 | counter: 10 | 0.345458984375
+valid: 1 | counter: 10 | 0.37548828125
+valid: 1 | counter: 10 | 0.386962890625
+valid: 1 | counter: 10 | 0.548828125
+valid: 1 | counter: 10 | 0.830322265625
+valid: 1 | counter: 10 | 0.978515625
+valid: 1 | counter: 10 | 0.630615234375
+valid: 1 | counter: 10 | 0.2783203125
+valid: 1 | counter: 10 | 0.606689453125
+valid: 1 | counter: 10 | 0.071533203125
+valid: 1 | counter: 10 | 0.9169921875
+valid: 1 | counter: 10 | 0.556884765625
+valid: 1 | counter: 10 | 0.056884765625
+valid: 1 | counter: 10 | 0.8837890625
+valid: 1 | counter: 10 | 0.387939453125
+valid: 1 | counter: 10 | 0.3720703125
+valid: 1 | counter: 10 | 0.873779296875
+valid: 1 | counter: 10 | 0.177001953125
+valid: 1 | counter: 10 | 0.345947265625
+valid: 1 | counter: 10 | 0.44775390625
+valid: 1 | counter: 10 | 0.05615234375
+valid: 1 | counter: 10 | 0.4853515625
+valid: 1 | counter: 10 | 0.453857421875
+valid: 1 | counter: 10 | 0.42041015625
+valid: 1 | counter: 10 | 0.87939453125
+valid: 1 | counter: 10 | 0.556640625
+valid: 1 | counter: 10 | 0.34130859375
+valid: 1 | counter: 10 | 0.28857421875
+valid: 1 | counter: 10 | 0.844970703125
+valid: 1 | counter: 10 | 0.5947265625
+valid: 1 | counter: 10 | 0.0341796875
+valid: 1 | counter: 10 | 0.874755859375
+valid: 1 | counter: 10 | 0.329345703125
+valid: 1 | counter: 10 | 0.759033203125
+valid: 1 | counter: 10 | 0.322509765625
+valid: 1 | counter: 10 | 0.072265625
+valid: 1 | counter: 10 | 0.510498046875
+valid: 1 | counter: 10 | 0.624755859375
+valid: 1 | counter: 10 | 0.61572265625
+valid: 1 | counter: 10 | 0.601318359375
+valid: 1 | counter: 10 | 0.3779296875
+valid: 1 | counter: 10 | 0.885009765625
+valid: 1 | counter: 10 | 0.330810546875
+valid: 1 | counter: 10 | 0.740478515625
+valid: 1 | counter: 10 | 0.7373046875
+valid: 1 | counter: 10 | 0.12841796875
+valid: 1 | counter: 10 | 0.392333984375
+valid: 1 | counter: 10 | 0.978759765625
+valid: 1 | counter: 10 | 0.606201171875
+valid: 1 | counter: 10 | 0.80810546875
+valid: 1 | counter: 10 | 0.37060546875
+valid: 1 | counter: 10 | 0.252197265625
+valid: 1 | counter: 10 | 0.970458984375
+valid: 1 | counter: 10 | 0.366943359375
+valid: 1 | counter: 10 | 0.159912109375
+valid: 1 | counter: 10 | 0.74853515625
+valid: 1 | counter: 10 | 0.317626953125
+valid: 1 | counter: 10 | 0.176513671875
+valid: 1 | counter: 10 | 0.0810546875
+valid: 1 | counter: 10 | 0.697509765625
+valid: 1 | counter: 10 | 0.528076171875
+valid: 1 | counter: 10 | 0.810302734375
+valid: 1 | counter: 10 | 0.609130859375
+valid: 1 | counter: 10 | 0.9716796875
+valid: 1 | counter: 10 | 0.455322265625
+valid: 1 | counter: 10 | 0.402587890625
+valid: 1 | counter: 10 | 0.06298828125
+valid: 1 | counter: 10 | 0.9912109375
+valid: 1 | counter: 10 | 0.917236328125
+valid: 1 | counter: 10 | 0.588134765625
+valid: 1 | counter: 10 | 0.547119140625
+valid: 1 | counter: 10 | 0.85009765625
+valid: 1 | counter: 10 | 0.249267578125
+valid: 1 | counter: 10 | 0.3828125
+valid: 1 | counter: 10 | 0.00537109375
+valid: 1 | counter: 10 | 0.2880859375
+valid: 1 | counter: 10 | 0.62353515625
+valid: 1 | counter: 10 | 0.823974609375
+valid: 1 | counter: 10 | 0.977783203125
+valid: 1 | counter: 10 | 0.354736328125
+valid: 1 | counter: 10 | 0.971923828125
+valid: 1 | counter: 10 | 0.88134765625
+valid: 1 | counter: 10 | 0.431884765625
+valid: 1 | counter: 10 | 0.990966796875
+valid: 1 | counter: 10 | 0.5263671875
+valid: 1 | counter: 10 | 0.6005859375
+valid: 1 | counter: 10 | 0.516845703125
+valid: 1 | counter: 10 | 0.45751953125
+valid: 1 | counter: 10 | 0.439697265625
+valid: 1 | counter: 10 | 0.37646484375
+valid: 1 | counter: 10 | 0.83935546875
+valid: 1 | counter: 10 | 0.33642578125
+valid: 1 | counter: 10 | 0.6201171875
+valid: 1 | counter: 10 | 0.31298828125
+valid: 1 | counter: 10 | 0.208984375
+valid: 1 | counter: 10 | 0.006591796875
+valid: 1 | counter: 10 | 0.21923828125
+valid: 1 | counter: 10 | 0.18896484375
+valid: 1 | counter: 10 | 0.801513671875
+valid: 1 | counter: 10 | 0.25634765625
+valid: 1 | counter: 10 | 0.830322265625
+valid: 1 | counter: 10 | 0.949951171875
+valid: 1 | counter: 10 | 0.956787109375
+valid: 1 | counter: 10 | 0.410400390625
+valid: 1 | counter: 10 | 0.90625
+valid: 1 | counter: 10 | 0.88134765625
+valid: 1 | counter: 10 | 0.392333984375
+valid: 1 | counter: 10 | 0.66650390625
+valid: 1 | counter: 10 | 0.712158203125
+valid: 1 | counter: 10 | 0.717041015625
+valid: 1 | counter: 10 | 0.67236328125
+valid: 1 | counter: 10 | 0.0517578125
+valid: 1 | counter: 10 | 0.721923828125
+valid: 1 | counter: 10 | 0.11767578125
+valid: 1 | counter: 10 | 0.679931640625
+valid: 1 | counter: 10 | 0.54248046875
+valid: 1 | counter: 10 | 0.249267578125
+valid: 1 | counter: 10 | 0.767822265625
+valid: 1 | counter: 10 | 0.955322265625
+valid: 1 | counter: 10 | 0.48779296875
+valid: 1 | counter: 10 | 0.74560546875
+valid: 1 | counter: 10 | 0.50048828125
+valid: 1 | counter: 10 | 0.68603515625
+valid: 1 | counter: 10 | 0.134765625
+valid: 1 | counter: 10 | 0.802001953125
+valid: 1 | counter: 10 | 0.67236328125
+valid: 1 | counter: 10 | 0.258544921875
+valid: 1 | counter: 10 | 0.841064453125
+valid: 1 | counter: 10 | 0.996826171875
+valid: 1 | counter: 10 | 0.1943359375
+valid: 1 | counter: 10 | 0.944091796875
+valid: 1 | counter: 10 | 0.3203125
+valid: 1 | counter: 10 | 0.718505859375
+valid: 1 | counter: 10 | 0.6083984375
+valid: 1 | counter: 10 | 0.419677734375
+valid: 1 | counter: 10 | 0.182373046875
+valid: 1 | counter: 10 | 0.88623046875
+valid: 1 | counter: 10 | 0.298583984375
+valid: 1 | counter: 10 | 0.2958984375
+valid: 1 | counter: 10 | 0.528076171875
+valid: 1 | counter: 10 | 0.435791015625
+valid: 1 | counter: 10 | 0.44677734375
+valid: 1 | counter: 10 | 0.52001953125
+valid: 1 | counter: 10 | 0.1826171875
+valid: 1 | counter: 10 | 0.16748046875
+valid: 1 | counter: 10 | 0.249267578125
+valid: 1 | counter: 10 | 0.040283203125
+valid: 1 | counter: 10 | 0.52392578125
+valid: 1 | counter: 10 | 0.951171875
+valid: 1 | counter: 10 | 0.722412109375
+valid: 1 | counter: 10 | 0.99755859375
+valid: 1 | counter: 10 | 0.36572265625
+valid: 1 | counter: 10 | 0.4130859375
+valid: 1 | counter: 10 | 0.40625
+valid: 1 | counter: 10 | 0.654296875
+valid: 1 | counter: 10 | 0.602783203125
+valid: 1 | counter: 10 | 0.872314453125
+valid: 1 | counter: 10 | 0.81005859375
+valid: 1 | counter: 10 | 0.655029296875
+valid: 1 | counter: 10 | 0.665283203125
+valid: 1 | counter: 10 | 0.216064453125
+valid: 1 | counter: 10 | 0.958251953125
+valid: 1 | counter: 10 | 0.779052734375
+valid: 1 | counter: 10 | 0.8359375
+valid: 1 | counter: 10 | 0.27392578125
+valid: 1 | counter: 10 | 0.712646484375
+valid: 1 | counter: 10 | 0.80517578125
+valid: 1 | counter: 10 | 0.256591796875
+valid: 1 | counter: 10 | 0.247314453125
+valid: 1 | counter: 10 | 0.449462890625
+valid: 1 | counter: 10 | 0.576904296875
+valid: 1 | counter: 10 | 0.729736328125
+valid: 1 | counter: 10 | 0.033447265625
+valid: 1 | counter: 10 | 0.977783203125
+valid: 1 | counter: 10 | 0.12890625
+valid: 1 | counter: 10 | 0.583984375
+valid: 1 | counter: 10 | 0.96875
+valid: 1 | counter: 10 | 0.38427734375
+valid: 1 | counter: 10 | 0.275390625
+valid: 1 | counter: 10 | 0.697021484375
+valid: 1 | counter: 10 | 0.018310546875
+valid: 1 | counter: 10 | 0.709228515625
+valid: 1 | counter: 10 | 0.477783203125
+valid: 1 | counter: 10 | 0.644775390625
+valid: 1 | counter: 10 | 0.768310546875
+valid: 1 | counter: 10 | 0.766845703125
+valid: 1 | counter: 10 | 0.315185546875
+valid: 1 | counter: 10 | 0.9697265625
+valid: 1 | counter: 10 | 0.544677734375
+valid: 1 | counter: 10 | 0.78564453125
+valid: 1 | counter: 10 | 0.642822265625
+valid: 1 | counter: 10 | 0.5
+valid: 1 | counter: 10 | 0.70751953125
+valid: 1 | counter: 10 | 0.2314453125
+valid: 1 | counter: 10 | 0.569580078125
+valid: 1 | counter: 10 | 0.39990234375
+valid: 1 | counter: 10 | 0.820068359375
+valid: 1 | counter: 10 | 0.51318359375
+valid: 1 | counter: 10 | 0.963134765625
+valid: 1 | counter: 10 | 0.853271484375
+valid: 1 | counter: 10 | 0.870849609375
+valid: 1 | counter: 10 | 0.308837890625
+valid: 1 | counter: 10 | 0.100830078125
+valid: 1 | counter: 10 | 0.89453125
+valid: 1 | counter: 10 | 0.77490234375
+valid: 1 | counter: 10 | 0.736572265625
+valid: 1 | counter: 10 | 0.0126953125
+valid: 1 | counter: 10 | 0.553466796875
+valid: 1 | counter: 10 | 0.844482421875
+valid: 1 | counter: 10 | 0.275634765625
+valid: 1 | counter: 10 | 0.79296875
+valid: 1 | counter: 10 | 0.703125
+valid: 1 | counter: 10 | 0.933349609375
+valid: 1 | counter: 10 | 0.720703125
+valid: 1 | counter: 10 | 0.67333984375
+valid: 1 | counter: 10 | 0.55615234375
+valid: 1 | counter: 10 | 0.3330078125
+valid: 1 | counter: 10 | 0.43408203125
+valid: 1 | counter: 10 | 0.685546875
+IMA id: 0
+DataMemory contents
+Xbar Input Memory: matrixId: 0mvmu_type: f contents
+Xbar Output Memory: matrixId: 0mvmu_type: f contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+Xbar Input Memory: matrixId: 0mvmu_type: b contents
+Xbar Output Memory: matrixId: 0mvmu_type: b contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+Xbar Input Memory: matrixId: 0mvmu_type: d contents
+Xbar Output Memory: matrixId: 0mvmu_type: d contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+Xbar Input Memory: matrixId: 1mvmu_type: f contents
+Xbar Output Memory: matrixId: 1mvmu_type: f contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+Xbar Input Memory: matrixId: 1mvmu_type: b contents
+Xbar Output Memory: matrixId: 1mvmu_type: b contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+Xbar Input Memory: matrixId: 1mvmu_type: d contents
+Xbar Output Memory: matrixId: 1mvmu_type: d contents
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0

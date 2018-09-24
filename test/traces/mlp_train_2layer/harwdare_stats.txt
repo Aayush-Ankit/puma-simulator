@@ -1,0 +1,45 @@
+Access and energy distribution of dynamic energy: 
+Component                 num_access              percent
+tile_control                7029                  0.19 %
+edctrl                      23                    0.00 %
+xbar_ip                     384                   85.5 %
+xbOutmem                    13312                 1.18 %
+xbar_rd                     0                     0.0 %
+edram_bus                   31                    0.05 %
+xbar_op                     256                   9.80 %
+edram                       31                    0.14 %
+adc                         0                     0.0 %
+imem_t                      2                     0.00 %
+noc_inter                   0                     0.0 %
+core_control                7030                  0.97 %
+mux2                        49152                 0.0 %
+mux1                        49152                 0.0 %
+xbInmem_wr                  640                   0.05 %
+alu_sna                     55296                 1.38 %
+dac                         0                     0.0 %
+noc_intra                   46                    0.41 %
+alu_mul                     0                     0.0 %
+snh                         49152                 0.00 %
+xbar_wr                     0                     0.0 %
+dmem                        3                     0.00 %
+imem                        15                    0.01 %
+alu_act                     0                     0.0 %
+edctrl_counter              8                     0.00 %
+xbInmem_rd                  80                    0.07 %
+alu_other                   0                     0.0 %
+alu_div                     0                     0.0 %
+rbuff                       16                    0.07 %
+
+leakage_power: 5.17868538248
+node_area: 64.1916327206
+leakage_energy: 3.57014571249e-08
+tile_area: 0.234152575718
+core_area: 0.0276594732947
+dynamic_energy: 1.7945342111e-07
+total_energy: 2.15154878235e-07
+average_power: 30.6052458371
+time: 7.03e-06
+cycles: 7030
+peak_power: 80.8334022332
+network packet injection rate: 6.77369098422e-06
+number of tiles mapped: 1
