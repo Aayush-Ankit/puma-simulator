@@ -2,7 +2,7 @@
 ## All user specified parameters are provided by this file only
 
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
-cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
+cycles_max = 10000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
 
@@ -30,14 +30,13 @@ instrn_width = 48 # (in bits)
 
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_matrix = 2 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
+num_matrix = 1 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
 adc_res = 8
 num_adc = 2 * num_matrix
-num_ALU = num_matrix*2
-#dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
+num_ALU = 1
+dataMem_size = 4 * (2*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 instrnMem_size = 512 #in entries
 
 # This depends on above parameters
@@ -63,7 +62,7 @@ receive_buffer_depth = 150 #set equal to num_tile_max
 receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entry (in terms of number of neurons)
 
 # Change here - Specify the Tile parameters here
-num_ima = 8
+num_ima = 1
 edram_size = 64 # in Kilobytes (64 KB - same as issac)
 tile_instrnMem_size = 2048 # in entries
 
@@ -82,7 +81,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 2 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 1 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
@@ -92,5 +91,5 @@ noc_num_port = 4
 num_node = 1
 
 # Do not change this - total number of tiles
-num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute
+num_tile = num_node * num_tile_compute + 2 # +2 for first & last tiles - dummy, others - compute
 

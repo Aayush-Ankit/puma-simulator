@@ -7,6 +7,8 @@ from src.data_convert import *
 import include.config as cfg
 import include.constants as param
 
+from src.data_convert import *
+
 # Define nstruction prototypes
 # generate load prototype - load data from edram to (datamem/xbinmem)
 phy2log_ratio = cfg.num_bits/cfg.xbar_bits
@@ -74,19 +76,32 @@ def i_alui (aluop, d1, r1, imm, vec = 1):
     i_temp['aluop'] = aluop
     i_temp['d1'] = d1
     i_temp['r1'] = r1
-    i_temp['imm'] = imm # will be used in alui
+    i_temp['imm'] = float2fixed (imm, cfg.int_bits, cfg.frac_bits)
     i_temp['vec'] = vec
     return i_temp
 
 # generate mvm prototype - xbar isntrn
 # for each matrix, the three bits initiate fw, bw and delta crossbar
-def i_mvm (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
-    assert (len(xb_nma) == cfg.num_matrix) # each matrix in a core has a 3-bit mask
+
+#def i_mvm (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+#    assert (len(xb_nma) == cfg.num_matrix) # each matrix in a core has a 3-bit mask
+#    i_temp = param.dummy_instrn.copy()
+#    i_temp['opcode'] = 'mvm'
+#    i_temp['r1'] = r1
+#    i_temp['r2'] = r2
+#    i_temp['xb_nma'] = xb_nma
+#    return i_temp
+
+## Added for COMPILER - i_train, mask as integer
+def i_train (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+    xb_nma_str = xb_nma[0]
+    xb_nma_list = [xb_nma_str[i*3:(i+1)*3] for i in range(len(xb_nma_str)/3)] # split into list of 3-bit masks
+    assert (len(xb_nma_list) == cfg.num_matrix) # each matrix in a core has a 3-bit mask
     i_temp = param.dummy_instrn.copy()
     i_temp['opcode'] = 'mvm'
     i_temp['r1'] = r1
     i_temp['r2'] = r2
-    i_temp['xb_nma'] = xb_nma
+    i_temp['xb_nma'] = xb_nma_list
     return i_temp
 
 # generate crs instruction

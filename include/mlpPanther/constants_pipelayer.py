@@ -104,8 +104,9 @@ xbar_area_dict = {'2': {'32' : 1.5625 * 10**(-6),
 
 ## New values added for xbar MVM/MTVM, OP (parallel write), serial read/write
 # the following is lumped power for xbar inner/outer-product - includes peripherals
-xbar_op_lat = 20.0*12.8 # with 4 VFUs
-xbar_op_pow = 4.44 * 3.27 / (12.8)
+xbar_op_lat = 100.0 + 100*((96000.0/1600.0)/16.0) #96000/1600 is ratio of MVM to Serial Access latency, divided by 16 as serial acecss doesn't require bit streaming
+xbar_op_pow = (1.37*2.0) + 4.44*53
+### NOTE: The above serial access cannot get amortized over batch
 
 xbar_ip_lat = 100.0
 xbar_ip_pow = (1.37*2.0)

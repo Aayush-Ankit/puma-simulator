@@ -55,12 +55,18 @@ import ima_metrics
 import tile_metrics
 import node_metrics
 
+compiler_path = "/home/aankit/isca-2019-exps/dpe/test/panther_benchmarks/"
+trace_path = "/home/aankit/dpe_emulate/test/traces/"
 
 class DPE:
 
     def run(self, net):
-        instrndir = os.path.join(os.path.join(test_dir, 'testasm'), net)
-        tracedir = os.path.join(os.path.join(test_dir, 'traces'), net)
+        print(test_dir)
+        instrndir = compiler_path + net
+        #tracedir = os.path.join(os.path.join(test_dir, 'traces'), net.split('/')[-1])
+        tracedir = trace_path + net
+        print("Inst directory: ", instrndir)
+        print("Trace directory: ", tracedir)
 
         assert (os.path.exists(instrndir) ==1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
         '''if not os.path.exists(instrndir):
@@ -150,7 +156,7 @@ class DPE:
         fid = open(hwtrace_file, 'w')
         metric_dict = get_hw_stats(fid, node_dut, cycle)
         fid.close()
-        print('Success: Hadrware results compiled!!')
+        print('Success: Hardware results compiled!!')
 
 
 if __name__ == '__main__':

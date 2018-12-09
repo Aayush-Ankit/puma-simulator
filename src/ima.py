@@ -389,20 +389,47 @@ class ima (object):
         # define some common functions use dto address xbar memory spaces
         # xbar memory spaces are addressed as num_mvmu, f,b/d, i/o order
         # find [num_matrix, xbar_type, mem_addr, xbar_addr]
+        #def getXbarAddr (data_addr):
+        #    # find matrix id
+        #    num_matrix = data_addr / (6*cfg.xbar_size)
+        #    # find xbar_type (f, b, d)
+        #    matrix_addr = data_addr % (6*cfg.xbar_size) # address within the matrix
+        #    if (matrix_addr < 2*cfg.xbar_size):
+        #        xbar_type = 'f'
+        #    elif (matrix_addr >= 4*cfg.xbar_size):
+        #        xbar_type = 'd'
+        #    else:
+        #        xbar_type = 'b'
+        #    # find in/out memory
+        #    mem_addr = matrix_addr % (2*cfg.xbar_size)
+        #    xbar_addr = matrix_addr % cfg.xbar_size
+        #    return [num_matrix, xbar_type, mem_addr, xbar_addr]
+
         def getXbarAddr (data_addr):
-            # find matrix id
-            num_matrix = data_addr / (6*cfg.xbar_size)
-            # find xbar_type (f, b, d)
-            matrix_addr = data_addr % (6*cfg.xbar_size) # address within the matrix
-            if (matrix_addr < 2*cfg.xbar_size):
+            # find i or o
+            if (data_addr < cfg.num_matrix*3*cfg.xbar_size):
+                mem_addr = 0
+            else:
+                mem_addr = 128
+
+            # find xbar_addr
+            xbar_addr = data_addr % cfg.xbar_size
+
+            # find matrix_addr
+            num_matrix = (data_addr / (3*cfg.xbar_size)) % cfg.num_matrix
+
+            # find xbar_type
+            temp_val = (data_addr % (cfg.num_matrix*3*cfg.xbar_size))
+            temp_val1 = temp_val % (3*cfg.xbar_size)
+            if (temp_val1 < cfg.xbar_size):
                 xbar_type = 'f'
-            elif (matrix_addr >= 4*cfg.xbar_size):
+            elif (temp_val1 < 2*cfg.xbar_size):
+                xbar_type = 'b'
+            elif (temp_val1 < 3*cfg.xbar_size):
                 xbar_type = 'd'
             else:
-                xbar_type = 'b'
-            # find in/out memory
-            mem_addr = matrix_addr % (2*cfg.xbar_size)
-            xbar_addr = matrix_addr % cfg.xbar_size
+                assert (1==0), "xbar memory addressing failed"
+
             return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
         # write to the xbar memory (in/out) space depending on the address
@@ -523,7 +550,6 @@ class ima (object):
                         writeToXbarMem (self, dst_addr, ex_val1)
 
             elif (ex_op == 'mvm'):
-
                 ## Define function to perform inner-product on specified mvmu
                 # Note: Inner product with shift and add (shift-sub with last bit), works for 2s complement
                 # representation for positive and negative numbers
@@ -626,8 +652,10 @@ class ima (object):
                     mask_temp = self.de_xb_nma[i]
                     if (mask_temp[0] == '1'):
                         # foward xbar operation
+                        #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MVM")
                         inner_product (i, 'f')
                     if (mask_temp[1] == '1'):
+                        #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MTVM")
                         # backward xbar operation
                         inner_product (i, 'b')
                     if (mask_temp[2] == '1'):
@@ -692,10 +720,10 @@ class ima (object):
             for temp in mask:
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
-                    break
-                elif (temp[2] == '1'):
+                    #break
+                if (temp[2] == '1'):
                     d_found += 1
-                    break
+                    #break
 
             ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
             # Cycle1 - xbar_inMem + DAC + XBar
@@ -704,13 +732,18 @@ class ima (object):
             # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
             num_stage = 3
             lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
-            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
+            #latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
+            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
             ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
             num_phase = 4
             lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
-            latency_op = lat_temp * num_phase * d_found
+            #latency_op = lat_temp * num_phase * d_found
+            latency_op = lat_temp * num_phase * float(int(d_found>0))
             ## output latency should be the max of ip/op operation
             latency_out = max(latency_ip, latency_op)
+            print ("Mask", mask)
+            print ("Latency IP", latency_ip)
+            print ("Latency OP", latency_op)
             return latency_out
 
 

@@ -107,8 +107,8 @@ xbar_area_dict = {'2': {'32' : 1.5625 * 10**(-6),
 xbar_op_lat = 20.0*12.8 # with 4 VFUs
 xbar_op_pow = 4.44 * 3.27 / (12.8)
 
-xbar_ip_lat = 100.0
-xbar_ip_pow = (1.37*2.0)
+xbar_ip_lat = 100*8.97 #8.97X higher are for constant latency
+xbar_ip_pow = ((1.37*2.0)*4.17) / (8.97)
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)

@@ -16,7 +16,8 @@ nj = 10 ** (-9)
 
 # Copied from /include/constants.py file
 # Enlists components at core, tile, and node levels
-hw_comp_energy = {'xbar_ip':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':param.xbar_op_pow_dyn*param.xbar_op_lat,
+hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':param.xbar_op_pow_dyn*param.xbar_op_lat,
+                  'xbar_mtvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat,
         'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, 'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
         'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
         'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, 'adc':param.adc_pow_dyn, \
@@ -39,7 +40,8 @@ hw_comp_energy = {'xbar_ip':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':p
 def get_hw_stats (fid, node_dut, cycle):
 
     # List of all components that dissipate power
-    hw_comp_access = {'xbar_ip':0, 'xbar_op':0,
+    hw_comp_access = {'xbar_mvm':0, 'xbar_op':0,
+                      'xbar_mtvm':0,
             'xbar_rd':0, 'xbar_wr':0,
             'dac':0, 'snh':0, \
             'mux1':0, 'mux2':0, 'adc':0, \
@@ -87,8 +89,10 @@ def get_hw_stats (fid, node_dut, cycle):
                     for m in range(cfg.phy2log_ratio):
                         if (mvmu_t == 'd'):
                             hw_comp_access['xbar_op'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
+                        elif (mvmu_t == 'b'):
+                            hw_comp_access['xbar_mtvm'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
                         else:
-                            hw_comp_access['xbar_ip'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
+                            hw_comp_access['xbar_mvm'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access
                         hw_comp_access['xbar_rd'] += \
                         node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access_rd / (cfg.xbar_size**2)
                         hw_comp_access['xbar_wr'] += \
