@@ -1,26 +1,13 @@
 *.pyc
-*.swp
-*.swb
-*.swc
-*.swd
-*.swe
-*.swf
-*.swg
-*.swo
-*.swn
-*swj
-*swk
-*swi
-*swm
-*swh
-*swk
-*swl
-traces/
+*.sw*
 
-/src/junk/
-/test/*.txt
-/test/coreMvm_test/*.npy
-/test/coreMvm_test/*.txt
-/test/coreOther_test/*.npy
-/test/coreOther_test/*.txt
+/test/testasm/
+/test/traces/
+/test/coreMvm_test/
+/test/coreOther_test/
+/test/mlp_train_2layer/
 
+asplos_sims_raw_data/
+others/
+
+/benchmarks/panther_benchmarks/compiled_benchmarks/
