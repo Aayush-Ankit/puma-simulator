@@ -64,7 +64,7 @@ Success: Hadrware results compiled!!
 
 ## Authors
 
-TBD
+Aayush Ankit, Plinio Silveira, Glaucimar Aguiar
 
 ## License
 
