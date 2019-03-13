@@ -2,7 +2,6 @@
 
 # add the folder location for include files
 import sys, json
-sys.path.insert (0, '/home/aankit/dpe_emulate/')
 
 # import dependancy files
 import numpy as np

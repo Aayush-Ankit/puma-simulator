@@ -1,7 +1,6 @@
 # APIs to compute ima power and area stats
 
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/include')
 
 # import dependency files
 import config as cfg

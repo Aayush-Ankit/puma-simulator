@@ -33,6 +33,7 @@ test_dir = os.path.join(root_dir, "test")
 
 sys.path.insert(0, include_dir)
 sys.path.insert(0, src_dir)
+sys.path.insert(0, root_dir)
 
 # Set the instruction & trace paths (create the folder hierarchy)
 # Assumption: All instructions for all TILEs and IMAs have already been generated
@@ -55,8 +56,8 @@ import ima_metrics
 import tile_metrics
 import node_metrics
 
-compiler_path = "/home/aankit/isca-2019-exps/dpe/test/panther_benchmarks/"
-trace_path = "/home/aankit/dpe_emulate/test/traces/"
+compiler_path = os.path.join(root_dir, "test/testasm/")
+trace_path = os.path.join(root_dir, "test/traces/")
 
 class DPE:
 

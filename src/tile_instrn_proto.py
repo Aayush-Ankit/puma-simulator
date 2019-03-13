@@ -1,6 +1,5 @@
 # Define the instruction prototypes which will be used by the generate_instrn.py file
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/include')
 
 import numpy as np
 import include.config as cfg

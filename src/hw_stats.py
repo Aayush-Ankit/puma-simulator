@@ -1,8 +1,6 @@
 # API to extract hardware trace (stats) from DPE execution
 # Write to file
 import sys
-sys.path.insert (0, '/home/aa/dpe_emulate/include/')
-#sys.path.insert (0, '/home/aa/dpe_emulate/src/')
 import config as cfg
 import constants as param
 import node_metrics
