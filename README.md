@@ -33,6 +33,8 @@ sudo pip install -r <dpe_emulate>/requirements.txt
 If you are behind a proxy, you should type ```
 sudo pip --proxy $http_proxy install ...``` instead.
 
+#TODO: add info on how to change the number of crossbars ad how to inform a model to run 
+
 ## Usage
 
 For testing if everything is working fine:
