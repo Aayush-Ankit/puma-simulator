@@ -1,4 +1,4 @@
-# HPE DPE emulator
+# PUMA Simulator
 
 Below you will find some information on how to use HPE DPE Emulator.
 
@@ -12,7 +12,7 @@ Below you will find some information on how to use HPE DPE Emulator.
 - [License](#license)
 
 ## Introduction
-This emulator was created as a result of the work described in the PUMA paper (https://arxiv.org/abs/1901.10351). Details of the hardware architectture and compiler can be found there. 
+This emulator was created as a result of the work described in the PUMA paper (https://dl.acm.org/citation.cfm?id=3304049). Details of the hardware architectture and compiler can be found there. 
 
 ## System requirements
 
@@ -67,7 +67,7 @@ Output Tile dump finished
 Success: Hadrware results compiled!!
 ```
 ### Running a compiled model
-This emulator executes models compiled by DPE compiler (https://bitbucket.org/izzat/dpe/src/master/). 
+This emulator executes models compiled by PUMA Compiler (https://github.com/illinois-impact/puma-compiler). 
 
 After you compile a model using the compiler, in order to execute it with the DPE emulator, follow the steps below?
 1- Copy <dpe_emulate>/test/generate-py.sh file to the <dpe_compiler>/test folder (you only need to do this once).
