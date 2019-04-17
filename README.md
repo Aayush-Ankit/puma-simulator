@@ -8,8 +8,8 @@ Below you will find some information on how to use the PUMA Simulator.
 - [System requirements](#system-requirements)
 - [Quick Start](#quick-start)
 - [Usage](#usage)
+- [Citation](#citation)
 - [Authors](#authors)
-- [License](#license)
 
 ## Introduction
 This emulator was created as a result of the work described in the PUMA paper (https://dl.acm.org/citation.cfm?id=3304049). Details of the hardware architectture and compiler can be found there. 
