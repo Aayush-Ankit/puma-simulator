@@ -70,7 +70,7 @@ Success: Hadrware results compiled!!
 This emulator executes models compiled by PUMA Compiler (https://github.com/illinois-impact/puma-compiler). 
 
 After you compile a model using the compiler, in order to execute it with the DPE emulator, follow the steps below?
-1- Copy <dpe_emulate>/test/generate-py.sh file to the <dpe_compiler>/test folder (you only need to do this once).
+1- Copy <dpe_emulate>/test/generate-py.sh and <dpe_emulate>/test/input.py files to the <dpe_compiler>/test folder (you only need to do this once).
 2- Edit <dpe_emulate>/test/generate-py.sh file, line 4 and change the value of SIMULATOR_PATH variable.
 ```sh
 
