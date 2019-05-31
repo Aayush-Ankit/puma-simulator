@@ -12,7 +12,10 @@ Below you will find some information on how to use the PUMA Simulator.
 - [Authors](#authors)
 
 ## Introduction
-This emulator was created as a result of the work described in the PUMA paper (https://dl.acm.org/citation.cfm?id=3304049). Details of the hardware architectture and compiler can be found there. 
+This emulator was created as a result of the work described in the PUMA paper (https://dl.acm.org/citation.cfm?id=3304049) presented at ASPLOS 2019, which discusses the architecture and compiler in details.
+ASPLOS Presentation Slides: https://www.dropbox.com/s/mszdkbhwzv0yv4q/slides-puma-asplos19.pptx?dl=0
+Lightning Talk:https://www.youtube.com/watch?v=x3dAPgkQFOg
+
 
 ## System requirements
 
