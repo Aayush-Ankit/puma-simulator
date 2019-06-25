@@ -3,7 +3,7 @@
 
 SIMULATOR_PATH="" # simulator root path
 
-if [[$SIMULATOR_PATH == ""]] ; then
+if [[ $SIMULATOR_PATH == "" ]] ; then
     print "Error, missing simulator path."
     exit
 fi
@@ -14,7 +14,8 @@ PYTHON=python2
 for g in *.puma; do
     #Parse tile and core ids
     dataset="$( cut -d '-' -f 1 <<< "$g" )"
-    tileid=$(echo $g | grep -o -E '[0-9]+' | head -1)
+    tileid=$(echo $g | grep -o -E 'tile[0-9]+' | head -1)
+
     if [[ $g == *"core"* ]]; then
         #coredid=$(echo $g | cut -d " " -f $N)
         coreid=$(echo "${g: -6}")
@@ -23,9 +24,9 @@ for g in *.puma; do
     else
         filename='tile_imem'
     fi
-    mkdir -p $dataset/tile$tileid
-    dir=$dataset/tile$tileid
-    f=$dataset/tile$tileid/$g
+    mkdir -p $dataset/$tileid
+    dir=$dataset/$tileid
+    f=$dataset/$tileid/$g
 
     echo "" > $f.py
     echo "import sys, os" >> $f.py
