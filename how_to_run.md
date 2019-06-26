@@ -8,14 +8,14 @@ Below you will find some information on how to use the PUMA Compiler and Simulat
 | Python      | 2.7.12      
 
 
-### 1. Create DPE folder and go to the folder:
+### 1. Create DPE folder and change to the folder:
  ```
  mkdir dpe
  cd dpe
  ```
 ### 2. Setup PUMA Compiler:
 ```
-git clone https://izabellaaaq@bitbucket.org/izzat/dpe.git
+git clone https://github.com/illinois-impact/puma-compiler
 ```
 ### 3. Setup PUMA Simulator:
 ```
@@ -85,7 +85,7 @@ num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dumm
 ```
 ### 7. Run your model, in this example, the ```lstm-layer.cpp```:
 ```
-cd /puma-simulator/src
+cd "PATH TO PUMA SIMULATOR"/src
 
 python dpe.py -n lstm           
 ```
