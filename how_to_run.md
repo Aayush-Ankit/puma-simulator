@@ -8,10 +8,10 @@ Below you will find some information on how to use the PUMA Compiler and Simulat
 | Python      | 2.7.12      
 
 
-### 1. Create DPE folder and change to the folder:
+### 1. Create puma folder and change to the folder:
  ```
- mkdir dpe
- cd dpe
+ mkdir puma
+ cd puma
  ```
 ### 2. Setup PUMA Compiler:
 ```
