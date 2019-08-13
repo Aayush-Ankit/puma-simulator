@@ -16,6 +16,7 @@ from data_convert import *
 phy2log_ratio = cfg.phy2log_ratio # ratio of physical to logical xbar
 # datamem_off is the start of address sapce of datamemory
 datamem_off = cfg.datamem_off # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+my_xbar_count = 0
 
 class ima (object):
 
@@ -58,7 +59,6 @@ class ima (object):
                         temp_xbar = imod.xbar_op (cfg.xbar_size)
                     temp_list_xbar.append (temp_xbar)
                 temp_xbar_dict[key] = temp_list_xbar
-
                 # assign input memory to mvmu
                 temp_inMem_dict[key] = imod.xb_inMem (cfg.xbar_size)
 
@@ -68,6 +68,7 @@ class ima (object):
             self.matrix_list.append(temp_xbar_dict)
             self.xb_inMem_list.append(temp_inMem_dict)
             self.xb_outMem_list.append(temp_outMem_dict)
+
 
         # Instantiate DACs
         self.dacArray_list = [] # list of dicts
@@ -85,10 +86,33 @@ class ima (object):
 
         # Instatiate ADCs
         # num_adc is 2*num_matrix (no adc needed for delta xbar)
+        # FIXME This is the option 1
         self.adc_list = []
         for i in xrange(cfg.num_adc):
-            temp_adc = imod.adc (cfg.adc_res)
+            adc_key = str('adc_' + i)
+
+            if adc_key in cfg.adc_res_new:
+                adc_res = cfg.adc_res_new[adc_key]
+            else:
+                adc_res = cfg.adc_res
+
+            temp_adc = imod.adc (adc_res)
             self.adc_list.append(temp_adc)
+        
+        # FIXME This is the option 2
+#        for i in xrange(cfg.num_matrix):
+#            temp_dict = {'f':[], 'b':[], 'd':[]}
+#            for key in temp_dict:
+#                if (key in ['f', 'b']):
+#                    # FIXME should we create a adc_array like dac_array object ?
+#                    # I am asking that because in dac_array we are sending the xbar_size. Do we need take a care with that in ADC?
+#                    # Does that impact in the number of ADC's? xbar_size and adc_res? or Does adc is used only for latency? 
+#                    if adc_key in cfg.adc_res_new:
+#                        adc_res = cfg.adc_res_new[adc_key]                    
+#                    else:
+#                        adc_res = cfg.adc_res
+#                    temp_adcArray = imod.adc (adc_res)
+#                    self.adc_list.append(temp_adcArray)
 
         # Instantiate sample and hold
         self.snh_list = []
@@ -730,7 +754,17 @@ class ima (object):
             # Cycle3 - SnA + xbar_outMem
             # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
             num_stage = 3
-            lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
+            #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
+            lat_temp = 0
+
+            for adc_temp in self.adc_list:
+                lat_temp = adc_temp.getLatency()
+                
+            # FIXME Do we need to sum all adc latencies or do we need to check what is the higher?
+            # FIXME Should we do a max operation between adc.getLatency and self.matrix_list[0]['f'][0].getIpLatency() ?
+            # FIXME do we will use this value (sum or higher) in the latency_ip operation below?
+            # FIXME Should we modify self.matrix_list[0]['f'][0].getIpLatency()? What values should be?
+
             #latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
             latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
             ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)

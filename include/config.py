@@ -33,8 +33,20 @@ xbar_bits = 2
 num_matrix = 2 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
-adc_res = 8
+# ADC configuration
+adc_res = 8 # around 4 to 8. this value should be
 num_adc = 2 * num_matrix
+
+# The idea is to have different ADC resolution value for each ADC.
+# The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
+adc_res_new = {
+                'adc_1' : 2,
+                'adc_2' : 4,
+                'adc_3' : 8,
+                'adc_4' : 8
+              }
+
+
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
@@ -42,7 +54,7 @@ instrnMem_size = 512 #in entries
 
 # This depends on above parameters
 datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
-phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar
+phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar #vaulue is 8
 lr = 0.25 # learning rate for updates to d-xbar
 
 ## Tile configurable parameters (permissible values for each parameter provided here)
