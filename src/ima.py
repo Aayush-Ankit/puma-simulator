@@ -105,8 +105,8 @@ class ima (object):
 #            for key in temp_dict:
 #                if (key in ['f', 'b']):
 #                    # FIXME should we create a adc_array like dac_array object ?
-#                    # I am asking that because in dac_array we are sending the xbar_size. Do we need take a care with that in ADC?
-#                    # Does that impact in the number of ADC's? xbar_size and adc_res? or Does adc is used only for latency? 
+#                    # FIXME I am asking that because in dac_array we are sending the xbar_size. Do we need take a care with that in ADC?
+#                    # FIXME Does that impact in the number of ADC's? xbar_size and adc_res? or Does adc is used only for latency? 
 #                    if adc_key in cfg.adc_res_new:
 #                        adc_res = cfg.adc_res_new[adc_key]                    
 #                    else:
@@ -756,6 +756,10 @@ class ima (object):
             num_stage = 3
             #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
             lat_temp = 0
+            #4 =2*2 (f & b)
+            #matrix to identify adc
+            # ps: we only count one time the adc_res, 
+            # Aa: one adc per matrix
 
             for adc_temp in self.adc_list:
                 lat_temp = adc_temp.getLatency()
