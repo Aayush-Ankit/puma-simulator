@@ -90,7 +90,7 @@ class ima (object):
         self.adc_list = []
         #for i in xrange(cfg.num_adc):
         for i in xrange(cfg.num_matrix):
-            adc_key = str('matrix_adc_' + i)
+            adc_key = 'matrix_adc_' + str(i)
 
             if adc_key in cfg.adc_res_new:
                 adc_res = cfg.adc_res_new[adc_key]
@@ -728,6 +728,7 @@ class ima (object):
             d_found = 0
             latency_out_list = []
             for idx, temp in enumerate(mask):
+                print("idx", idx)
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
                     #break
@@ -743,7 +744,7 @@ class ima (object):
                 num_stage = 3
                 #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
                 lat_temp = 0
-                lat_temp = self.self.adc_list[idx].getLatency()
+                lat_temp = self.adc_list[idx].getLatency()
                 latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
@@ -909,7 +910,7 @@ class ima (object):
         self.stage_done = one_list[:]
 
         #Initialize the instruction memory
-        dict_list = np.load(instrn_filepath)
+        dict_list = np.load(instrn_filepath, allow_pickle=True)
         self.instrnMem.load(dict_list)
 
         self.ldAccess_done = 0

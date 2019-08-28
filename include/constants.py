@@ -324,7 +324,7 @@ xbar_rd_lat = xbar_rd_lat
 xbar_wr_lat = xbar_wr_lat
 dac_lat = dac_lat_dict [str(cfg.dac_res)]
 #FIXME need to review it I can remove adc_lat property
-# adc_lat = adc_lat_dict [str(cfg.adc_res)]
+adc_lat = adc_lat_dict [str(cfg.adc_res)]
 xbar_inMem_lat = xbar_inMem_lat_dict[str(cfg.xbar_size)]
 xbar_outMem_lat = xbar_outMem_lat_dict[str(cfg.xbar_size)]
 instrnMem_lat =  instrnMem_lat_dict[str(cfg.instrnMem_size)]

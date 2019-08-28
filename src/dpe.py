@@ -100,7 +100,7 @@ class DPE:
         inp_tileId = 0
         assert (os.path.exists(inp_filename)
                 ), 'Input Error: Provide input before running the DPE'
-        inp = np.load(inp_filename).item()
+        inp = np.load(inp_filename, allow_pickle=True).item()
         print ('length of input data:', len(inp['data']))
         for i in range(len(inp['data'])):
             data = float2fixed(inp['data'][i], cfg.int_bits, cfg.frac_bits)

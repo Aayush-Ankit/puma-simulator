@@ -75,7 +75,7 @@ class tile (object):
     def tile_init (self, instrnpath, tracepath):
         # Initialize the tile instruction memory
         instrn_filepath = instrnpath + 'tile_imem' + '.npy'
-        dict_list = np.load(instrn_filepath)
+        dict_list = np.load(instrn_filepath, allow_pickle=True)
         self.instrn_memory.load (dict_list)
 
         # Initialize the IMAs and their trace file ids
