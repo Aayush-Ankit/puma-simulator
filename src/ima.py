@@ -90,7 +90,7 @@ class ima (object):
         self.adc_list = []
         for i in xrange(cfg.num_adc):
         # for i in xrange(cfg.num_matrix):
-            adc_key = 'matrix_adc_' + str(i//cfg.num_matrix)
+            adc_key = 'matrix_adc_' + str(i)
 
             if adc_key in cfg.adc_res_new:
                 adc_res = cfg.adc_res_new[adc_key]

@@ -41,8 +41,10 @@ num_adc = num_adc_per_matrix * num_matrix
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 adc_res_new = {
-                'matrix_adc_1' : 2,
-                'matrix_adc_2' : 4
+                'matrix_adc_0' : 8,
+                'matrix_adc_1' : 8,
+                'matrix_adc_2' : 8,
+                'matrix_adc_3' : 8
               }
 
 
@@ -93,7 +95,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 1 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
