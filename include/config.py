@@ -40,10 +40,8 @@ num_adc = 2 * num_matrix
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 adc_res_new = {
-                'adc_1' : 2,
-                'adc_2' : 4,
-                'adc_3' : 8,
-                'adc_4' : 8
+                'matrix_adc_1' : 2,
+                'matrix_adc_2' : 4
               }
 
 

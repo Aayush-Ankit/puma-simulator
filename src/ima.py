@@ -88,8 +88,9 @@ class ima (object):
         # num_adc is 2*num_matrix (no adc needed for delta xbar)
         # FIXME This is the option 1
         self.adc_list = []
-        for i in xrange(cfg.num_adc):
-            adc_key = str('adc_' + i)
+        #for i in xrange(cfg.num_adc):
+        for i in xrange(cfg.num_matrix):
+            adc_key = str('matrix_adc_' + i)
 
             if adc_key in cfg.adc_res_new:
                 adc_res = cfg.adc_res_new[adc_key]
@@ -98,21 +99,6 @@ class ima (object):
 
             temp_adc = imod.adc (adc_res)
             self.adc_list.append(temp_adc)
-        
-        # FIXME This is the option 2
-#        for i in xrange(cfg.num_matrix):
-#            temp_dict = {'f':[], 'b':[], 'd':[]}
-#            for key in temp_dict:
-#                if (key in ['f', 'b']):
-#                    # FIXME should we create a adc_array like dac_array object ?
-#                    # FIXME I am asking that because in dac_array we are sending the xbar_size. Do we need take a care with that in ADC?
-#                    # FIXME Does that impact in the number of ADC's? xbar_size and adc_res? or Does adc is used only for latency? 
-#                    if adc_key in cfg.adc_res_new:
-#                        adc_res = cfg.adc_res_new[adc_key]                    
-#                    else:
-#                        adc_res = cfg.adc_res
-#                    temp_adcArray = imod.adc (adc_res)
-#                    self.adc_list.append(temp_adcArray)
 
         # Instantiate sample and hold
         self.snh_list = []
@@ -740,7 +726,8 @@ class ima (object):
             #Parse out the mask to find if f/b/d xbars operations will be computed
             fb_found = 0
             d_found = 0
-            for temp in mask:
+            latency_out_list = []
+            for idx, temp in enumerate(mask):
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
                     #break
@@ -748,41 +735,29 @@ class ima (object):
                     d_found += 1
                     #break
 
-            ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
-            # Cycle1 - xbar_inMem + DAC + XBar
-            # Cycle2 - SnH + ADC
-            # Cycle3 - SnA + xbar_outMem
-            # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
-            num_stage = 3
-            #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
-            lat_temp = 0
-            #4 =2*2 (f & b)
-            #matrix to identify adc
-            # ps: we only count one time the adc_res, 
-            # Aa: one adc per matrix
-
-            for adc_temp in self.adc_list:
-                lat_temp = adc_temp.getLatency()
-                
-            # FIXME Do we need to sum all adc latencies or do we need to check what is the higher?
-            # FIXME Should we do a max operation between adc.getLatency and self.matrix_list[0]['f'][0].getIpLatency() ?
-            # FIXME do we will use this value (sum or higher) in the latency_ip operation below?
-            # FIXME Should we modify self.matrix_list[0]['f'][0].getIpLatency()? What values should be?
-
-            #latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
-            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
-            ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
-            num_phase = 4
-            lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
-            #latency_op = lat_temp * num_phase * d_found
-            latency_op = lat_temp * num_phase * float(int(d_found>0))
-            ## output latency should be the max of ip/op operation
-            latency_out = max(latency_ip, latency_op)
-            print ("Mask", mask)
-            print ("Latency IP", latency_ip)
-            print ("Latency OP", latency_op)
-            return latency_out
-
+                ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
+                # Cycle1 - xbar_inMem + DAC + XBar
+                # Cycle2 - SnH + ADC
+                # Cycle3 - SnA + xbar_outMem
+                # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
+                num_stage = 3
+                #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
+                lat_temp = 0
+                lat_temp = self.self.adc_list[idx].getLatency()
+                latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
+                ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
+                num_phase = 4
+                lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
+                #latency_op = lat_temp * num_phase * d_found
+                latency_op = lat_temp * num_phase * float(int(d_found>0))
+                ## output latency should be the max of ip/op operation
+                latency_out = max(latency_ip, latency_op)
+                print ("Mask", mask)
+                print ("Latency IP", latency_ip)
+                print ("Latency OP", latency_op)
+                print ("latency_out", latency_out)
+                latency_out_list.append(latency_out)
+            return max(latency_out_list)
 
         # State machine runs only if the stage is non-empty
         # Describe the functionality on a cycle basis
