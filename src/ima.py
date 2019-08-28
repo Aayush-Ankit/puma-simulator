@@ -88,9 +88,9 @@ class ima (object):
         # num_adc is 2*num_matrix (no adc needed for delta xbar)
         # FIXME This is the option 1
         self.adc_list = []
-        #for i in xrange(cfg.num_adc):
-        for i in xrange(cfg.num_matrix):
-            adc_key = 'matrix_adc_' + str(i)
+        for i in xrange(cfg.num_adc):
+        # for i in xrange(cfg.num_matrix):
+            adc_key = 'matrix_adc_' + str(i//cfg.num_matrix)
 
             if adc_key in cfg.adc_res_new:
                 adc_res = cfg.adc_res_new[adc_key]
@@ -744,6 +744,8 @@ class ima (object):
                 num_stage = 3
                 #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
                 lat_temp = 0
+                # We assume all ADCs in a matrix has the same resolution
+                adc_idx = idx*cfg.num_adc_per_matrix
                 lat_temp = self.adc_list[idx].getLatency()
                 latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)

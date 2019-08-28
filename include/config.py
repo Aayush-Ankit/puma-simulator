@@ -35,7 +35,8 @@ xbar_size = 128
 dac_res = 1
 # ADC configuration
 adc_res = 8 # around 4 to 8. this value should be
-num_adc = 2 * num_matrix
+num_adc_per_matrix = 2
+num_adc = num_adc_per_matrix * num_matrix
 
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
