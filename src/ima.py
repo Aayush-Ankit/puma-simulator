@@ -73,7 +73,7 @@ class ima (object):
         # Instantiate DACs
         self.dacArray_list = [] # list of dicts
         # each matrix will have mutiple dac_arrays for each of its mvmu (f,b,d)
-        for i in xrange(cfg.num_matrix):
+        for i in range(cfg.num_matrix):
             temp_dict = {'f':[], 'b':[], 'd_r':[], 'd_c':[]} # separate dac_array for delta xbar row and columns
             for key in temp_dict:
                 if (key in ['f', 'b', 'd_r']):
@@ -88,7 +88,7 @@ class ima (object):
         # num_adc is 2*num_matrix (no adc needed for delta xbar)
         # FIXME This is the option 1
         self.adc_list = []
-        for i in xrange(cfg.num_adc):
+        for i in range(cfg.num_adc):
             adc_key = str('adc_' + i)
 
             if adc_key in cfg.adc_res_new:
@@ -737,51 +737,33 @@ class ima (object):
 
         # Computes the latency for mvm instruction based on DPE configuration
         def xbComputeLatency (self, mask):
-            #Parse out the mask to find if f/b/d xbars operations will be computed
+            latency_out_list = []
             fb_found = 0
             d_found = 0
-            for temp in mask:
+            for idx, temp in enumerate(mask):
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
                     #break
                 if (temp[2] == '1'):
                     d_found += 1
                     #break
-
-            ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
-            # Cycle1 - xbar_inMem + DAC + XBar
-            # Cycle2 - SnH + ADC
-            # Cycle3 - SnA + xbar_outMem
-            # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
-            num_stage = 3
-            #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
-            lat_temp = 0
-            #4 =2*2 (f & b)
-            #matrix to identify adc
-            # ps: we only count one time the adc_res, 
-            # Aa: one adc per matrix
-
-            for adc_temp in self.adc_list:
-                lat_temp = adc_temp.getLatency()
-                
-            # FIXME Do we need to sum all adc latencies or do we need to check what is the higher?
-            # FIXME Should we do a max operation between adc.getLatency and self.matrix_list[0]['f'][0].getIpLatency() ?
-            # FIXME do we will use this value (sum or higher) in the latency_ip operation below?
-            # FIXME Should we modify self.matrix_list[0]['f'][0].getIpLatency()? What values should be?
-
-            #latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
-            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
-            ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
-            num_phase = 4
-            lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
-            #latency_op = lat_temp * num_phase * d_found
-            latency_op = lat_temp * num_phase * float(int(d_found>0))
-            ## output latency should be the max of ip/op operation
-            latency_out = max(latency_ip, latency_op)
-            print ("Mask", mask)
-            print ("Latency IP", latency_ip)
-            print ("Latency OP", latency_op)
-            return latency_out
+        
+                num_stage = 3
+                lat_temp = 0
+                lat_temp = self.self.adc_list[idx].getLatency()
+                latency_ip =  lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
+        
+                num_phase = 4
+                lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
+        
+                latency_op = lat_temp * num_phase * float(int(d_found>0))
+        
+                print ("Mask", mask)
+                print ("Latency IP", latency_ip)
+                print ("Latency OP", latency_op)
+                latency_out_list.append(max(latency_ip, latency_op))
+        
+            return max(latency_out_list
 
 
         # State machine runs only if the stage is non-empty
