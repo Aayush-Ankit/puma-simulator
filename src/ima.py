@@ -73,7 +73,7 @@ class ima (object):
         # Instantiate DACs
         self.dacArray_list = [] # list of dicts
         # each matrix will have mutiple dac_arrays for each of its mvmu (f,b,d)
-        for i in xrange(cfg.num_matrix):
+        for i in range(cfg.num_matrix):
             temp_dict = {'f':[], 'b':[], 'd_r':[], 'd_c':[]} # separate dac_array for delta xbar row and columns
             for key in temp_dict:
                 if (key in ['f', 'b', 'd_r']):
@@ -723,7 +723,7 @@ class ima (object):
 
         # Computes the latency for mvm instruction based on DPE configuration
         def xbComputeLatency (self, mask):
-            #Parse out the mask to find if f/b/d xbars operations will be computed
+            latency_out_list = []
             fb_found = 0
             d_found = 0
             latency_out_list = []
