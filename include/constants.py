@@ -144,11 +144,11 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
                  '16': 1.67 * 10**(-7)}
 
 # ADC - Discuss exact values with ISSAC authors
-adc_lat_dict = {'1' : 100,
-                '2' : 200,
-                '4' : 400,
+adc_lat_dict = {'1' : 12.5,
+                '2' : 25,
+                '4' : 50,
                 '8' : 100,
-                '16': 1600}
+                '16': 200}
 
 adc_pow_dyn_dict = {'1' : 1.8,
                     '2' : 1.8,

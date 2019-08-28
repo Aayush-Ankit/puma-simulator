@@ -97,6 +97,9 @@ class ima (object):
             else:
                 adc_res = cfg.adc_res
 
+            print("adc_key",adc_key)
+            print("adc_res",adc_res)
+
             temp_adc = imod.adc (adc_res)
             self.adc_list.append(temp_adc)
 
@@ -746,7 +749,15 @@ class ima (object):
                 lat_temp = 0
                 # We assume all ADCs in a matrix has the same resolution
                 adc_idx = idx*cfg.num_adc_per_matrix
-                lat_temp = self.adc_list[idx].getLatency()
+                lat_temp = self.adc_list[adc_idx].getLatency()
+                '''
+                print("adc_idx", adc_idx)
+                print("lat_temp", lat_temp)
+                print("self.adc_list[adc_idx].adc_res", self.adc_list[adc_idx].adc_res)
+                for adccccc in self.adc_list:
+                    print("adccccc.adc_res", adccccc.adc_res)
+                print("---")
+                '''
                 latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
