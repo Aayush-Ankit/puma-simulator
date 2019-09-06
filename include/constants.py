@@ -108,7 +108,8 @@ xbar_op_lat = 20.0*12.8 # with 4 VFUs
 xbar_op_pow = 4.44 * 3.27 / (12.8)
 
 xbar_ip_lat = 100.0
-xbar_ip_pow = (1.37*2.0)
+#xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
+xbar_ip_pow = (1.37*2.0) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
