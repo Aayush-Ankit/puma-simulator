@@ -33,8 +33,22 @@ xbar_bits = 2
 num_matrix = 2 # each matrix is 8-fw xbars, 8-bw xbars and 16-delta xbars
 xbar_size = 128
 dac_res = 1
-adc_res = 8
-num_adc = 2 * num_matrix
+# ADC configuration
+adc_res = 8 # around 4 to 8. this value should be
+num_adc_per_matrix = 2
+num_adc = num_adc_per_matrix * num_matrix
+
+# The idea is to have different ADC resolution value for each ADC.
+# The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
+# NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
+adc_res_new = {
+                'matrix_adc_0' : 8,
+                'matrix_adc_1' : 4,
+                'matrix_adc_2' : 8,
+                'matrix_adc_3' : 4
+              }
+
+
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
@@ -42,7 +56,7 @@ instrnMem_size = 512 #in entries
 
 # This depends on above parameters
 datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
-phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar
+phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar #vaulue is 8
 lr = 0.25 # learning rate for updates to d-xbar
 
 ## Tile configurable parameters (permissible values for each parameter provided here)
@@ -82,7 +96,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 2 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005

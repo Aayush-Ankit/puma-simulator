@@ -16,6 +16,7 @@ from data_convert import *
 phy2log_ratio = cfg.phy2log_ratio # ratio of physical to logical xbar
 # datamem_off is the start of address sapce of datamemory
 datamem_off = cfg.datamem_off # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+my_xbar_count = 0
 
 class ima (object):
 
@@ -58,7 +59,6 @@ class ima (object):
                         temp_xbar = imod.xbar_op (cfg.xbar_size)
                     temp_list_xbar.append (temp_xbar)
                 temp_xbar_dict[key] = temp_list_xbar
-
                 # assign input memory to mvmu
                 temp_inMem_dict[key] = imod.xb_inMem (cfg.xbar_size)
 
@@ -69,10 +69,11 @@ class ima (object):
             self.xb_inMem_list.append(temp_inMem_dict)
             self.xb_outMem_list.append(temp_outMem_dict)
 
+
         # Instantiate DACs
         self.dacArray_list = [] # list of dicts
         # each matrix will have mutiple dac_arrays for each of its mvmu (f,b,d)
-        for i in xrange(cfg.num_matrix):
+        for i in range(cfg.num_matrix):
             temp_dict = {'f':[], 'b':[], 'd_r':[], 'd_c':[]} # separate dac_array for delta xbar row and columns
             for key in temp_dict:
                 if (key in ['f', 'b', 'd_r']):
@@ -85,9 +86,21 @@ class ima (object):
 
         # Instatiate ADCs
         # num_adc is 2*num_matrix (no adc needed for delta xbar)
+        # FIXME This is the option 1
         self.adc_list = []
         for i in xrange(cfg.num_adc):
-            temp_adc = imod.adc (cfg.adc_res)
+        # for i in xrange(cfg.num_matrix):
+            adc_key = 'matrix_adc_' + str(i)
+
+            if adc_key in cfg.adc_res_new:
+                adc_res = cfg.adc_res_new[adc_key]
+            else:
+                adc_res = cfg.adc_res
+
+            print("adc_key",adc_key)
+            print("adc_res",adc_res)
+
+            temp_adc = imod.adc (adc_res)
             self.adc_list.append(temp_adc)
 
         # Instantiate sample and hold
@@ -713,10 +726,12 @@ class ima (object):
 
         # Computes the latency for mvm instruction based on DPE configuration
         def xbComputeLatency (self, mask):
-            #Parse out the mask to find if f/b/d xbars operations will be computed
+            latency_out_list = []
             fb_found = 0
             d_found = 0
-            for temp in mask:
+            latency_out_list = []
+            for idx, temp in enumerate(mask):
+                print("idx", idx)
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
                     #break
@@ -724,27 +739,39 @@ class ima (object):
                     d_found += 1
                     #break
 
-            ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
-            # Cycle1 - xbar_inMem + DAC + XBar
-            # Cycle2 - SnH + ADC
-            # Cycle3 - SnA + xbar_outMem
-            # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
-            num_stage = 3
-            lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
-            #latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * fb_found
-            latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
-            ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
-            num_phase = 4
-            lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
-            #latency_op = lat_temp * num_phase * d_found
-            latency_op = lat_temp * num_phase * float(int(d_found>0))
-            ## output latency should be the max of ip/op operation
-            latency_out = max(latency_ip, latency_op)
-            print ("Mask", mask)
-            print ("Latency IP", latency_ip)
-            print ("Latency OP", latency_op)
-            return latency_out
-
+                ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
+                # Cycle1 - xbar_inMem + DAC + XBar
+                # Cycle2 - SnH + ADC
+                # Cycle3 - SnA + xbar_outMem
+                # The above pipeline is valid for one ADC per physical xbar only !! (Update for other cases, if required)
+                num_stage = 3
+                #lat_temp = self.matrix_list[0]['f'][0].getIpLatency() # due to xbar access
+                lat_temp = 0
+                # We assume all ADCs in a matrix has the same resolution
+                adc_idx = idx*cfg.num_adc_per_matrix
+                lat_temp = self.adc_list[adc_idx].getLatency()
+                '''
+                print("adc_idx", adc_idx)
+                print("lat_temp", lat_temp)
+                print("self.adc_list[adc_idx].adc_res", self.adc_list[adc_idx].adc_res)
+                for adccccc in self.adc_list:
+                    print("adccccc.adc_res", adccccc.adc_res)
+                print("---")
+                '''
+                latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
+                ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
+                num_phase = 4
+                lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
+                #latency_op = lat_temp * num_phase * d_found
+                latency_op = lat_temp * num_phase * float(int(d_found>0))
+                ## output latency should be the max of ip/op operation
+                latency_out = max(latency_ip, latency_op)
+                print ("Mask", mask)
+                print ("Latency IP", latency_ip)
+                print ("Latency OP", latency_op)
+                print ("latency_out", latency_out)
+                latency_out_list.append(latency_out)
+            return max(latency_out_list)
 
         # State machine runs only if the stage is non-empty
         # Describe the functionality on a cycle basis
@@ -896,7 +923,7 @@ class ima (object):
         self.stage_done = one_list[:]
 
         #Initialize the instruction memory
-        dict_list = np.load(instrn_filepath)
+        dict_list = np.load(instrn_filepath, allow_pickle=True)
         self.instrnMem.load(dict_list)
 
         self.ldAccess_done = 0

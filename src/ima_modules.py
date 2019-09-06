@@ -218,7 +218,7 @@ class adc (object):
         self.num_access = 0
 
         # define latency
-        self.latency = param.adc_lat
+        self.latency = param.adc_lat_dict[str(adc_res)]
 
         self.adc_res = adc_res
 
