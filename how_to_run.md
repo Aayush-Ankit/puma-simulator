@@ -61,7 +61,7 @@ make <lstm-layer>.test       # Compile a specific example (make <example-name>.t
 ```
 ./<lstm-model>.test          # Execute a specific example (./<example-name>.test)
 ```
-### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` file to compiler test folder where the ```.npy``` files are generated.
+### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py`` files to compiler test folder where the ```.npy``` files are generated.
 
 ### 6. Update the SIMULATOR_PATH for the path to the Puma Simulator;
 
@@ -71,7 +71,7 @@ make <lstm-layer>.test       # Compile a specific example (make <example-name>.t
 ```
 #### 6.2 - Copy the <example> folder that was generated and paste into the Puma Simulator:
 ```
-cp -R <example-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
+cp -R <new-generated-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
 ```
 
 #### 6.3 - Update in the ```config.py``` file (puma-simulator/include/) the number of tiles according to the quantity that was generated in your example model.
