@@ -1,0 +1,2 @@
+Tile ran for 25402 cycles
+cycle: 25402   |   instrn: halt   |   addr: 0   |   vtileId: 0   |   ima_halt_list: [1, 1, 1, 1, 1, 1, 1, 1]

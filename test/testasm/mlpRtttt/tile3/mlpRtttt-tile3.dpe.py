@@ -1,0 +1,55 @@
+
+import sys, os
+import numpy as np
+import math
+sys.path.insert (0, '/home/plinio/dpe_emulate/include/')
+sys.path.insert (0, '/home/plinio/dpe_emulate/src/')
+from data_convert import *
+from instrn_proto import *
+from tile_instrn_proto import *
+dict_temp = {}
+dict_list = []
+i_temp = i_receive(mem_addr=90, vtile_id=2, receive_width=10, counter=1, vec=2)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=110, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=238, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=366, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=494, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=622, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=750, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=878, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1006, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1134, vtile_id=0, receive_width=10, counter=1, vec=1)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1144, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1272, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1400, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1528, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1656, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1784, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=1912, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=2040, vtile_id=0, receive_width=16, counter=1, vec=8)
+dict_list.append(i_temp.copy())
+i_temp = i_receive(mem_addr=2168, vtile_id=0, receive_width=10, counter=1, vec=1)
+dict_list.append(i_temp.copy())
+i_temp = i_send(mem_addr=2178, vtile_id=3, send_width=10, target_addr=1, vec=4)
+dict_list.append(i_temp.copy())
+i_temp = i_halt()
+dict_list.append(i_temp.copy())
+filename = 'mlpRtttt/tile3/tile_imem.npy'
+np.save(filename, dict_list)

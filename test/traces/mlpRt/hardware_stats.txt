@@ -1,0 +1,42 @@
+Access and energy distribution of dynamic energy: 
+Component                 num_access              percent
+tile_control                25341                 0.37 %
+edctrl                      3813                  0.54 %
+xbOutmem                    32858                 1.57 %
+edram_bus                   3879                  3.48 %
+edram                       3879                  9.98 %
+adc                         131072                70.6 %
+imem_t                      11                    0.00 %
+noc_inter                   0                     0.0 %
+core_control                10156                 0.75 %
+mux2                        65536                 0.0 %
+mux1                        131072                0.0 %
+xbInmem_wr                  1024                  0.04 %
+alu_sna                     147456                1.98 %
+dac                         16384                 0.01 %
+noc_intra                   192                   0.92 %
+xbar                        1024                  9.19 %
+alu_mul                     0                     0.0 %
+snh                         131072                0.00 %
+dmem                        316                   0.03 %
+imem                        61                    0.02 %
+alu_act                     10                    0.00 %
+edctrl_counter              72                    0.01 %
+xbInmem_rd                  128                   0.06 %
+alu_other                   80                    0.00 %
+alu_div                     0                     0.0 %
+rbuff                       130                   0.34 %
+
+leakage_energy(J): 1.25903095225e-07
+dynamic_energy(J): 3.34151429328e-07
+total_energy(J): 4.60054524553e-07
+leakage_power(mW): 35.2134024326
+average_power(mW): 45.2898724703
+peak_power(mW): 378.828896352
+node_area(mm^2): 108.428746435
+tile_area(mm^2): 0.497468728781
+core_area(mm^2): 0.0363719532947
+cycles: 10158
+time(sec): 1.0158e-05
+network_packet_inj_rate: 3.86746547408e-05
+num_tiles: 1
