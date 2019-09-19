@@ -5,7 +5,7 @@ Below you will find some information on how to use the PUMA Compiler and Simulat
 | Requirement | Version                    |
 | ----------- | -------------------------- |
 | OS: Ubuntu  | 16.04.3 LTS (Xenial Xerus) |
-| Python      | 2.7.12      
+| Python      | 2.7.12
 
 
 ### 1. Create puma folder and change to the folder:
@@ -42,10 +42,10 @@ pip --proxy $http_proxy install ...``` instead.
 
 ### 4. Go to the source Puma Compiler:
 
-#### 4.1 - Clean compilation/emulation artifacts:
+#### 4.1 - Setup compiler:
 ```
 cd src/
-make clean
+make
 ```
 #### 4.2 - Go to de /test and set up environment to point to libpuma.so:
 ```
@@ -71,7 +71,7 @@ make <lstm-layer>.test       # Compile a specific example (make <example-name>.t
 ```
 #### 6.2 - Copy the <example> folder that was generated and paste into the Puma Simulator:
 ```
-cp -R large <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
+cp -R <example-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
 ```
 
 #### 6.3 - Update in the ```config.py``` file (puma-simulator/include/) the number of tiles according to the quantity that was generated in your example model.
@@ -87,7 +87,7 @@ num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dumm
 ```
 cd "PATH TO PUMA SIMULATOR"/src
 
-python dpe.py -n lstm           
+python dpe.py -n lstm
 ```
 
 ### 8. Then, you should see some results like:
@@ -113,7 +113,7 @@ cd puma-simulator/test/traces/lstm
 ```
 ####  ```hardware_stats.txt```
 ```
-Access and energy distribution of dynamic energy: 
+Access and energy distribution of dynamic energy:
 Component                 num_access              percent
 tile_control                5751403               0.60 %
 edctrl                      405611                0.40 %
