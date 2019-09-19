@@ -233,14 +233,14 @@ class adc (object):
         return ('0'*(num_bits - len(bin_value)) + bin_value)
 
     def propagate (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         assert (type(inp) in [float, np.float32, np.float64]), 'adc input type mismatch (float, np.float32, np.float64 expected)'
         num_bits = self.adc_res
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
