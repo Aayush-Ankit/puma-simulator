@@ -43,8 +43,11 @@ pip --proxy $http_proxy install ...``` instead.
 ### 4. Go to the source Puma Compiler:
 
 #### 4.1 - Setup compiler:
-```
+
 cd src/
+
+#### 4.1.1  For inference set N_TRAINING_MVMUS_PER_CORE to 0 and N_CONSTANT_MVMUS_PER_CORE to 2 in src/common.h
+```
 make
 ```
 #### 4.2 - Go to de /test and set up environment to point to libpuma.so:
@@ -53,15 +56,21 @@ cd test/
 export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 ```
 #### 4.3 - Compile the examples:
+### To run with weights, train a model in any deep-learning framework (like py-torch or tensorflow) to get the weights.
+### A "name of model".cpp file and a weights folder is required in the Puma Compiler /test.
+### A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test as a template which needs to be copied to Puma Compiler/test or
+### Create your model.cpp (which will have same configuration as the one used to get weights in pytorch)  and weights folder (obtained from pytorch) in Puma Compiler/test
 ```
+
 make                           # Compile all examples
-make <lstm-layer>.test       # Compile a specific example (make <example-name>.test)
-```
+make <lstm-layer>.test       # Compile a specific example (make <mlp_l4_mnist>.test)
+
+
 #### 4.4 - Execute the examples to generate the PUMA assembly code:
 ```
-./<lstm-model>.test          # Execute a specific example (./<example-name>.test)
+./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
 ```
-### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py``` files to compiler test folder where the ```.npy``` files are generated.
+### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
 
 ### 6. Update the SIMULATOR_PATH for the path to the Puma Simulator;
 
@@ -75,6 +84,7 @@ cp -R <new-generated-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testas
 ```
 
 #### 6.3 - Update in the ```config.py``` file (puma-simulator/include/) the number of tiles according to the quantity that was generated in your example model.
+#### 6.3.1 For inference, in ```config.py``` file, (puma-simulator/include/) set num_matrix according to N_CONSTANT_MVMUS_PER_CORE in compiler src/common.h (for now it is 2 in both)
 #### For example: Tiles generated from the ```lstm-layer.cpp``` model, a total of 25 tiles:
 ```
 # Change here - Specify the Node parameters here
@@ -88,6 +98,11 @@ num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dumm
 cd "PATH TO PUMA SIMULATOR"/src
 
 python dpe.py -n lstm
+
+can also specify num_tile_compute using the t flag in console
+
+python dpe.py -n lstm -t 25
+python dpe.py -n mlp -t 7 
 ```
 
 ### 8. Then, you should see some results like:
