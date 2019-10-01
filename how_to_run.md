@@ -176,3 +176,7 @@ network packet injection rate: 0.000274674783037
 number of tiles mapped: 23
 ```
 #### In the  archive```output.txt``` EDRAM contents will be saved.
+
+###to run Regression Test after running with weights for inference, go to simulator/test
+
+python reg_test_1.py -n mlp
