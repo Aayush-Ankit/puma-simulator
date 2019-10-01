@@ -6,8 +6,8 @@
 import sys
 
 import numpy as np
-import constants as param
-import config as cfg
+import include.constants as param
+import include.config as cfg
 import math
 from data_convert import *
 
@@ -233,14 +233,14 @@ class adc (object):
         return ('0'*(num_bits - len(bin_value)) + bin_value)
 
     def propagate (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         assert (type(inp) in [float, np.float32, np.float64]), 'adc input type mismatch (float, np.float32, np.float64 expected)'
         num_bits = self.adc_res
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
@@ -649,7 +649,7 @@ class mem_interface (object):
         self.rd_width = 0
         self.addr = 0 # add sent by ima to mem controller
         self.ramload = 0 # data (for LD) sent by edram to ima
-        self.ramstore = 0 # data (for ST) sent by ima to men controller
+        self.ramstore = 0 # data (for ST) sent by ima to mem controller
 
         ## For DEBUG of IMA only - define a memory element and preload some values
         #self.edram = memory (cfg.dataMem_size, 0)

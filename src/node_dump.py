@@ -21,14 +21,17 @@ def mem_dump (fid, memfile, name, node = '', tile_id = ''):
         # to print in float format
         if (memfile[addr] != ''):
             temp_val = fixed2float (memfile[addr], cfg.int_bits, cfg.frac_bits)
-            # use this for debugging/viewing addresses
-            #temp_val = bin2int (memfile[addr], cfg.num_bits)
-        #else: # not printing zero values for ease of view
-        #    temp_val = 0.0
             if (name == 'EDRAM' and (node != '') and (tile_id != '')): # for EDRAM also show counter/valid
                 fid.write ('valid: ' + str(node.tile_list[tile_id].edram_controller.valid[addr]) \
-                        + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
+                    + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
+                fid.write(str(temp_val) + '\n')
+            # use this for debugging/viewing addresses
+            #temp_val = bin2int (memfile[addr], cfg.num_bits)
+        else: # not printing zero values for ease of view
+            temp_val = 0.0
+        if (name != 'EDRAM'):
             fid.write(str(temp_val) + '\n')
+
 
 def node_dump (node, filepath = ''):
     assert (filepath != ''), 'Debug flag is set, filepath cannot be nil'
@@ -53,10 +56,10 @@ def node_dump (node, filepath = ''):
                 for mvmu_t in mvmu_list:
                     # dump the xbar input memory
                     mem_dump (fid, node.tile_list[i].ima_list[j].xb_inMem_list[k][mvmu_t].memfile, \
-                            'Xbar Input Memory: matrixId: ' + str(k) + 'mvmu_type: ' + mvmu_t, 'Xbar Input Memory')
+                            'Xbar Input Memory: imaId:'+ str(j) +' matrixId:' + str(k) + ' mvmu_type:' + mvmu_t, 'Xbar Input Memory')
                     # dump the xbar output memory
                     mem_dump (fid, node.tile_list[i].ima_list[j].xb_outMem_list[k][mvmu_t].memfile, \
-                            'Xbar Output Memory: matrixId: ' + str(k) + 'mvmu_type: ' + mvmu_t, 'Xbar Output Memory')
+                            'Xbar Output Memory: imaId:'+ str(j) +' matrixId:' + str(k) + ' mvmu_type:' + mvmu_t, 'Xbar Output Memory')
 
         fid.close()
 
