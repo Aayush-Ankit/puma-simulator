@@ -83,7 +83,7 @@ class RegTest1:
                         #import pdb; pdb.set_trace()
                         err = np.tanh(out_gold) - np.tanh(out_exp)
 
-                        print("error for Tile " + str(i) + " , Core " + str(j) + " , Matrix " +str(k) + " has mean " + str(np.average(err)) + " and stdev " + str(np.std(err))) 
+                        print("error for Tile " + str(i) + " , Core " + str(j) + " , Matrix " + str(k) + " has mean " + str(np.average(err)) + " and stdev " + str(np.std(err))) 
                         
                         avg_mean_err += np.average(err)
                         avg_stdev_err += np.std(err)
