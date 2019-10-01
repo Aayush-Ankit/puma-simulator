@@ -73,6 +73,7 @@ make <lstm-layer>.test       # Compile a specific example (make <mlp_l4_mnist>.t
 ### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
 
 ### 6. Update the SIMULATOR_PATH  in ```generate-py.sh``` and ```populate.py``` for the path to the Puma Simulator;
+#### 6.0 In simulator/src/instrn_proto.py, use the appropriate block of i_mvm. See comments in the code.
 
 #### 6.1 - Execute and generate .npy archives:
 ```
