@@ -12,6 +12,8 @@ sys.path.insert(0, test_dir)
 trace_dir = os.path.join(root_dir, "test/traces")
 sys.path.insert(0, trace_dir)
 
+sys.path.insert(0, os.path.join(root_dir, "include"))
+
 from src.data_convert import *
 import src.ima as ima
 from src.instrn_proto import *
