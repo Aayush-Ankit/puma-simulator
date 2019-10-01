@@ -2,9 +2,11 @@
 ## All user specified parameters are provided by this file only
 
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
-cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
+cycles_max = 500000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
+inference =1
+# training = 0
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16
@@ -55,7 +57,11 @@ dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
 instrnMem_size = 512 #in entries
 
 # This depends on above parameters
-datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+if(not inference):
+  datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
+if(inference):
+  datamem_off = xbar_size * (num_matrix*2) # each matrix has 2 memory spaces (for f only)
+# datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
 phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar #vaulue is 8
 lr = 0.25 # learning rate for updates to d-xbar
 
@@ -96,7 +102,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 7 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
