@@ -107,6 +107,13 @@ class tile (object):
 
     ### Simulate one cycle exectution of all IMAs (which have't halted) & their EDRAM interactions
     def tile_compute (self, cycle):
+        #print('AHA Tile Compute')
+        #for j in range(cfg.num_ima):
+        #        for k in range(cfg.num_matrix):
+        #            for l in range(cfg.phy2log_ratio):
+        #                print(self.ima_list[j].matrix_list[k]['f'][l].get_value())
+
+
         ## Simulate a cycle if IMA(s) that haven't halted
         if (not all(self.halt_list)): # A tile halts whwn all IMAs (within the tile) halt
             for i in range (cfg.num_ima):
@@ -354,6 +361,15 @@ class tile (object):
                 self.stall = 1
 
         ## simulate a cycle of ima execution based on current state of self.ima_nma
+
+        #print('AHA Tile')
+        #for j in range(cfg.num_ima):
+        #        for k in range(cfg.num_matrix):
+        #            for l in range(cfg.phy2log_ratio):
+        #                print(self.ima_list[j].matrix_list[k]['b'][l].get_value())
+
+       # import pdb ; pdb.set_trace()
+        
         self.tile_compute (cycle)
 
         ## for DEBUG only
