@@ -1,7 +1,7 @@
 # Copy this file to compiler test folder where the .npy files are generated.
 # Update SIMULATOR_PATH value and execute it.
 
-SIMULATOR_PATH="" # simulator root path
+SIMULATOR_PATH="/local/scratch/a/sanyals/pumafork/puma-simulator" # simulator root path
 
 if [[ $SIMULATOR_PATH == "" ]] ; then
     print "Error, missing simulator path."
@@ -53,3 +53,5 @@ done
 cp input.py $dataset/input.py
 cd $dataset
 $PYTHON input.py
+cd ..
+$PYTHON populate.py
