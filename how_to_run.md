@@ -57,8 +57,8 @@ export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 ```
 #### 4.3 - Compile the examples:
 ### To run with weights, train a model in any deep-learning framework (like py-torch or tensorflow) to get the weights.
-### A "name of model".cpp file and a weights folder is required in the Puma Compiler /test.
-### A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test as a template which needs to be copied to Puma Compiler/test or
+### A "name of model".cpp file and a weights folder is required in the Puma Compiler /test/.
+### A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test/mnist_l4_mnist/ as a template which needs to be copied to Puma Compiler/test or
 ### Create your model.cpp (which will have same configuration as the one used to get weights in pytorch)  and weights folder (obtained from pytorch) in Puma Compiler/test
 ```
 
@@ -70,7 +70,7 @@ make <lstm-layer>.test       # Compile a specific example (make <mlp_l4_mnist>.t
 ```
 ./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
 ```
-### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
+### 5. Access the Puma Simulator test/utils folder and copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
 
 ### 6. Update the SIMULATOR_PATH  in ```generate-py.sh``` and ```populate.py``` for the path to the Puma Simulator;
 #### 6.0 In simulator/src/instrn_proto.py, use the appropriate block of i_mvm. See comments in the code.
@@ -178,6 +178,6 @@ number of tiles mapped: 23
 ```
 #### In the  archive```output.txt``` EDRAM contents will be saved.
 
-###to run Regression Test after running with weights for inference, go to simulator/test
+###to run Regression Test after running with weights for inference, go to simulator/test/val
 
 python reg_test_1.py -n mlp
