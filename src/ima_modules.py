@@ -13,7 +13,7 @@ from data_convert import *
 
 
 class xbar (object):
-    def __init__ (self, xbar_size, xbar_value = 'nil'):
+    def __init__ (self, xbar_size, xbar_value= 'nil' ):
         # define num_accesses for different operations
         self.num_access = 0 # parallel reads (inner-product)
         self.num_access_rd = 0 # serial reads
@@ -36,9 +36,13 @@ class xbar (object):
         # xbar output currents are recorded fro analysis of applicable
         self.xb_record = []
 
+
     # Records the xbar currents
     def record (self, xb_out):
         self.xb_record.append(xb_out)
+
+    def get_value(self):
+        print(self.xbar_value)
 
     # programs the entire xbar during configuration phase
     def program (self, xbar_value = ''):
@@ -81,7 +85,9 @@ class xbar (object):
         self.num_access += 1
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
-        return np.dot(inp, self.xbar_value)
+        out = np.dot(inp, self.xbar_value)
+        self.record(out)
+        return out
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp = 'nil'):
@@ -97,6 +103,7 @@ class xbar (object):
             inp_float[i] = fixed2float(temp_inp, cfg.int_bits, cfg.frac_bits)
         inp_float = np.asarray (inp_float)
         out_float = np.dot(inp_float, self.xbar_value)
+        
 
         # record xbar_i if applicable
         if (cfg.xbar_record):
@@ -164,7 +171,7 @@ class dac (object):
         return analog_max * frac
 
     def propagate (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         if (inp == ''):
             inp = '0' * cfg.dac_res
         assert ((type(inp) == str) and (len(inp) == self.dac_res)), 'dac input type/size (bits) mismatch (string expected)'
@@ -240,7 +247,7 @@ class adc (object):
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp):
-        self.num_access += 1
+        #self.num_access += 1
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)

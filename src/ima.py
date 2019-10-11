@@ -6,7 +6,7 @@ import sys, json
 # import dependancy files
 import numpy as np
 import math
-import config as cfg
+import include.config as cfg
 #import include.configTest as cfg
 import include.constants as param
 import src.ima_modules as imod
@@ -142,7 +142,7 @@ class ima (object):
         self.alu_int = imod.alu_int ()
 
         # Instantiate  data memory (stores data)
-        self.dataMem = imod.memory (cfg.dataMem_size, datamem_off)
+        self.dataMem = imod.memory (cfg.dataMem_size, cfg.datamem_off)
 
         # Instantiate instruction memory (stores instruction)
         self.instrnMem = imod.instrn_memory (cfg.instrnMem_size)
@@ -418,29 +418,52 @@ class ima (object):
         #    return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
         def getXbarAddr (data_addr):
-            # find i or o
-            if (data_addr < cfg.num_matrix*3*cfg.xbar_size):
-                mem_addr = 0
-            else:
-                mem_addr = 128
+            
+            if (cfg.training):
+                # find i or o
+                if (data_addr < cfg.num_matrix*3*cfg.xbar_size):
+                    mem_addr = 0
+                else:
+                    mem_addr = 128
 
-            # find xbar_addr
-            xbar_addr = data_addr % cfg.xbar_size
+                # find xbar_addr
+                xbar_addr = data_addr % cfg.xbar_size
 
-            # find matrix_addr
-            num_matrix = (data_addr / (3*cfg.xbar_size)) % cfg.num_matrix
+                # find matrix_addr
+                num_matrix = (data_addr / (3*cfg.xbar_size)) % cfg.num_matrix
 
-            # find xbar_type
-            temp_val = (data_addr % (cfg.num_matrix*3*cfg.xbar_size))
-            temp_val1 = temp_val % (3*cfg.xbar_size)
-            if (temp_val1 < cfg.xbar_size):
-                xbar_type = 'f'
-            elif (temp_val1 < 2*cfg.xbar_size):
-                xbar_type = 'b'
-            elif (temp_val1 < 3*cfg.xbar_size):
-                xbar_type = 'd'
-            else:
-                assert (1==0), "xbar memory addressing failed"
+                # find xbar_type
+                temp_val = (data_addr % (cfg.num_matrix*3*cfg.xbar_size))
+                temp_val1 = temp_val % (3*cfg.xbar_size)
+                if (temp_val1 < cfg.xbar_size):
+                    xbar_type = 'f'
+                elif (temp_val1 < 2*cfg.xbar_size):
+                    xbar_type = 'b'
+                elif (temp_val1 < 3*cfg.xbar_size):
+                    xbar_type = 'd'
+                else:
+                    assert (1==0), "xbar memory addressing failed"
+
+            if (cfg.inference):
+                # find i or o
+                if (data_addr < cfg.num_matrix*1*cfg.xbar_size):
+                    mem_addr = 0
+                else:
+                    mem_addr = 128
+
+                # find xbar_addr
+                xbar_addr = data_addr % cfg.xbar_size
+
+                # find matrix_addr
+                num_matrix = (data_addr / (1*cfg.xbar_size)) % cfg.num_matrix
+
+                # find xbar_type
+                temp_val = (data_addr % (cfg.num_matrix*1*cfg.xbar_size))
+                temp_val1 = temp_val % (1*cfg.xbar_size)
+                if (temp_val1 < cfg.xbar_size):
+                    xbar_type = 'f'
+                else:
+                    assert (1==0), "xbar memory addressing failed"        
 
             return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
@@ -465,6 +488,7 @@ class ima (object):
                 return self.xb_outMem_list[matrix_id][xbar_type].read (xbar_addr)
 
         # Define what to do in execute (done for conciseness)
+        
         def do_execute (self, ex_op, fid):
 
             if (ex_op == 'ld'):
@@ -565,6 +589,7 @@ class ima (object):
                 ## Define function to perform inner-product on specified mvmu
                 # Note: Inner product with shift and add (shift-sub with last bit), works for 2s complement
                 # representation for positive and negative numbers
+                
                 def inner_product (mat_id, key):
                     # reset the xb out memory before starting to accumulate
                     self.xb_outMem_list[mat_id][key].reset ()
@@ -581,7 +606,7 @@ class ima (object):
                         #*************************************** HACK *********************************************
 
                         # convert digital values to analog
-                        out_dac = self.dacArray_list[mat_id][key].propagate_dummy (out_xb_inMem) #pass through
+                        out_dac = self.dacArray_list[mat_id][key].propagate_dummy(out_xb_inMem) #pass through
 
                         # Do for (data_width/xbar_bits) xbars
                         num_xb = cfg.data_width / cfg.xbar_bits
@@ -589,9 +614,9 @@ class ima (object):
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
                             # compute dot-product
-                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy (out_dac)
+                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac)        
                             # do sampling and hold
-                            out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy (out_xbar[m])
+                            out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy(out_xbar[m])
 
                         # each of the num_xb produce shifted bits of output (weight bits have been distributed)
                         for j in xrange (cfg.xbar_size): # this 'for' across xbar outs to adc happens via mux
@@ -600,9 +625,9 @@ class ima (object):
                             for m in range (num_xb):
                                 # convert from analog to digital
                                 adc_id = (mat_id*num_xb + m) % cfg.num_adc
-                                out_mux1 = self.mux1_list[mat_id].propagate_dummy (out_snh[m][j]) # i is the ith xbar
-                                out_mux2 = self.mux2_list[mat_id % cfg.num_adc].propagate_dummy (out_mux1)
-                                out_adc = self.adc_list[adc_id].propagate_dummy (out_mux2)
+                                out_mux1 = self.mux1_list[mat_id].propagate_dummy(out_snh[m][j]) # i is the ith xbar
+                                out_mux2 = self.mux2_list[mat_id % cfg.num_adc].propagate_dummy(out_mux1)
+                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2)
 
                                 # shift and add outputs from difefrent wt_bits
                                 alu_op = 'sna'
@@ -659,19 +684,26 @@ class ima (object):
                             self.matrix_list[mat_id][key][m].propagate_op_dummy (out_dac1, out_dac2, cfg.lr)
 
                 ## Traverse through the matrices in a core
-                for i in xrange (cfg.num_matrix):
+                if (cfg.training):
+                    for i in xrange (cfg.num_matrix):
                     # traverse through f/b/d mvmu(s) for the matrix and execute if applicable
-                    mask_temp = self.de_xb_nma[i]
-                    if (mask_temp[0] == '1'):
+                        mask_temp = self.de_xb_nma[i]
+                        if (mask_temp[0] == '1'):
                         # foward xbar operation
-                        #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MVM")
-                        inner_product (i, 'f')
-                    if (mask_temp[1] == '1'):
+                            print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MVM")
+                            inner_product (i, 'f')
+                        if (mask_temp[1] == '1'):
                         #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MTVM")
                         # backward xbar operation
-                        inner_product (i, 'b')
-                    if (mask_temp[2] == '1'):
-                        outer_product (i, 'd')
+                            inner_product (i, 'b')
+                        if (mask_temp[2] == '1'):
+                            outer_product (i, 'd')
+
+                if (cfg.inference):
+                   for i in xrange(cfg.num_matrix):
+                       if self.de_xb_nma[i]:
+                           print ("ima_id: " +str(self.ima_id) + " mat_id: "  +str(i) + " MVM")
+                           inner_product(i,'f')
 
             elif (ex_op == 'crs'):
                 # read weights from delta-xbar, synchronize, write to f/b xbars
@@ -947,6 +979,7 @@ class ima (object):
                 update_ready = self.stage_done[i+1]
 
             # run the stage based on its update_ready argument
+           
             stage_function[i] (update_ready, fid)
 
         # If specified, print thetrace (pipeline stage information)
