@@ -102,8 +102,6 @@ class xbar (object):
             temp_inp = (cfg.num_bits - cfg.dac_res) * '0' + inp[i]
             inp_float[i] = fixed2float(temp_inp, cfg.int_bits, cfg.frac_bits)
         inp_float = np.asarray (inp_float)
-        #print('inp_float')
-        #print(inp_float)
         out_float = np.dot(inp_float, self.xbar_value)
         
 
