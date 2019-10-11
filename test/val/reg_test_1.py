@@ -3,7 +3,7 @@ import os
 import numpy
 import argparse
 
-root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, root_dir)
 
 test_dir = os.path.join(root_dir, "test")
@@ -13,6 +13,7 @@ trace_dir = os.path.join(root_dir, "test/traces")
 sys.path.insert(0, trace_dir)
 
 sys.path.insert(0, os.path.join(root_dir, "include"))
+sys.path.insert(0, os.path.join(root_dir, "src"))
 
 from src.data_convert import *
 import src.ima as ima
@@ -80,7 +81,6 @@ class RegTest1:
                             out_exp = np.zeros((cfg.xbar_size,1))
                         out_gold = np.dot(weights,inputs)
 
-                        #import pdb; pdb.set_trace()
                         err = np.tanh(out_gold) - np.tanh(out_exp)
 
                         print("error for Tile " + str(i) + " , Core " + str(j) + " , Matrix " + str(k) + " has mean " + str(np.average(err)) + " and stdev " + str(np.std(err))) 
