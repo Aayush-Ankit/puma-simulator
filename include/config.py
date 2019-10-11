@@ -2,7 +2,7 @@
 ## All user specified parameters are provided by this file only
 
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
-cycles_max = 50000 # Put both these to very large numbers (when design is bug-free)!
+cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
 inference = 1
@@ -32,7 +32,7 @@ instrn_width = 48 # (in bits)
 
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_matrix = 2 # each matrix is 1-fw logical xbar for inference
+num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, and 1 delta logical xbar for training. Each logical xbar for inference is 8-fw physical xbar and for training  8-fw, 8-bw and 16-delta physical xbars.
 xbar_size = 128
 dac_res = 1
 # ADC configuration
@@ -49,7 +49,6 @@ adc_res_new = {
                 'matrix_adc_2' : 8,
                 'matrix_adc_3' : 4
               }
-#
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
@@ -90,14 +89,14 @@ tile_instrnMem_size = 2048 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile
-# num_tile_compute = : positive integer
+# num_tile_compute =  positive integer
 # inj_rate < 0.2 (depends on the mapping)
 # num_port: 4, 8
 
 # Fixed parameters
 # NOC topology: cmesh (n=2, k=4, c=4) - can fit k*n*c tiles
 cmesh_c = 4
-num_bits_tileId = 2
+num_bits_tileId =32
 flit_width = 32
 packet_width = edram_buswidth/data_width #in multiples of flits (data considered only - booksim consider address itself)
 # (b bit of address = logN, N is the number of nodes)
