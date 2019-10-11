@@ -36,8 +36,6 @@ class xbar (object):
         # xbar output currents are recorded fro analysis of applicable
         self.xb_record = []
 
-       # print('check weights inside xbar')
-       # print(xbar_value)
 
     # Records the xbar currents
     def record (self, xb_out):
@@ -55,8 +53,6 @@ class xbar (object):
                     'Xbar values format should be a numpy array of the xbar dimensions'
         #self.xbar_value[0:val_size[0], 0:val_size[1]] = xbar_value.copy ()
         self.xbar_value = xbar_value.copy()
-        #print('program')
-        #print(self.xbar_value)
 
     # writes to a location on xbar
     def write (self, k, l, value):
@@ -95,8 +91,6 @@ class xbar (object):
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp = 'nil'):
-        #print('propagate')
-        #print(self.xbar_value)
         # data input is list of bit strings (of length dac_res) - fixed point binary
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
@@ -110,11 +104,8 @@ class xbar (object):
         inp_float = np.asarray (inp_float)
         #print('inp_float')
         #print(inp_float)
-        #import pdb ;  pdb.set_trace()
         out_float = np.dot(inp_float, self.xbar_value)
-        #if not (self.xbar_value.all()==0):
-         #   print('xbar_value')
-          #  print(self.xbar_value)
+        
 
         # record xbar_i if applicable
         if (cfg.xbar_record):
@@ -182,7 +173,7 @@ class dac (object):
         return analog_max * frac
 
     def propagate (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         if (inp == ''):
             inp = '0' * cfg.dac_res
         assert ((type(inp) == str) and (len(inp) == self.dac_res)), 'dac input type/size (bits) mismatch (string expected)'
@@ -251,7 +242,7 @@ class adc (object):
         return ('0'*(num_bits - len(bin_value)) + bin_value)
 
     def propagate (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         assert (type(inp) in [float, np.float32, np.float64]), 'adc input type mismatch (float, np.float32, np.float64 expected)'
         num_bits = self.adc_res
         return self.real2bin (inp, num_bits)

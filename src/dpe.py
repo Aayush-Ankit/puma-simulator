@@ -111,25 +111,9 @@ class DPE:
             node_dut.tile_list[inp_tileId].edram_controller.valid[i] = int(
                 inp['valid'][i])
 
+        #program the X-bars with weights using the dnn_wt_p.dnn_wt() API
+
         dnn_wt_p.dnn_wt().prog_dnn_wt(self.instrnpath, node_dut)
-
-        # ## Program DNN weights on the xbars
-        # for i in range(1, cfg.num_tile):
-        #     print ('Programming weights of tile no: ', i)
-        #     for j in range(cfg.num_ima):
-        #         print ('Programming ima no: ', j)
-        #         for k in range(cfg.num_matrix):
-        #             for l in range(cfg.phy2log_ratio):
-        #                 wt_filename = self.instrnpath + 'weights/tile' + str(i) + '/core'+str(j)+\
-        #                         '/mat'+str(k)+'-phy_xbar'+str(l)+'.npy'
-        #                 if (os.path.exists(wt_filename)):  # check if weights for the xbar exist
-        #                     print ('wtfile exits: ' + 'tile ' + str(i) +
-        #                            'ima ' + str(j) + 'matrix ' + str(k) + 'xbar' + str(l))
-        #                     wt_temp = np.load(wt_filename)
-        #                     node_dut.tile_list[i].ima_list[j].matrix_list[k]['f'][l].program(wt_temp)
-        #                     node_dut.tile_list[i].ima_list[j].matrix_list[k]['b'][l].program(wt_temp)
-
-        #raw_input ('Press Enter')
 
         # Run all the tiles
         cycle = 0
@@ -144,7 +128,6 @@ class DPE:
         # For DEBUG only - dump the contents of all tiles
         # NOTE: Output and input tiles are dummy tiles to enable self-contained simulation
         if (cfg.debug):
-            #import pdb; pdb.set_trace()
             node_dump(node_dut, self.tracepath)
 
         if (cfg.xbar_record):

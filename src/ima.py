@@ -489,7 +489,6 @@ class ima (object):
 
         # Define what to do in execute (done for conciseness)
         
-        #set_trace()
         def do_execute (self, ex_op, fid):
 
             if (ex_op == 'ld'):
@@ -593,7 +592,6 @@ class ima (object):
                 
                 def inner_product (mat_id, key):
                     # reset the xb out memory before starting to accumulate
-                    #import pdb; pdb.set_trace()
                     self.xb_outMem_list[mat_id][key].reset ()
 
                     ## Loop to cover all bits of inputs
@@ -705,7 +703,6 @@ class ima (object):
                    for i in xrange(cfg.num_matrix):
                        if self.de_xb_nma[i]:
                            print ("ima_id: " +str(self.ima_id) + " mat_id: "  +str(i) + " MVM")
-                          # import pdb; pdb.set_trace()
                            inner_product(i,'f')
 
             elif (ex_op == 'crs'):
@@ -880,7 +877,6 @@ class ima (object):
                     self.stage_cycle[sId] = self.stage_cycle[sId] + 1
 
                 elif (ex_op != 'st' and self.stage_latency[sId] == 1 and update_ready): # NA for LD/ST
-                    #import pdb; pdb.set_trace()
                     do_execute (self, ex_op, fid)
                     self.stage_done[sId] = 1
                     self.stage_cycle[sId] = 0
@@ -913,7 +909,6 @@ class ima (object):
                   (self.de_opcode == 'ld' and self.stage_cycle[sId] >= self.stage_latency[sId]-1 and self.ex_vec_count == (self.de_vec-1) and update_ready)):
                 ex_op = self.de_opcode
                 #print ("doing exe stage for op: " + ex_op)
-                #import pdb ; pdb.set_trace()
                 do_execute (self, ex_op, fid)
                 self.stage_done[sId] = 1
                 self.stage_cycle[sId] = 0
@@ -984,17 +979,7 @@ class ima (object):
                 update_ready = self.stage_done[i+1]
 
             # run the stage based on its update_ready argument
-            #print('check weights in pipe_run')
-            #print(imod.xbar.xbar_value)
-           # print('AHA Pipe Run')
-             #for j in range(cfg.num_ima):
-           # for k in range(cfg.num_matrix):
-               # for l in range(cfg.phy2log_ratio):
-                  #  print(self.matrix_list[k]['f'][l].get_value())
-
-
-            #if (i == 2):
-               # import pdb; pdb.set_trace()
+           
             stage_function[i] (update_ready, fid)
 
         # If specified, print thetrace (pipeline stage information)

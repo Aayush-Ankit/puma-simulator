@@ -72,20 +72,11 @@ class node (object):
         #transfer_latency = self.noc.getLatency() + \
         #        self.tile_list[0].receive_buffer.getLatency()
 
-        #print('AHA Node')
-        #for i in range(1, cfg.num_tile):
-        #    for j in range(cfg.num_ima):
-        #        for k in range(cfg.num_matrix):
-        #            for l in range(cfg.phy2log_ratio):
-        #                print(self.tile_list[i].ima_list[j].matrix_list[k]['f'][l].get_value())
-
-
+        
 
 
         # A cyle execution of each tile and probe each tile's halt
         for i in range (cfg.num_tile):
-            #if (i == 1):
-                #import pdb; pdb.set_trace()
             # run a tile only if has not halted
             if (not self.tile_list[i].tile_halt):
                 self.tile_list[i].tile_run (cycle, self.tile_fid_list[i])
