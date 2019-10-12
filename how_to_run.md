@@ -44,51 +44,56 @@ pip --proxy $http_proxy install ...``` instead.
 
 #### 4.1 - Setup compiler:
 
-```cd src/```
-For inference N_TRAINING_MVMUS_PER_CORE should be 0 in src/common.h
-```
-make
-```
-#### 4.2 - Go to test/ and set up environment to point to libpuma.so:
+For **inference** N_TRAINING_MVMUS_PER_CORE should be 0 in src/common.h
 
 ```
-cd test/
+cd src/
+make
+cd ../test/
 export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 ```
 
-#### 4.3 - Compile the model:
-To run with weights, train a model in any deep-learning framework (like pytorch or tensorflow) to get the weights.
-A model file and a weights folder are required in the ```test/``` directory.
-### A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test/mnist_l4_mnist/ as a template which needs to be copied to Puma Compiler/test or
-### Create your model.cpp (which will have the same configuration as the one used to get weights in pytorch) and weights folder (obtained from pytorch) in compiler/test
+#### 4.2 - Compile model:
+
+To run with weights, train a model in any deep-learning framework (like pytorch or tensorflow) to get the weights. A model file and a weights folder are required in the ```test/``` directory.
+
+A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test/mnist_l4_mnist/ as a template which needs to be copied to Puma Compiler/test or
+
+Create your model.cpp (which will have the same configuration as the one used to get weights in pytorch) and weights folder (obtained from pytorch) in compiler/test
 
 ```
-make                           # Compile all examples
-make <lstm-layer>.test       # Compile a specific example (make <mlp_l4_mnist>.test)
+make <lstm-layer>.test       # Compiles a specific example (make <mlp_l4_mnist>.test)
 ```
 
+#### 4.3 - Execute the examples to generate the PUMA assembly code:
 
-#### 4.4 - Execute the examples to generate the PUMA assembly code:
 ```
 ./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
 ```
-### 5. Access the Puma Simulator test/utils folder and copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
 
-### 6. Update the SIMULATOR_PATH  in ```generate-py.sh``` and ```populate.py``` for the path to the Puma Simulator;
-#### 6.0 In simulator/src/instrn_proto.py, use the appropriate block of i_mvm. See comments in the code.
+### 5. From simulator/test/utils folder, copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler test folder where the ```.npy``` files are generated.
 
-#### 6.1 - Execute and generate .npy archives:
+### 6. Generate compiled assembly for running on simulator:
+
+Update the SIMULATOR_PATH  in ```generate-py.sh``` and ```populate.py``` for the path to the simulator.
+
+In ```simulator/src/instrn_proto.py```, use the appropriate block of ```i_mvm``` - check comments in the code.
+
 ```
 ./generate-py.sh
-```
-#### 6.2 - Copy the <example> folder that was generated and paste into the Puma Simulator:
-```
-cp -R <new-generated-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
+cp -R <example> puma-simulator/test/testasm/
 ```
 
-#### 6.3 - Update in the ```config.py``` file (puma-simulator/include/) the number of tiles according to the quantity that was generated in your example model.
-#### 6.3.1 For inference, in ```config.py``` file, (puma-simulator/include/) set num_matrix according to N_CONSTANT_MVMUS_PER_CORE in compiler src/common.h (for now it is 2 in both)
+#### 6.1 - Setup config file :
+
+Config file - ```puma-simulator/include/config.py```.
+
+Update ```num_tile_compute``` in config file based on the number of tiles generated in your ```<example>``` model.
+
+For *inference*, set ```num_matrix``` in config file equal to N_CONSTANT_MVMUS_PER_CORE in ```puma-compilersrc/common.h```.
+
 #### For example: Tiles generated from the ```lstm-layer.cpp``` model, a total of 25 tiles:
+
 ```
 # Change here - Specify the Node parameters here
 num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output tiles) -- (Line 85)
@@ -96,7 +101,9 @@ num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output 
 # Do not change this - total number of tiles
 num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute -- (Line 95)
 ```
+
 ### 7. Run your model, in this example, the ```lstm-layer.cpp```:
+
 ```
 cd "PATH TO PUMA SIMULATOR"/src
 
@@ -180,6 +187,6 @@ number of tiles mapped: 23
 ```
 #### In the  archive```output.txt``` EDRAM contents will be saved.
 
-###to run Regression Test after running with weights for inference, go to simulator/test/val
+### To run Regression tests after running with weights for inference, go to simulator/test/val.
 
 python reg_test_1.py -n mlp
