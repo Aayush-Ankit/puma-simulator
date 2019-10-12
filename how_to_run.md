@@ -182,4 +182,4 @@ number of tiles mapped: 23
 
 ### 10. To run Regression tests after running with weights for inference, go to simulator/test/val.
 
-python reg_test_1.py -n mlp
+```python reg_test_1.py -n mlp```
