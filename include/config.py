@@ -36,13 +36,13 @@ num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, 
 xbar_size = 128
 dac_res = 1
 # ADC configuration
-adc_res = 8 # around 4 to 8. this value should be
+adc_res = 8
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
-# NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
+# NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed to be equal to 0 and 2. 
 adc_res_new = {
                 'matrix_adc_0' : 8,
                 'matrix_adc_1' : 4,
@@ -60,7 +60,8 @@ if (training):
     datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
 
 if (inference):
-    datamem_off = xbar_size * (num_matrix*2) # each matrix has 2 memory spaces ( 1 input Xbar memory and 1 output Xbar memory) 
+    # FIXME I had to set it to *6 to make it work. I don't know why.
+    datamem_off = xbar_size * (num_matrix*6) # each matrix has 2 memory spaces ( 1 input Xbar memory and 1 output Xbar memory) 
 
 phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar #vaulue is 8
 lr = 0.25 # learning rate for updates to d-xbar
@@ -102,7 +103,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute =7 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 7 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
