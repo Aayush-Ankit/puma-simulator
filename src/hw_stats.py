@@ -45,7 +45,7 @@ def get_hw_stats (fid, node_dut, cycle):
                       'xbar_mtvm':0,
             'xbar_rd':0, 'xbar_wr':0,
             'dac':0, 'snh':0, \
-            'mux1':0, 'mux2':0, 'adc':0, \
+            'mux1':0, 'mux2':0, \
             'alu_div':0, 'alu_mul':0, \
             'alu_act':0, 'alu_other':0, \
             'alu_sna':0, \
@@ -57,6 +57,8 @@ def get_hw_stats (fid, node_dut, cycle):
             'noc_intra':0, 'noc_inter':0, \
             'core_control':0, 'tile_control': 0 \
             }
+    for k in range (cfg.num_adc):
+        hw_comp_access['adc_'+str(k)] = 0
 
     # traverse components to populate dict (hw_comp_access)
     hw_comp_access['noc_intra'] += node_dut.noc.num_cycles_intra
