@@ -18,7 +18,7 @@ hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':
                   'xbar_mtvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat,
         'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, 'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
         'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
-        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, 'adc':param.adc_pow_dyn, \
+        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, \
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
         'alu_sna': param.sna_pow_dyn, \
@@ -33,6 +33,9 @@ hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':
         'core_control':param.ccu_pow,
         'tile_control':param.tcu_pow
         }
+# 'adc':param.adc_pow_dyn, 
+for k in range (cfg.num_adc):
+    hw_comp_energy['adc_'+str(k)] = param.adc_pow_dyn # FIXME to get different values per resultion
 
 # Used to calculate dynamic energy consumption and other metrics (area/time/total_power/peak_power)
 def get_hw_stats (fid, node_dut, cycle):
@@ -118,7 +121,7 @@ def get_hw_stats (fid, node_dut, cycle):
                 hw_comp_access['mux2'] += node_dut.tile_list[i].ima_list[j].mux1_list[k].num_access
 
             for k in range (cfg.num_adc):
-                hw_comp_access['adc'] += node_dut.tile_list[i].ima_list[j].adc_list[k].num_access
+                hw_comp_access['adc_'+str(k)] += node_dut.tile_list[i].ima_list[j].adc_list[k].num_access
 
             for k in range (cfg.num_ALU):
                 hw_comp_access['alu_div'] += node_dut.tile_list[i].ima_list[j].alu_list[k].num_access_div + \
