@@ -109,7 +109,8 @@ xbar_op_pow = 4.44 * 3.27 / (12.8)
 
 xbar_ip_lat = 100.0
 #xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
-xbar_ip_pow = (1.37*2.0) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
+# Note: removed 2.0 factor for inference because we are using only 16bit
+xbar_ip_pow = (1.37) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
@@ -150,6 +151,8 @@ adc_lat_dict = {'1' : 12.5,
                 '4' : 50,
                 '8' : 100,
                 '16': 200}
+# the number in the table * 128 (columns)
+# Better to be able to use any number of bit (not only power of 2) (max 16 bit)
 
 adc_pow_dyn_dict = {'1' : 0.225,
                     '2' : 0.45,
