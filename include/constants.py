@@ -146,19 +146,19 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
                  '16': 1.67 * 10**(-7)}
 
 # ADC - Discuss exact values with ISSAC authors
-adc_lat_dict = {'1' : 12.5,
-                '2' : 25,
-                '4' : 50,
-                '8' : 100,
-                '16': 200}
+adc_lat_dict = {'1' : 128*0.091093117,
+                '2' : 128*0.182186235,
+                '4' : 128*0.364372470,
+                '8' : 128*0.728744939,
+                '16': 128*1.728744939}
 # the number in the table * 128 (columns)
 # Better to be able to use any number of bit (not only power of 2) (max 16 bit)
 
-adc_pow_dyn_dict = {'1' : 0.225,
-                    '2' : 0.45,
-                    '4' : 0.9,
-                    '8' : 1.8,
-                    '16': 3.6}
+adc_pow_dyn_dict = {'1' : 0.018131034,
+                  '2' : 0.072524136,
+                  '4' : 0.290096543,
+                  '8' : 1.160386173,
+                  '16': 2.160386173}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
