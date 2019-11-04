@@ -60,8 +60,7 @@ if (training):
     datamem_off = xbar_size * (num_matrix*6) # each matrix has 6 memory spaces (1 for f/b, 2 for d)
 
 if (inference):
-    # FIXME I had to set it to *6 to make it work. I don't know why.
-    datamem_off = xbar_size * (num_matrix*6) # each matrix has 2 memory spaces ( 1 input Xbar memory and 1 output Xbar memory) 
+    datamem_off = xbar_size * (num_matrix*2) # each matrix has 2 memory spaces ( 1 input Xbar memory and 1 output Xbar memory)
 
 phy2log_ratio = num_bits / xbar_bits # ratio of physical to logical xbar #vaulue is 8
 lr = 0.25 # learning rate for updates to d-xbar

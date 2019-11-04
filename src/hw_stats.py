@@ -35,7 +35,6 @@ hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':
         }
 # 'adc':param.adc_pow_dyn, 
 for k in range (cfg.num_adc):
-    #hw_comp_energy['adc_'+str(k)] = param.adc_pow_dyn # FIXME to get different values per resultion
     hw_comp_energy['adc_'+str(k)] = param.adc_pow_dyn_dict[str(cfg.adc_res_new[str('matrix_adc_'+str(k))])]
 
 # Used to calculate dynamic energy consumption and other metrics (area/time/total_power/peak_power)
