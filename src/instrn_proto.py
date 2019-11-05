@@ -6,6 +6,8 @@ from src.data_convert import *
 import include.config as cfg
 import include.constants as param
 
+from src.data_convert import *
+
 # Define nstruction prototypes
 # generate load prototype - load data from edram to (datamem/xbinmem)
 phy2log_ratio = cfg.num_bits/cfg.xbar_bits
@@ -89,10 +91,10 @@ def i_alui (aluop, d1, r1, imm, vec = 1):
 #    i_temp['xb_nma'] = xb_nma
 #    return i_temp
 
-# TODO: just a hack for now, but eventually opcode will be different in i_mvm and i_train
-# def i_mvm (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
+# TODO: just a hack for now, but eventually opcode will be different in i_mvm and i_train. Uncomment this for training and comment the next block
+#def i_mvm (xb_nma = cfg.num_matrix*['000'], r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
 #     xb_nma_str = xb_nma[0]
-#     #xb_nma_str = xb_nma
+    #xb_nma_str = xb_nma
 #     xb_nma_list = [xb_nma_str[i*3:(i+1)*3] for i in range(len(xb_nma_str)/3)] # split into list of 3-bit masks
 #     assert (len(xb_nma_list) == cfg.num_matrix) # each matrix in a core has a 3-bit mask
 #     i_temp = param.dummy_instrn.copy()
@@ -102,7 +104,7 @@ def i_alui (aluop, d1, r1, imm, vec = 1):
 #     i_temp['xb_nma'] = xb_nma_list
 #     return i_temp
 
-#Defined to take the xb_nma as string instead of list of strings
+#Defined to take the xb_nma as string instead of list of strings. Comment this for training and uncommen the previous block
 def i_mvm (xb_nma = cfg.num_matrix*'0', r1=0, r2=0): # r1 is displacement, r2 is length of a continuum of data
     xb_nma_str = xb_nma[0]
     #xb_nma_str = xb_nma

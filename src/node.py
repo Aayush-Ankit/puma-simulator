@@ -72,6 +72,8 @@ class node (object):
         #transfer_latency = self.noc.getLatency() + \
         #        self.tile_list[0].receive_buffer.getLatency()
 
+        
+
 
         # A cyle execution of each tile and probe each tile's halt
         for i in range (cfg.num_tile):

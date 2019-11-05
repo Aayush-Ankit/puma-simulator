@@ -142,7 +142,7 @@ class ima (object):
         self.alu_int = imod.alu_int ()
 
         # Instantiate  data memory (stores data)
-        self.dataMem = imod.memory (cfg.dataMem_size, datamem_off)
+        self.dataMem = imod.memory (cfg.dataMem_size, cfg.datamem_off)
 
         # Instantiate instruction memory (stores instruction)
         self.instrnMem = imod.instrn_memory (cfg.instrnMem_size)
@@ -417,8 +417,9 @@ class ima (object):
         #    xbar_addr = matrix_addr % cfg.xbar_size
         #    return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
-        if(not cfg.inference):
-            def getXbarAddr (data_addr):
+        def getXbarAddr (data_addr):
+            
+            if (cfg.training):
                 # find i or o
                 if (data_addr < cfg.num_matrix*3*cfg.xbar_size):
                     mem_addr = 0
@@ -443,10 +444,7 @@ class ima (object):
                 else:
                     assert (1==0), "xbar memory addressing failed"
 
-                return [num_matrix, xbar_type, mem_addr, xbar_addr]
-
-        if(cfg.inference):
-            def getXbarAddr (data_addr):
+            if (cfg.inference):
                 # find i or o
                 if (data_addr < cfg.num_matrix*1*cfg.xbar_size):
                     mem_addr = 0
@@ -464,14 +462,10 @@ class ima (object):
                 temp_val1 = temp_val % (1*cfg.xbar_size)
                 if (temp_val1 < cfg.xbar_size):
                     xbar_type = 'f'
-                # elif (temp_val1 < 2*cfg.xbar_size):
-                #     xbar_type = 'b'
-                # elif (temp_val1 < 3*cfg.xbar_size):
-                #     xbar_type = 'd'
                 else:
-                    assert (1==0), "xbar memory addressing failed"
+                    assert (1==0), "xbar memory addressing failed"   
 
-                return [num_matrix, xbar_type, mem_addr, xbar_addr]
+	    return [num_matrix, xbar_type, mem_addr, xbar_addr]     
 
         # write to the xbar memory (in/out) space depending on the address
         def writeToXbarMem (self, data_addr, data):
@@ -495,11 +489,9 @@ class ima (object):
 
         # Define what to do in execute (done for conciseness)
         
-        #set_trace()
         def do_execute (self, ex_op, fid):
 
             if (ex_op == 'ld'):
-                # print('In Load')
                 self.ldAccess_done = 0
                 data = self.mem_interface.ramload
                 # based on the address write to dataMem or xb_inMem
@@ -509,7 +501,6 @@ class ima (object):
                     data = ['0'*cfg.data_width]*self.de_r2
                 for i in range (self.de_r2):
                     dst_addr = data_addr + i
-                    # print('Destination Address in load', dst_addr)
                     if (dst_addr >= datamem_off):
                       self.dataMem.write (dst_addr, data[i])
                     else:
@@ -519,7 +510,6 @@ class ima (object):
                 return 1
 
             elif (ex_op == 'set'):
-                # print('In Set')
                 for i in range (self.de_vec):
                     # write to dataMem - check if addr is a valid datamem address
                     dst_addr = self.de_d1 + i
@@ -529,10 +519,8 @@ class ima (object):
                         writeToXbarMem (self, dst_addr, self.de_val1)
 
             elif (ex_op == 'cp'):
-                # print('In Copy')
                 for i in range (self.de_vec):
                     src_addr = self.de_r1 + i
-                    # print('Source Address',src_addr)
                     # based on address read from dataMem or xb_inMem
                     if (src_addr >= datamem_off):
                         ex_val1 = self.dataMem.read (src_addr)
@@ -541,8 +529,6 @@ class ima (object):
 
                     dst_addr = self.de_d1 + i
                     # based on the address write to dataMem or xb_inMem
-                    # print('Destination Address',dst_addr)
-                    # print('data', ex_val1)
                     if (dst_addr >= datamem_off):
                         self.dataMem.write (dst_addr, ex_val1)
                     else:
@@ -577,7 +563,6 @@ class ima (object):
                     else:
                         writeToXbarMem (self, dst_addr, ex_val1)
 
-
             elif (ex_op == 'alui'):
                 for i in range (self.de_vec):
                     # read val 2 either from data memory or xbar_outmem
@@ -604,16 +589,9 @@ class ima (object):
                 ## Define function to perform inner-product on specified mvmu
                 # Note: Inner product with shift and add (shift-sub with last bit), works for 2s complement
                 # representation for positive and negative numbers
-                #import pdb; pdb.set_trace();
-
-                 #print('AHA Do Execute')
-                 #for k in range(cfg.num_matrix):
-                  #      for l in range(cfg.phy2log_ratio):
-                   #         print(self.matrix_list[k]['f'][l].get_value())
 
                 def inner_product (mat_id, key):
                     # reset the xb out memory before starting to accumulate
-                    #import pdb; pdb.set_trace()
                     self.xb_outMem_list[mat_id][key].reset ()
 
                     ## Loop to cover all bits of inputs
@@ -636,10 +614,6 @@ class ima (object):
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
                             # compute dot-product
-                            #print('check dac/wt')
-                            #print(out_dac)
-                           # print(self.matrix_list[mat_id][key][m].get_value())
-                           # import pdb; pdb.set_trace()
                             out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac)        
                             # do sampling and hold
                             out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy(out_xbar[m])
@@ -710,7 +684,7 @@ class ima (object):
                             self.matrix_list[mat_id][key][m].propagate_op_dummy (out_dac1, out_dac2, cfg.lr)
 
                 ## Traverse through the matrices in a core
-                if (not cfg.inference):
+                if (cfg.training):
                     for i in xrange (cfg.num_matrix):
                     # traverse through f/b/d mvmu(s) for the matrix and execute if applicable
                         mask_temp = self.de_xb_nma[i]
@@ -919,7 +893,6 @@ class ima (object):
                 if (st_data_addr >= datamem_off):
                     for num in range (cfg.edram_buswidth / cfg.data_width): # modified
                         ex_val1[num] = self.dataMem.read (st_data_addr+num) # modified
-
                 else:
                     for num in range (cfg.edram_buswidth / cfg.data_width): # modified
                         ex_val1[num] = readFromXbarMem (self, st_data_addr+num)
@@ -936,7 +909,6 @@ class ima (object):
                   (self.de_opcode == 'ld' and self.stage_cycle[sId] >= self.stage_latency[sId]-1 and self.ex_vec_count == (self.de_vec-1) and update_ready)):
                 ex_op = self.de_opcode
                 #print ("doing exe stage for op: " + ex_op)
-                #import pdb ; pdb.set_trace()
                 do_execute (self, ex_op, fid)
                 self.stage_done[sId] = 1
                 self.stage_cycle[sId] = 0
@@ -1007,17 +979,7 @@ class ima (object):
                 update_ready = self.stage_done[i+1]
 
             # run the stage based on its update_ready argument
-            #print('check weights in pipe_run')
-            #print(imod.xbar.xbar_value)
-           # print('AHA Pipe Run')
-             #for j in range(cfg.num_ima):
-           # for k in range(cfg.num_matrix):
-               # for l in range(cfg.phy2log_ratio):
-                  #  print(self.matrix_list[k]['f'][l].get_value())
 
-
-            #if (i == 2):
-               # import pdb; pdb.set_trace()
             stage_function[i] (update_ready, fid)
 
         # If specified, print thetrace (pipeline stage information)
@@ -1045,4 +1007,3 @@ class ima (object):
 
             if (self.halt == 1):
                 fid.write ('IMA halted at ' + str(cycle) + ' cycles')
-

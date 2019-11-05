@@ -107,6 +107,7 @@ class tile (object):
 
     ### Simulate one cycle exectution of all IMAs (which have't halted) & their EDRAM interactions
     def tile_compute (self, cycle):
+        
         ## Simulate a cycle if IMA(s) that haven't halted
         if (not all(self.halt_list)): # A tile halts whwn all IMAs (within the tile) halt
             for i in range (cfg.num_ima):
@@ -354,6 +355,8 @@ class tile (object):
                 self.stall = 1
 
         ## simulate a cycle of ima execution based on current state of self.ima_nma
+
+                
         self.tile_compute (cycle)
 
         ## for DEBUG only

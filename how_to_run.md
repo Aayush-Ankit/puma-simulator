@@ -43,39 +43,53 @@ pip --proxy $http_proxy install ...``` instead.
 ### 4. Go to the source Puma Compiler:
 
 #### 4.1 - Setup compiler:
+
+For **inference** N_TRAINING_MVMUS_PER_CORE should be 0 in src/common.h
+
 ```
 cd src/
 make
-```
-#### 4.2 - Go to de /test and set up environment to point to libpuma.so:
-```
-cd test/
+cd ../test/
 export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 ```
-#### 4.3 - Compile the examples:
-```
-make                           # Compile all examples
-make <lstm-layer>.test       # Compile a specific example (make <example-name>.test)
-```
-#### 4.4 - Execute the examples to generate the PUMA assembly code:
-```
-./<lstm-model>.test          # Execute a specific example (./<example-name>.test)
-```
-### 5. Access the Puma Simulator test folder and copy the ```generate-py.sh``` and ```input.py``` files to compiler test folder where the ```.npy``` files are generated.
 
-### 6. Update the SIMULATOR_PATH for the path to the Puma Simulator;
+#### 4.2 - Compile model:
 
-#### 6.1 - Execute and generate .npy archives:
+*Note: To run with weights, train a model in any deep-learning framework (like pytorch or tensorflow) to get the weights. A model file and a weights folder are required in the ```test/``` directory. A sample ```mlp_l4_mnist.cpp``` and ```mlp_l4_mnist_weights/``` is provided in ```puma-simulator/test/mnist_l4_mnist/``` as a template which needs to be copied to ```puma-compiler/test```*.
+
+```
+make <lstm-layer>.test       # Compiles a specific example (make <mlp_l4_mnist>.test)
+```
+
+#### 4.3 - Execute the examples to generate the PUMA assembly code:
+
+```
+./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
+```
+
+### 5. From simulator/test/utils folder, copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler/test folder.
+
+### 6. Generate compiled assembly for running on simulator:
+
+Update the SIMULATOR_PATH  in ```generate-py.sh``` and ```populate.py``` for the path to the simulator.
+
+In ```simulator/src/instrn_proto.py```, use the appropriate block of ```i_mvm``` (check comments in the code).
+
 ```
 ./generate-py.sh
-```
-#### 6.2 - Copy the <example> folder that was generated and paste into the Puma Simulator:
-```
-cp -R <new-generated-folder> <PATH TO PUMA SIMULATOR>/puma-simulator/test/testasm/
+cp -R <example> puma-simulator/test/testasm/
 ```
 
-#### 6.3 - Update in the ```config.py``` file (puma-simulator/include/) the number of tiles according to the quantity that was generated in your example model.
-#### For example: Tiles generated from the ```lstm-layer.cpp``` model, a total of 25 tiles:
+#### 6.1 - Setup config file :
+
+Config file - ```puma-simulator/include/config.py```.
+
+Update ```num_tile_compute``` in config file based on the number of tiles generated in your ```<example>``` model.
+
+For *inference*, set ```num_matrix``` in config file equal to N_CONSTANT_MVMUS_PER_CORE in ```puma-compilersrc/common.h```.
+
+*Example: Tiles generated from the ```lstm-layer.cpp``` model, a total of 25 tiles:*
+
 ```
 # Change here - Specify the Node parameters here
 num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output tiles) -- (Line 85)
@@ -83,11 +97,15 @@ num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output 
 # Do not change this - total number of tiles
 num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute -- (Line 95)
 ```
+
 ### 7. Run your model, in this example, the ```lstm-layer.cpp```:
+
 ```
 cd "PATH TO PUMA SIMULATOR"/src
 
-python dpe.py -n lstm
+python dpe.py -n lstm # can specify num_tile_compute using the -t flag
+
+python dpe.py -n lstm -t 25
 ```
 
 ### 8. Then, you should see some results like:
@@ -161,3 +179,7 @@ network packet injection rate: 0.000274674783037
 number of tiles mapped: 23
 ```
 #### In the  archive```output.txt``` EDRAM contents will be saved.
+
+### 10. To run Regression tests after running with weights for inference, go to simulator/test/val.
+
+```python reg_test_1.py -n mlp```
