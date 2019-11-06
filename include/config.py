@@ -44,16 +44,16 @@ num_adc = num_adc_per_matrix * num_matrix
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 # NOTE: For *latency* computation only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed to be equal to 0 and 2. 
 adc_res_new = {
-                'matrix_adc_0' : 8,
+                'matrix_adc_0' : 4,
                 'matrix_adc_1' : 4,
                 'matrix_adc_2' : 8,
-                'matrix_adc_3' : 4
+                'matrix_adc_3' : 8
               }
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 512 #in entries
+instrnMem_size = 2536 #in entries
 
 # This depends on above parameters
 if (training):

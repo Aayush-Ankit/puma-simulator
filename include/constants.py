@@ -257,19 +257,23 @@ dataMem_area_dict = {'256' : 0.00056,
 # Instruction Memory value dictionary
 instrnMem_lat_dict = {'512' : 1,
                       '1024': 1,
-                      '2048': 1}
+                      '2048': 1,
+                      '2536': 1}
 
 instrnMem_pow_dyn_dict = {'512' : 0.46,
                           '1024': 0.53,
-                          '2048': 0.65}
+                          '2048': 0.65,
+                          '2536': 0.65}
 
 instrnMem_pow_leak_dict = {'512' : 0.078,
                            '1024': 0.147,
-                           '2048': 0.33}
+                           '2048': 0.33,
+                           '2536': 0.33}
 
 instrnMem_area_dict = {'512' : 0.00108,
                        '1024': 0.00192,
-                       '2048': 0.0041}
+                       '2048': 0.0041,
+                       '2536': 0.0041}
 
 # Xbar_inMem value dictionary (1 access means reading (dac_res) bits for each xbar row)
 # for computing average power of ima - scale dyn_pow down by xbar_size
@@ -360,7 +364,7 @@ dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(cfg.dataMem_size)]
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
 xbar_pow_leak = 0
 dac_pow_leak = dac_pow_leak_dict [str(cfg.dac_res)]
-adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)]
+adc_pow_leak = dac_pow_leak_dict [str(cfg.adc_res)] / 9.0 # took a constant ratio between dynamic and leakage (9:1), i.e. 10% being leakage power
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_leak = xbar_outMem_pow_leak_dict[str(cfg.xbar_size)]
 instrnMem_pow_leak =  instrnMem_pow_leak_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
