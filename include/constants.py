@@ -149,7 +149,9 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
 adc_lat_dict = {'1' : 128*0.091093117,
                 '2' : 128*0.182186235,
                 '4' : 128*0.364372470,
+                '6' : 128*0.546558704,
                 '8' : 128*0.728744939,
+                '9' : 128*0.819838057,
                 '16': 128*1.728744939}
 # the number in the table * 128 (columns)
 # Better to be able to use any number of bit (not only power of 2) (max 16 bit)
@@ -157,19 +159,25 @@ adc_lat_dict = {'1' : 128*0.091093117,
 adc_pow_dyn_dict = {'1' : 0.018131034,
                   '2' : 0.072524136,
                   '4' : 0.290096543,
+                  '6' : 0.652717222,
                   '8' : 1.160386173,
+                  '9' : 1.46861375,
                   '16': 2.160386173}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
                      '4' : 0.1,
+                     '6' : 0.15,
                      '8' : 0.2,
+                     '9' : 0.3,
                      '16': 0.4}
 
 adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
                  '4' : 0.0012,
+                 '6' : 0.0012,
                  '8' : 0.0012,
+                 '9' : 0.0012,
                  '16': 0.0012}
 
 # SNH (MVM pipeline)
@@ -364,7 +372,7 @@ dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(cfg.dataMem_size)]
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
 xbar_pow_leak = 0
 dac_pow_leak = dac_pow_leak_dict [str(cfg.dac_res)]
-adc_pow_leak = dac_pow_leak_dict [str(cfg.adc_res)] / 9.0 # took a constant ratio between dynamic and leakage (9:1), i.e. 10% being leakage power
+adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)] / 9.0 # took a constant ratio between dynamic and leakage (9:1), i.e. 10% being leakage power
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_leak = xbar_outMem_pow_leak_dict[str(cfg.xbar_size)]
 instrnMem_pow_leak =  instrnMem_pow_leak_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction

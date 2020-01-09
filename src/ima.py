@@ -97,8 +97,8 @@ class ima (object):
             else:
                 adc_res = cfg.adc_res
 
-            print("adc_key",adc_key)
-            print("adc_res",adc_res)
+            #print("adc_key",adc_key)
+            #print("adc_res",adc_res)
 
             temp_adc = imod.adc (adc_res)
             self.adc_list.append(temp_adc)
