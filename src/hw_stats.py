@@ -7,7 +7,6 @@ import node_metrics
 import tile_metrics
 import ima_metrics
 
-
 ns = 10 ** (-9)
 mw = 10 ** (-3)
 nj = 10 ** (-9)
@@ -38,7 +37,7 @@ for k in range (cfg.num_adc):
     hw_comp_energy['adc_'+str(k)] = param.adc_pow_dyn_dict[str(cfg.adc_res_new[str('matrix_adc_'+str(k))])]
 
 # Used to calculate dynamic energy consumption and other metrics (area/time/total_power/peak_power)
-def get_hw_stats (fid, node_dut, cycle):
+def get_hw_stats (fid, node_dut, cycle, net):
 
     # List of all components that dissipate power
     hw_comp_access = {'xbar_mvm':0, 'xbar_op':0,
@@ -183,8 +182,13 @@ def get_hw_stats (fid, node_dut, cycle):
             'tile_area':0.0,
             'core_area':0.0,
             'cycles':0,
-            'time':0.0}
+            'time':0.0,
+            'network_packet_injection_rate':'',
+            'number of tiles mapped':0, 
+            'network_name':''}
 
+    metric_dict['network_name'] = net
+    metric_dict['number_tiles_mapped'] = cfg.num_tile_compute
     metric_dict['leakage_power'] = node_metrics.compute_pow_leak () # in mW
     metric_dict['peak_power'] = node_metrics.compute_pow_peak () # in mW
     metric_dict['node_area'] = node_metrics.compute_area () # in mm2
@@ -205,6 +209,9 @@ def get_hw_stats (fid, node_dut, cycle):
     fid.write ('network packet injection rate: ' + str(packet_inj_rate) + '\n')
     fid.write ('number of tiles mapped: ' + str(cfg.num_tile_compute))
 
+    metric_dict['network_packet_injection_rate'] = packet_inj_rate
+
     return metric_dict
+
 
 
