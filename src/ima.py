@@ -764,16 +764,16 @@ class ima (object):
             latency_out_list = []
             for idx, temp in enumerate(mask):
                 print("idx", idx)
-                if cfg.training:
-                    if ((temp[0] == '1') or (temp[1] == '1')):
-                        fb_found += 1
-                        #break
-                    if (temp[2] == '1'):
-                        d_found += 1
-                        #break
-                if cfg.inference:
-                    if (temp == '1'):
-                        fb_found += 1
+                # if cfg.training:
+                if ((temp[0] == '1') or (temp[1] == '1')):
+                    fb_found += 1
+                    #break
+                if (temp[2] == '1'):
+                    d_found += 1
+                    #break
+                # if cfg.inference:
+                #     if (temp == '1'):
+                #         fb_found += 1
 
                 ## MVM inner product goes through a 3 stage pipeline (each stage consumes 128 cycles - xbar aces latency)
                 # Cycle1 - xbar_inMem + DAC + XBar
