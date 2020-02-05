@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 
-SIMULATOR_PATH=" "
+SIMULATOR_PATH="/home/marte/Desktop/puma-simulator"
 sys.path.insert (0, SIMULATOR_PATH + '/include/')
 sys.path.insert (0, SIMULATOR_PATH + '/src/') 
 sys.path.insert (0, SIMULATOR_PATH +'/')

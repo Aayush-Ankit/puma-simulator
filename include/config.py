@@ -116,3 +116,5 @@ num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dumm
 
 encrypted = False
 authenticated = False
+cypher_name = ''
+cypher_hash = ''
