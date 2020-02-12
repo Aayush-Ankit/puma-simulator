@@ -1,3 +1,14 @@
+#****************************************************************************************
+# Designed by - Guilherme Maurer                
+#               Miguel Xavier
+#               Plinio Silveira
+#               Yago Liborio
+#               Pontifical Catholic University of Rio Grande do Sul 
+#               
+# GenerateMAC - A script that calls functions to generate MAC for Model and Input
+#
+#****************************************************************************************
+
 from Factory import Factory
 import sys
 

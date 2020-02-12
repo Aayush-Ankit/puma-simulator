@@ -114,6 +114,8 @@ num_node = 1
 # Do not change this - total number of tiles
 num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute
 
+#Security parameters - Used to verify if the model used is encryted or authenticated (set by dpe.py)
+#Do not change
 encrypted = False
 authenticated = False
 cypher_name = ''

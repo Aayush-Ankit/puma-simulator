@@ -59,11 +59,9 @@ import ima_metrics
 import tile_metrics
 import node_metrics
 import dnn_wt_p
-import Factory
+from Factory import Factory
 
-from modeldecrypt import modelcheck
-from check import check
-from decryptall import decrypt
+
 
 compiler_path = os.path.join(root_dir, "test/testasm/")
 trace_path = os.path.join(root_dir, "test/traces/")
@@ -87,14 +85,18 @@ class DPE:
         print("Trace directory: ", tracedir)
 
         if cfg.authenticated:
-            f = Factory.Factory()
+            f = Factory()
             puma_cypher_hash = f.auth(cfg.cypher_hash)
-            puma_cypher_hash.authenticateModel(instrndir)
-            puma_cypher_hash.authenticateInput(instrndir)
+
+            if not puma_cypher_hash.authenticateModel(instrndir):
+                print("Model not authenticated")
+                sys.exit(1)
+            if not puma_cypher_hash.authenticateInput(instrndir):
+                print("Input not authenticated")
+                sys.exit(1)
 
         if cfg.encrypted:
-            
-            f = Factory.Factory()
+            f = Factory()
             puma_crypto = f.crypto(cfg.cypher_name)
             puma_crypto.decrypt(instrndir)
         assert (os.path.exists(instrndir) ==1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
@@ -223,9 +225,10 @@ if __name__ == '__main__':
 
     cfg.num_tile_compute = total_tiles
     cfg.num_tile = cfg.num_node * cfg.num_tile_compute + 2
-    print(cfg.num_tile)
-    print(cfg.encrypted)
-    print(cfg.cypher_name)
+    
+    #print(cfg.num_tile)
+    #print(cfg.encrypted)
+    #print(cfg.cypher_name)
    
     print('Input net is {}'.format(net))
     print(compiler_path)

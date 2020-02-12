@@ -1,3 +1,12 @@
+# Designed by - Guilherme Maurer                
+#               Miguel Xavier
+#               Plinio Silveira
+#               Yago Liborio
+#               Pontifical Catholic University of Rio Grande do Sul 
+#               
+# IAuth - Defines the interface used to authenticate models and input
+#
+#****************************************************************************************
 from abc import ABCMeta, abstractmethod
 
 class IAuth:

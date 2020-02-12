@@ -1,3 +1,14 @@
+#****************************************************************************************
+# Designed by - Guilherme Maurer                
+#               Miguel Xavier
+#               Plinio Silveira
+#               Yago Liborio
+#               Pontifical Catholic University of Rio Grande do Sul 
+#               
+# Encrypter - A script that calls an encrypt function
+#
+#****************************************************************************************
+
 from Factory import Factory
 import sys
 
