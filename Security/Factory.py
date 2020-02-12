@@ -24,7 +24,7 @@ class Factory:
             print("Invalid cryptography argument, please select a valid security implementation")
             sys.exit(1)
 
-    #Used to select wich hash and cypher will be used for authentication
+    #Used to select which hash and cypher will be used for authentication
     def auth(self,cypher_hash):
         if cypher_hash == 'Fer256' :
             return AuthFer256(self.key)
