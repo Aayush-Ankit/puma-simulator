@@ -1,4 +1,4 @@
-# Security and multi-model
+# Security and multi-model implementation
 This document describes alterations made to the compiler and simulator of the PUMA machine learning accelerator that allows it to execute multiple models concurrently and with more security.
 
 
