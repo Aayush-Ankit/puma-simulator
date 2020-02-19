@@ -30,5 +30,5 @@ class Factory:
             return AuthFer256(self.key)
         else:
             print("Invalid authentication argument, please select a valid authentication implementation")
+            sys.exit(1)
 
-    #def hash(self, name):
