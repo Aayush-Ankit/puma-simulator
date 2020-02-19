@@ -1,3 +1,11 @@
+# Security and multi-model
+This document describes alterations made to the compiler and simulator of the PUMA machine learning accelerator that allows it to execute multiple models concurrently and with more security.
+
+
+- [Alterations Made](#Alterations-Made)
+- [How to Add your Own Security Module](#How-to-Add-your-Own-Security-Module)
+- [How to run](#how-to-run)
+
 ## Alterations Made
 
 Two different solutions for security were implemented, first a MAC(Message Authentication Code) was implemented to validate models received by the architecture and secondly a model encryption approach was developed to allow the model to be securely sent to the simulator.
@@ -5,9 +13,7 @@ Two different solutions for security were implemented, first a MAC(Message Authe
 For the security module, we implemented two interfaces that allow for different implementations of cryptography and authentication methods. We also made one implementation for each interface, the first one was for authentication and uses a SHA256 hash to generate a hash of the model and the input and then we used the Fernet python library to encrypt the hash generating a MAC. The Fernet library was also used for the encryption/decryption of models. We also created a factory class in order to make adding new security models easier. Other alterations made to run models securely were in the source file dpe.py in which two parameters -a and -c that allow the simulator to run authenticated models “-a” or encrypted models “-c” were added.
 
   
-![UML Diagram](/images/puma.png)
-Format: ![Alt Text](url)
-  
+![UML Diagram](/images/puma.png)  
 
 Figure 1: UML Diagram showing the relations between the Security classes.
 
