@@ -109,10 +109,6 @@ class DPE:
         if not os.path.exists(tracedir):
             os.makedirs(tracedir)
 
-
-            
-
-
         for i in range(cfg.num_tile):
             temp_tiledir = tracedir + '/tile' + str(i)
             if not os.path.exists(temp_tiledir):
