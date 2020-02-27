@@ -12,8 +12,10 @@ fi
 PYTHON=python2
 
 for g in *.puma; do
+    echo $g
     #Parse tile and core ids
     dataset="$( cut -d '-' -f 1 <<< "$g" )"
+    #echo $dataset
     tileid=$(echo $g | grep -o -E 'tile[0-9]+' | head -1)
 
     if [[ $g == *"core"* ]]; then
@@ -50,8 +52,21 @@ for g in *.puma; do
     $PYTHON $f.py
 done
 
+
 cp input.py $dataset/input.py
+
+echo $dataset
 cd $dataset
 $PYTHON input.py
+
+if [[ $1 == *"-c"* ]]; then 
+    $PYTHON $SIMULATOR_PATH/Security/encrypter.py $2 $PWD
+    rm -r tile*
+fi
+
+if [[ $1 == *"-a"*  ]]; then
+    $PYTHON $SIMULATOR_PATH/Security/generateMAC.py $2 $PWD
+fi
+
 cd ..
 $PYTHON populate.py
