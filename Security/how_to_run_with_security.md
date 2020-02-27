@@ -13,7 +13,7 @@ Two different solutions for security were implemented, first a MAC(Message Authe
 For the security module, we implemented two interfaces that allow for different implementations of cryptography and authentication methods. We also made one implementation for each interface, the first one was for authentication and uses a SHA256 hash to generate a hash of the model and the input and then we used the Fernet python library to encrypt the hash generating a MAC. The Fernet library was also used for the encryption/decryption of models. We also created a factory class in order to make adding new security models easier. Other alterations made to run models securely were in the source file dpe.py in which two parameters -a and -c that allow the simulator to run authenticated models “-a” or encrypted models “-c” were added.
 
   
-![UML Diagram](/images/puma.png)  
+![image](https://user-images.githubusercontent.com/2287889/75450667-fe2df500-594d-11ea-9f75-e55f2af90448.png)
 
 Figure 1: UML Diagram showing the relations between the Security classes.
 
