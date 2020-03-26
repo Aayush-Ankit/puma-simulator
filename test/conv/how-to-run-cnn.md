@@ -1,9 +1,9 @@
 1. Copy the sample cnnbig.cpp and paste it in puma-compiler/test/
 
-2. Chnage the cnnbig.cpp as needed.
+2. Change the cnnbig.cpp as needed.
 
    NOTE: Do not change in_size_x and in_size_y
-	 Only chnage the input and output channels
+	 Only change the input and output channels
 
    If you want to simulate a conv layer for bigger input activation map, just multiply the results for this by X
 
