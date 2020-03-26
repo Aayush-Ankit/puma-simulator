@@ -52,15 +52,12 @@ make
 cd ../test/
 export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 ```
-<<<<<<< HEAD
-=======
 #### 4.3 - Compile the examples:
 ### To run with weights, train a model in any deep-learning framework (like py-torch or tensorflow) to get the weights.
 ### A "name of model".cpp file and a weights folder is required in the Puma Compiler /test/.
 ### A sample mlp_l4_mnist.cpp and mlp_l4_mnist_weights/ is provided in Puma Simulator/test/mlp_l4_mnist/ as a template which needs to be copied to Puma Compiler/test or
 ### Create your model.cpp (which will have same configuration as the one used to get weights in pytorch)  and weights folder (obtained from pytorch) in Puma Compiler/test
 ```
->>>>>>> f52fe0ff77a2467e526e2d4bc7d9e3a8ea6c20de
 
 #### 4.2 - Compile model:
 
