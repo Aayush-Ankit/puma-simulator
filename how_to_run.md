@@ -111,9 +111,7 @@ num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dumm
 ```
 cd "PATH TO PUMA SIMULATOR"/src
 
-python dpe.py -n lstm # can specify num_tile_compute using the -t flag
-
-python dpe.py -n lstm -t 25
+python dpe.py -n lstm 
 ```
 
 ### 8. Then, you should see some results like:
