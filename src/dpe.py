@@ -26,11 +26,14 @@ import getopt
 import os
 import argparse
 
+
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src_dir = os.path.join(root_dir, "src")
 include_dir = os.path.join(root_dir, "include")
 test_dir = os.path.join(root_dir, "test")
+security_dir=os.path.join(root_dir, "Security")
 
+sys.path.insert(1, security_dir)
 sys.path.insert(0, include_dir)
 sys.path.insert(0, src_dir)
 sys.path.insert(0, root_dir)
@@ -56,9 +59,20 @@ import ima_metrics
 import tile_metrics
 import node_metrics
 import dnn_wt_p
+from Factory import Factory
+
+
 
 compiler_path = os.path.join(root_dir, "test/testasm/")
 trace_path = os.path.join(root_dir, "test/traces/")
+
+
+def count_tiles(net_path):
+    t_count = 0
+    while os.path.isdir(net_path + "/tile" + str(t_count)):
+        t_count += 1
+    return t_count
+
 
 class DPE:
 
@@ -70,6 +84,21 @@ class DPE:
         print("Inst directory: ", instrndir)
         print("Trace directory: ", tracedir)
 
+        if cfg.authenticated:
+            f = Factory()
+            puma_cypher_hash = f.auth(cfg.cypher_hash)
+
+            if not puma_cypher_hash.authenticateModel(instrndir):
+                print("Model not authenticated")
+                sys.exit(1)
+            if not puma_cypher_hash.authenticateInput(instrndir):
+                print("Input not authenticated")
+                sys.exit(1)
+
+        if cfg.encrypted:
+            f = Factory()
+            puma_crypto = f.crypto(cfg.cypher_name)
+            puma_crypto.decrypt(instrndir)
         assert (os.path.exists(instrndir) ==1), 'Instructions for net missing: generate intuctions (in folder hierarchy) hierarchy'
         '''if not os.path.exists(instrndir):
             os.makedirs(instrndir)
@@ -79,6 +108,7 @@ class DPE:
 
         if not os.path.exists(tracedir):
             os.makedirs(tracedir)
+
         for i in range(cfg.num_tile):
             temp_tiledir = tracedir + '/tile' + str(i)
             if not os.path.exists(temp_tiledir):
@@ -97,10 +127,18 @@ class DPE:
         node_dut.node_init(self.instrnpath, self.tracepath)
 
         # Read the input data (input.t7) into the input tile's edram
-        inp_filename = self.instrnpath + 'input.npy'
+     
+        inp_filename = os.path.join(str(self.instrnpath) ,'input.npy')
+
+
         inp_tileId = 0
         assert (os.path.exists(inp_filename)
                 ), 'Input Error: Provide input before running the DPE'
+
+        assert (os.path.exists(instrndir+'/'+'tile0')
+                ), 'Input Error: Provide input before running the DPE'
+  
+            
         inp = np.load(inp_filename, allow_pickle=True).item()
         print ('length of input data:', len(inp['data']))
         for i in range(len(inp['data'])):
@@ -156,7 +194,38 @@ if __name__ == '__main__':
         "-n", "--net", help="The net name as it is in test/testasm.", default='large')
     args = parser.parse_args()
     net = args.net
-    
-    print('Input net is {}'.format(net))
-    DPE().run(net)
+ 
+    parser.add_argument(
+            '-c',"--cryptography", help="Run an encrypted model")
+    parser.add_argument(
+            '-a',"--authenticated", help="Run only authenticated models") 
+    args = parser.parse_args()
+    net = args.net
 
+    cfg.authenticated = True if args.authenticated else False
+    
+    cfg.encrypted = True if args.cryptography else False 
+    cfg.cypher_name = args.cryptography
+    cfg.cypher_hash = args.authenticated
+    
+    
+    if cfg.encrypted :
+        model_path = os.path.join(compiler_path,net,"crypto") 
+    else:
+        model_path = os.path.join(compiler_path,net) 
+
+    total_tiles = count_tiles(model_path) - 2
+    print(total_tiles)
+    
+    cfg.num_tile_compute = total_tiles
+    cfg.num_tile = cfg.num_node * cfg.num_tile_compute + 2
+    
+    #print(cfg.num_tile)
+    #print(cfg.encrypted)
+    #print(cfg.cypher_name)
+   
+
+    print('Input net is {}'.format(net))
+    print(compiler_path)
+    DPE().run(net)
+    
