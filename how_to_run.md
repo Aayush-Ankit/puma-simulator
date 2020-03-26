@@ -55,6 +55,8 @@ export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 
 #### 4.2 - Compile model:
 
+*Note: To run cnns, consult the test/conv directory
+
 *Note: To run with weights, train a model in any deep-learning framework (like pytorch or tensorflow) to get the weights. A model file and a weights folder are required in the ```test/``` directory. A sample ```mlp_l4_mnist.cpp``` and ```mlp_l4_mnist_weights/``` is provided in ```puma-simulator/test/mnist_l4_mnist/``` as a template which needs to be copied to ```puma-compiler/test```*.
 
 ```
@@ -86,7 +88,7 @@ Config file - ```puma-simulator/include/config.py```.
 
 Update ```num_tile_compute``` in config file based on the number of tiles generated in your ```<example>``` model.
 
-For *inference*, set ```num_matrix``` in config file equal to N_CONSTANT_MVMUS_PER_CORE in ```puma-compilersrc/common.h```.
+For *inference*, set ```num_matrix``` in config file equal to N_CONSTANT_MVMUS_PER_CORE in ```puma-compiler/src/common.h```.
 
 *Example: Tiles generated from the ```lstm-layer.cpp``` model, a total of 25 tiles:*
 
