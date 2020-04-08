@@ -4,7 +4,7 @@
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
 cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
-xbar_record = 0
+xbar_record = 1
 inference = 1
 training = not(inference)
 
@@ -102,11 +102,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-#<<<<<<< HEAD
-num_tile_compute =4 # number of tiles mapped by dnn (leaving input and output tiles)
-#=======
-#num_tile_compute = 4 # number of tiles mapped by dnn (leaving input and output tiles)
-#>>>>>>> f4f8f41269a93523c87f38d8325427df763a4d4a
+num_tile_compute = 7 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
