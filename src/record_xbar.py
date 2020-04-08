@@ -22,20 +22,23 @@ def record_xbar (node):
                         xbar_currents.append(l.xb_record)
     #print(xbar_currents)
     xbar_currents_arr = np.asarray (xbar_currents)
-    print(xbar_currents_arr)
+    #print(xbar_currents_arr)
 
     # Analyze the stats (find curent distribution)
-    thresh = np.max(xbar_currents_arr) / 20.0
+    thresh = np.max(xbar_currents_arr.all()) / 20.0
     #thresh = 0.0
     arr_size = np.size (xbar_currents_arr)
     # nonzero_curr = np.count_nonzero(xbar_currents_arr)
-    num_val = np.sum(np.absolute(xbar_currents_arr) > thresh)
+    num_val = np.sum(np.abs(element) for element in xbar_currents_arr > thresh)
     print ('non-zero percentage: ' + str(num_val/float(arr_size)*100)[0:5] + ' %')
 
     #plt.plot(np.reshape(xbar_currents_arr, arr_size))
     flat_arr = np.reshape(xbar_currents_arr, arr_size)
-    weights = np.ones_like(flat_arr)/float(len(flat_arr))
-    plt.hist(flat_arr, bins=50, weights=weights)
+    curr = []
+    for i in range(0, flat_arr.shape[0]):
+        curr.append(np.sum(flat_arr[i])) 
+    weights = np.ones_like(curr)/float(len(flat_arr))
+    plt.hist(np.asarray(curr), bins = 50, weights = weights)
     plt.title("Xbar current distribution")
     plt.ylabel("Fraction")
     plt.xlabel("Xbar current")
