@@ -75,7 +75,11 @@ make <lstm-layer>.test       # Compiles a specific example (make <mlp_l4_mnist>.
 ./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
 ```
 
-### 5. From simulator/test/utils folder, copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler/test folder.
+### 5
+
+From simulator/test/utils folder, copy the ```generate-py.sh``` and ```input.py``` and ```populate.py``` files to compiler/test folder.
+
+From simulator/include/config folder, copy ``cnn-config.py``` or ```mlp-config.py``` and paste it in simulator/include as ```config.py```
 
 ### 6. Generate compiled assembly for running on simulator:
 
@@ -190,8 +194,14 @@ number of tiles mapped: 23
 
 ```python reg_test_1.py -n mlp```
 
+### 11. To run Regression tests for cnn, go to simulator/test/val
 
-### 11. Special note for running cnn workloads
+```./sanitycheck_on_cnn.sh ```  
+
+Dont forget to change the name of the desired cnn in line 4 of script 
+
+
+### 12. Special note for running cnn workloads
 
 1. Copy the sample cnn8.cpp or cnn9.cpp and paste it in puma-compiler/test/ and follow above steps
 
