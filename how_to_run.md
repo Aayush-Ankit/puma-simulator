@@ -189,3 +189,24 @@ number of tiles mapped: 23
 ### 10. To run Regression tests after running with weights for inference, go to simulator/test/val.
 
 ```python reg_test_1.py -n mlp```
+
+
+### 11. Special note for running cnn workloads
+
+1. Copy the sample cnn8.cpp or cnn9.cpp and paste it in puma-compiler/test/ and follow above steps
+
+2. Change the .cpp as needed.
+
+   NOTE: If you run into errors for running workloads with big input activation maps, 
+         try running the same workload for smaller input feature map sizes (small_x, small_y) 
+         while keeping everything else same
+
+
+ just multiply the results for this by X
+
+  where X = (actual input height * actual input width) / ( small_x * small_y)
+
+    
+   In line 18 of cpp file, dont forget to change the name as required. This is the name of 'net'
+
+
