@@ -72,7 +72,7 @@ make <lstm-layer>.test       # Compiles a specific example (make <mlp_l4_mnist>.
 ```
 
 
-#### 4.3 - Execute the examples to generate the PUMA assembly code:
+#### 4.4 - Execute the examples to generate the PUMA assembly code:
 
 ```
 ./<lstm-model>.test          # Execute a specific example (./<mlp_l4_mnist>.test) 
