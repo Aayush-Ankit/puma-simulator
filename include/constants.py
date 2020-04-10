@@ -1,3 +1,4 @@
+
 ## This file contains the data structures used in differnet hierarchies.
 ## It also holds power, area and latency numbers of different component used in DPE design
 import config as cfg
@@ -63,7 +64,7 @@ last_stage = 'ex'
 
 # IMA component latency/power/area dictionary (all values in ns, mw, mm2)
 # XBAR - Models from ISAAC paper
-xbar_lat_dict = {'2': {'32' : 32,   # first indexed by xbar_bits then by xbar_size
+xbar_lat_dict = {'2' : {'32' : 32,   # first indexed by xbar_bits then by xbar_size
                        '64' : 64,
                        '128': 128,
                        '256': 256},
@@ -74,7 +75,7 @@ xbar_lat_dict = {'2': {'32' : 32,   # first indexed by xbar_bits then by xbar_si
                  '6': {'32' : 32,
                        '64' : 64,
                        '128': 128,
-                       '256': 256}}
+                      '256': 256}}
 
 xbar_pow_dict = {'2': {'32' : 0.01875,
                        '64' : 0.075,
@@ -109,13 +110,15 @@ xbar_op_pow = 4.44 * 3.27 / (12.8)
 
 xbar_ip_lat = 100.0
 #xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
-xbar_ip_pow = (1.37*2.0) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
-
+xbar_ip_pow =  (1.37*2.0) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
+xbar_pow_dyn = 0.32383
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
 xbar_wr_lat = 351.0 * 1000 * (1/32.0)
 
 # the following is lumped power for xbar rd/wr (for whole array) - includes peripherals
+
+
 xbar_rd_pow = 208.0 * 1000 * (1/32.0) / xbar_rd_lat
 xbar_wr_pow = 676.0 * 1000 * (1/32.0) / xbar_rd_lat
 
@@ -148,24 +151,28 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
 adc_lat_dict = {'1' : 12.5,
                 '2' : 25,
                 '4' : 50,
+		'6' :75,
                 '8' : 100,
                 '16': 200}
 
 adc_pow_dyn_dict = {'1' : 0.225,
                     '2' : 0.45,
                     '4' : 0.9,
+		    '6' : 1.35,	
                     '8' : 1.8,
                     '16': 3.6}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
                      '4' : 0.1,
+		     '6' : 0.15,	
                      '8' : 0.2,
                      '16': 0.4}
 
 adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
                  '4' : 0.0012,
+		 '6' : 0.0012,
                  '8' : 0.0012,
                  '16': 0.0012}
 
@@ -213,60 +220,60 @@ mux_area = 0
 # Data Memory value dictionary
 dataMem_lat_dict = {'256' : 1,
                     '512' : 1,
-                    '1024': 1,
+                    '4096': 1,
                     '2048': 1}
 
 dataMem_pow_dyn_dict = {'256' : 0.16,
                         '512' : 0.24,
-                        '1024': 0.33,
+                        '4096': 0.33,
                         '2048': 0.57}
 
 dataMem_pow_leak_dict = {'256' : 0.044,
                          '512' : 0.078,
-                         '1024': 0.147,
+                         '4096': 0.147,
                          '2048': 0.33}
 
 dataMem_area_dict = {'256' : 0.00056,
                      '512' : 0.00108,
-                     '1024': 0.00192,
+                     '4096': 0.00192,
                      '2048': 0.00392}
 
 dataMem_lat_dict = {'256' : 1,
                     '512' : 1,
-                    '1024': 1,
+                    '4096': 1,
                     '2048': 1}
 
 dataMem_pow_dyn_dict = {'256' : 0.16,
                         '512' : 0.24,
-                        '1024': 0.33,
+                        '4096': 0.33,
                         '2048': 0.57}
 
 dataMem_pow_leak_dict = {'256' : 0.044,
                          '512' : 0.078,
-                         '1024': 0.147,
+                         '4096': 0.147,
                          '2048': 0.33}
 
 dataMem_area_dict = {'256' : 0.00056,
                      '512' : 0.00108,
-                     '1024': 0.00192,
+                     '4096': 0.00192,
                      '2048': 0.00392}
 
 # Instruction Memory value dictionary
 instrnMem_lat_dict = {'512' : 1,
                       '1024': 1,
-                      '2048': 1}
+                      '8192': 1}
 
 instrnMem_pow_dyn_dict = {'512' : 0.46,
                           '1024': 0.53,
-                          '2048': 0.65}
+                          '8192': 0.65}
 
 instrnMem_pow_leak_dict = {'512' : 0.078,
                            '1024': 0.147,
-                           '2048': 0.33}
+                           '8192': 0.33}
 
 instrnMem_area_dict = {'512' : 0.00108,
                        '1024': 0.00192,
-                       '2048': 0.0041}
+                       '8192': 0.0041}
 
 # Xbar_inMem value dictionary (1 access means reading (dac_res) bits for each xbar row)
 # for computing average power of ima - scale dyn_pow down by xbar_size
@@ -384,35 +391,39 @@ memInterface_lat = infinity # infinite latency
 # EDRAM value dictionary (counter storage is not coounted)
 edram_lat_dict = {'8'  :2,
                   '64' : 2, #edram access width is constant = 256 bits
-                  '128': 2}
+                  '128': 2,
+                  '2048':2}
 
 edram_pow_dyn_dict = {'8' : 17.2/2,
                       '64' : 17.2/2, # (0.0172 nJ with 2 cycles access latency)
-                      '128': 25.35/2}
+                      '128': 25.35/2,
+                      '2048':17.2/2}
 
 edram_pow_leak_dict = {'8' : 0.46,
                        '64' : 0.46,
-                       '128': 0.77}
+                       '128': 0.77,
+                       '2048':0.46}
 
 edram_area_dict = {'8' : 0.086,
                    '64' : 0.086,
-                   '128': 0.121}
+                   '128': 0.121,
+                   '2048':0.086}
 
 # Tile Instruction Memory value dictionary
 tile_instrnMem_lat_dict = {'512' : 1,
-                          '1024': 1,
+                          '4096': 1,
                           '2048': 1}
 
 tile_instrnMem_pow_dyn_dict = {'512' : 0.46,
-                               '1024': 0.53,
+                               '4096': 0.53,
                                '2048': 0.65}
 
 tile_instrnMem_pow_leak_dict = {'512' : 0.078,
-                                '1024': 0.147,
+                                '4096': 0.147,
                                 '2048': 0.33}
 
 tile_instrnMem_area_dict = {'512' : 0.00108,
-                            '1024': 0.00192,
+                            '4096': 0.00192,
                             '2048': 0.0041}
 
 # counter storage (2048 Byte Scratch RAM - 1 counter entry shared by 256 bits of data (16 neurons))
