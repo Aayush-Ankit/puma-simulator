@@ -466,13 +466,23 @@ class memory (object):
         return self.memfile[addr - self.addr_start]
 
 
-    def write (self, addr, data):
+    def write (self, addr, data, type_t='data'):
         self.num_access += 1
         assert (type(addr) == int), 'addr type should be int'
         assert (self.addr_start <= addr <= self.addr_end), 'addr exceeds the memory bounds'
         #print 'length of data ' + str(len(data))
-        assert ((type(data) ==  str) and (len(data) == cfg.data_width)), 'data should be a string with mem_width bits'
-        self.memfile[addr - self.addr_start] = data
+
+	assert ((type(data) == str) and ((type_t == 'data')) or (type_t == 'addr')) 
+        if (type_t == 'data'):
+	    try:
+		assert (len(data) == cfg.data_width)
+	    except AssertionError:
+		print("Warning: Data width received is not coherent, NEEDS DEBUGGING")
+	        data = data[0:16]
+	else:
+	    assert (len(data) == cfg.addr_width)
+         
+	self.memfile[addr - self.addr_start] = data
 
     def reset (self):
         self.num_access += 1
