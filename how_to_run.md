@@ -61,7 +61,7 @@ export LD_LIBRARY_PATH=`pwd`/../src:$LD_LIBRARY_PATH
 
 #### 4.2 - Compile model:
 
-*Note: To run cnns, consult the test/conv directory
+*Note: To run cnns, scroll down and refer to point 12
 
 *Note: To run with weights, train a model in any deep-learning framework (like pytorch or tensorflow) to get the weights. A model file and a weights folder are required in the ```test/``` directory. A sample ```mlp_l4_mnist.cpp``` and ```mlp_l4_mnist_weights/``` is provided in ```puma-simulator/test/mnist_l4_mnist/``` as a template which needs to be copied to ```puma-compiler/test```*.
 
