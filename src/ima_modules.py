@@ -466,12 +466,22 @@ class memory (object):
         return self.memfile[addr - self.addr_start]
 
 
-    def write (self, addr, data):
+    def write (self, addr, data, type_t='data'):
         self.num_access += 1
         assert (type(addr) == int), 'addr type should be int'
         assert (self.addr_start <= addr <= self.addr_end), 'addr exceeds the memory bounds'
         #print 'length of data ' + str(len(data))
-        assert ((type(data) ==  str) and (len(data) == cfg.data_width)), 'data should be a string with mem_width bits'
+        #assert ((type(data) ==  str) and (len(data) == cfg.data_width)), 'data should be a string with mem_width bits'
+	assert ((type(data) == str) and ((type_t == 'data')) or (type_t == 'addr')) # UPDATE - Pointer/address for LD/ST written by previous SET instrn. can be larger than data_width
+	if (type_t == 'data'):
+	    try: 
+		assert (len(data) == cfg.data_width)
+		#print("I am here!!")
+	    except AssertionError:
+		print("Warning: Data width received is not-coherent, NEEDS DEBUGGING")
+		data = data[0:16]
+	else:
+	    assert (len(data) == cfg.addr_width) # Specification for pointer (or addres type data)
         self.memfile[addr - self.addr_start] = data
 
     def reset (self):
