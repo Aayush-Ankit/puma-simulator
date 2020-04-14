@@ -106,6 +106,8 @@ class DPE:
         print ('length of input data:', len(inp['data']))
         for i in range(len(inp['data'])):
             data = float2fixed(inp['data'][i], cfg.int_bits, cfg.frac_bits)
+            #print("node_dut.tile_list[inp_tileId].edram_controller.mem.memfile", len(node_dut.tile_list[inp_tileId].edram_controller.mem.memfile))
+            #print("i", i)
             node_dut.tile_list[inp_tileId].edram_controller.mem.memfile[i] = data
             node_dut.tile_list[inp_tileId].edram_controller.counter[i] = int(
                 inp['counter'][i])

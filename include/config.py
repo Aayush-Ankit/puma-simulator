@@ -53,7 +53,7 @@ adc_res_new = {
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 2536 #in entries
+instrnMem_size = 903032 #in entries
 
 # This depends on above parameters
 if (training):
@@ -84,8 +84,8 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 64 # in Kilobytes (64 KB - same as issac)
-tile_instrnMem_size = 2048 # in entries
+edram_size = 512 # in Kilobytes (64 KB - same as issac)
+tile_instrnMem_size = 903032 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile
@@ -102,7 +102,7 @@ packet_width = edram_buswidth/data_width #in multiples of flits (data considered
 # (b bit of address = logN, N is the number of nodes)
 
 # Change here - Specify the Node parameters here
-num_tile_compute = 68 # number of tiles mapped by dnn (leaving input and output tiles)
+num_tile_compute = 1 # number of tiles mapped by dnn (leaving input and output tiles)
 num_tile_max = 168.0 # maximum number of tiles per node
 num_inj_max = num_tile_max # [conservative] max number of packet injections that can occur in a cycle (each tile injects a packet into NOC each cycle)
 noc_inj_rate = 0.005
