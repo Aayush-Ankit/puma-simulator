@@ -52,7 +52,7 @@ def i_set (d1, imm, vec = 1):
     i_temp = param.dummy_instrn.copy ()
     i_temp['opcode'] = 'set'
     i_temp['d1'] = d1
-    i_temp['imm'] = imm if (type(imm) == str) else int2bin(imm, 16)
+    i_temp['imm'] = imm if (type(imm) == str) else int2bin(imm, cfg.addr_width)
     i_temp['vec'] = vec
     return i_temp
 

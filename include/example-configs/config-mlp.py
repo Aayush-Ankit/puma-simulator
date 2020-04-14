@@ -26,6 +26,7 @@ frac_bits = num_bits - int_bits
 # instrnMem_size: (in Bytes) - 512, 1024, 2048
 
 # Fixed parameters
+addr_width = 22 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
 data_width = num_bits # (in bits)
 xbdata_width = data_width # (in bits)
 instrn_width = 48 # (in bits)
