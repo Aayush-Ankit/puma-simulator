@@ -89,7 +89,7 @@ class tile (object):
             self.ima_list[i].pipe_init (instrnfile, self.fid_list[i])
 
         # Initialize the EDRAM - invalidate all entries (valid_list)
-        self.edram_controller.valid = [0] * (cfg.edram_size*1024/(cfg.data_width/8))
+        self.edram_controller.valid = [0] * (cfg.edram_size*1024*8/(cfg.data_width))
 
         # Intiialize the receive buffer - invalidate
         self.receive_buffer.inv ()

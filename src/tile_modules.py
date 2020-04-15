@@ -119,9 +119,9 @@ class edram_controller (object):
         self.num_access_counter = 0
 
         # Instantiate EDRAM, valid and counter fields
-        self.mem  = edram (cfg.edram_size*1024/(cfg.data_width/8)) #edram_size is in KB
-        self.valid  = [0] * (cfg.edram_size*1024/(cfg.data_width/8)) #edram_size is in KB
-        self.counter  = [0] * (cfg.edram_size*1024/(cfg.data_width/8)) #edram_size is in KB
+        self.mem  = edram (cfg.edram_size*1024*8/(cfg.data_width)) #edram_size is in KB
+        self.valid  = [0] * (cfg.edram_size*1024*8/(cfg.data_width)) #edram_size is in KB
+        self.counter  = [0] * (cfg.edram_size*1024*8/(cfg.data_width)) #edram_size is in KB
 
         # Define latency
         self.latency = param.edram_lat

@@ -53,8 +53,8 @@ adc_res_new = {
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 512 #in entries
+dataMem_size = 4096 # 2048 is larger than num_matrix*(6*xbar_size)
+instrnMem_size = 8192 #in entries
 
 # This depends on above parameters
 if (training):
@@ -85,8 +85,8 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 64 # in Kilobytes (64 KB - same as issac)
-tile_instrnMem_size = 2048 # in entries
+edram_size = 2048 # in Kilobytes (64 KB - same as issac)
+tile_instrnMem_size = 4096 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile
