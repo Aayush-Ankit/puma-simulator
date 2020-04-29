@@ -284,7 +284,8 @@ class ima (object):
             # instruction specific (for eg: ld_dec - load's decode stage)
             if (dec_op == 'ld'):
                 assert (self.fd_instrn['r1'] >= datamem_off), 'load address for tile memory comes from data memory'
-                self.de_r1 = bin2int(self.dataMem.read(self.fd_instrn['r1']), cfg.num_bits) # absolute mem addr
+                self.de_r1 = bin2int(self.dataMem.read(self.fd_instrn['r1']), cfg.addr_width) # absolute mem addr
+		assert (self.de_r1 >=0) # mem addr for load should be non negative
                 self.de_d1 = self.fd_instrn['d1']
                 self.de_r2 = self.fd_instrn['imm'] # used for incrementing/decrementing counter for edram entries
                 self.de_vec = self.fd_instrn['vec']
@@ -298,7 +299,8 @@ class ima (object):
 
             elif (dec_op == 'st'):
                 assert (self.fd_instrn['d1'] >= datamem_off), 'store address for tile memory comes from data memory'
-                self.de_d1 = bin2int(self.dataMem.read(self.fd_instrn['d1']), cfg.num_bits) #absolute mem addr
+                self.de_d1 = bin2int(self.dataMem.read(self.fd_instrn['d1']), cfg.addr_width) #absolute mem addr
+		assert (self.de_d1 >=0) # mem addr for store should be non negative
                 self.de_r1 = self.fd_instrn['r1'] # reg addr
                 self.de_vec = self.fd_instrn['vec']
                 # source value will be read in execute stage
@@ -514,8 +516,9 @@ class ima (object):
                     # write to dataMem - check if addr is a valid datamem address
                     dst_addr = self.de_d1 + i
                     if (dst_addr >= datamem_off):
-                        self.dataMem.write (dst_addr, self.de_val1)
+                        self.dataMem.write(addr=dst_addr, data=self.de_val1, type_t='addr') #Updated for separate data_width and addr_width
                     else:
+			assert (1==0) # Set instructions cannot write to MVMU storage
                         writeToXbarMem (self, dst_addr, self.de_val1)
 
             elif (ex_op == 'cp'):
