@@ -346,6 +346,12 @@ xbar_outMem_area_dict = {'32'  : 0.00015,
                         '128'  : 0.00078,
                         '256'  : 0.0019}
 
+dataMem_size_max =  '2048'
+if str(cfg.dataMem_size) in dataMem_lat_dict:
+      dataMem_size_max =  str(cfg.dataMem_size)
+else:
+      print("Warning: No values for core data memory size provided. Using values for 2048 instead.")
+
 instrnMem_size_max =  '2048'
 if str(cfg.instrnMem_size) in instrnMem_lat_dict:
       instrnMem_size_max =  str(cfg.instrnMem_size)
@@ -364,7 +370,7 @@ adc_lat = adc_lat_dict [str(cfg.adc_res)]
 xbar_inMem_lat = xbar_inMem_lat_dict[str(cfg.xbar_size)]
 xbar_outMem_lat = xbar_outMem_lat_dict[str(cfg.xbar_size)]
 instrnMem_lat =  instrnMem_lat_dict[instrnMem_size_max]
-dataMem_lat =  dataMem_lat_dict[str(cfg.dataMem_size)]
+dataMem_lat =  dataMem_lat_dict[str(dataMem_size_max)]
 
 # Chosen area based on config file - only for components whose latency is parameter dependent
 xbar_area = xbar_area_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
@@ -373,7 +379,7 @@ adc_area = adc_area_dict [str(cfg.adc_res)]
 xbar_inMem_area = xbar_inMem_area_dict[str(cfg.xbar_size)]
 xbar_outMem_area = xbar_outMem_area_dict[str(cfg.xbar_size)]
 instrnMem_area =  instrnMem_area_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_area =  dataMem_area_dict[str(cfg.dataMem_size)]
+dataMem_area =  dataMem_area_dict[str(dataMem_size_max)]
 
 # Chosen dyn_power based on config file - only for components whose latency is parameter dependent
 #xbar_pow_dyn = xbar_pow_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
@@ -387,7 +393,7 @@ xbar_inMem_pow_dyn_read = xbar_inMem_pow_dyn_read_dict[str(cfg.xbar_size)]
 xbar_inMem_pow_dyn_write = xbar_inMem_pow_dyn_write_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_dyn = xbar_outMem_pow_dyn_dict[str(cfg.xbar_size)]
 instrnMem_pow_dyn =  instrnMem_pow_dyn_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(cfg.dataMem_size)]
+dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(dataMem_size_max)]
 
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
 xbar_pow_leak = 0
@@ -396,7 +402,7 @@ adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)] / 9.0 # took a constant rati
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_leak = xbar_outMem_pow_leak_dict[str(cfg.xbar_size)]
 instrnMem_pow_leak =  instrnMem_pow_leak_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_pow_leak =  dataMem_pow_leak_dict[str(cfg.dataMem_size)]
+dataMem_pow_leak =  dataMem_pow_leak_dict[str(dataMem_size_max)]
 
 # Core Control unit (control unit and pipeline registers)
 ccu_pow = 1.25*0.2 #0.2 for activvity
