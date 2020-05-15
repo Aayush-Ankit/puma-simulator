@@ -598,7 +598,7 @@ class ima (object):
                     self.xb_outMem_list[mat_id][key].reset ()
 
                     ## Loop to cover all bits of inputs
-                    for k in xrange (cfg.xbdata_width / cfg.dac_res):
+                    for k in xrange (cfg.input_prec / cfg.dac_res):
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
@@ -612,7 +612,7 @@ class ima (object):
                         out_dac = self.dacArray_list[mat_id][key].propagate_dummy(out_xb_inMem) #pass through
 
                         # Do for (data_width/xbar_bits) xbars
-                        num_xb = cfg.data_width / cfg.xbar_bits
+                        num_xb = cfg.weight_width / cfg.xbar_bits
                         out_xbar = [[] for x in range(num_xb)]
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
@@ -793,7 +793,7 @@ class ima (object):
                     print("adccccc.adc_res", adccccc.adc_res)
                 print("---")
                 '''
-                latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
+                latency_ip = lat_temp * ((cfg.input_prec / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))  #changed xbdata_width to input_prec
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
                 lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
@@ -862,8 +862,9 @@ class ima (object):
                 # (EDRAM + Controller always latency >= 2) - Follow this else deisgn breaks
                 if (ex_op == 'st' and self.stage_latency[sId] == 0):
                     # read the data from dataMem or xb_outMem depending on address
-                    st_data_addr =  self.de_r1 + self.ex_vec_count * (cfg.edram_buswidth/cfg.data_width) # address of data in register
-                    ex_val1 = ['' for num in range (cfg.edram_buswidth/cfg.data_width)] # modified
+		    # changed data_width to weight_width
+                    st_data_addr =  self.de_r1 + self.ex_vec_count * (cfg.edram_buswidth/cfg.weight_width) # address of data in register
+                    ex_val1 = ['' for num in range (cfg.edram_buswidth/cfg.weight_width)] # modified
                     if (st_data_addr >= cfg.num_xbar * cfg.xbar_size):
                         for num in range (self.de_r2): # modified
                             ex_val1[num] = self.dataMem.read (st_data_addr+num) # modified
@@ -891,13 +892,13 @@ class ima (object):
             # Check whether datamem access for st has finished
             elif (self.de_opcode == 'st' and self.stage_cycle[sId] == self.stage_latency[sId]):
                 # read the data from dataMem or xb_outMem depending on address
-                st_data_addr =  self.de_r1 + self.ex_vec_count * (cfg.edram_buswidth/cfg.data_width) # address of data in register
-                ex_val1 = ['' for num in range (cfg.edram_buswidth/cfg.data_width)] # modified
+                st_data_addr =  self.de_r1 + self.ex_vec_count * (cfg.edram_buswidth/cfg.weight_width) # address of data in register
+                ex_val1 = ['' for num in range (cfg.edram_buswidth/cfg.weight_width)] # modified
                 if (st_data_addr >= datamem_off):
-                    for num in range (cfg.edram_buswidth / cfg.data_width): # modified
+                    for num in range (cfg.edram_buswidth / cfg.weight_width): # modified
                         ex_val1[num] = self.dataMem.read (st_data_addr+num) # modified
                 else:
-                    for num in range (cfg.edram_buswidth / cfg.data_width): # modified
+                    for num in range (cfg.edram_buswidth / cfg.weight_width): # modified
                         ex_val1[num] = readFromXbarMem (self, st_data_addr+num)
                 # combine counter and data
                 ramstore = [str(self.de_val1), ex_val1[:]] # modified - 1st item in list: counter value, 2nd item: list of values to be written to edram
