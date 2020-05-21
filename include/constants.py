@@ -63,41 +63,50 @@ last_stage = 'ex'
 
 # IMA component latency/power/area dictionary (all values in ns, mw, mm2)
 # XBAR - Models from ISAAC paper
-xbar_lat_dict = {'2': {'32' : 32,   # first indexed by xbar_bits then by xbar_size
+xbar_lat_dict = {'2': {'16' : 16,
+		       '32' : 32,   # first indexed by xbar_bits then by xbar_size
                        '64' : 64,
                        '128': 128,
                        '256': 256},
-                 '4': {'32' : 32,
+                 '4': {'16' : 16,
+		       '32' : 32,
                        '64' : 64,
                        '128': 128,
                        '256': 256},
-                 '6': {'32' : 32,
+                 '6': {'16' : 16,
+		       '32' : 32,
                        '64' : 64,
                        '128': 128,
                        '256': 256}}
 
-xbar_pow_dict = {'2': {'32' : 0.01875,
+xbar_pow_dict = {'2': {'16' : 0.0046875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2},
-                 '4': {'32' : 0.01875,
+                 '4': {'16' : 0.0046875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2},
-                 '6': {'32' : 0.01875,
+                 '6': {'16' : 0.0046875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2}}
 
-xbar_area_dict = {'2': {'32' : 1.5625 * 10**(-6),
+xbar_area_dict = {'2': {'16' : 3.90625 * 10**(-7),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)},
-                  '4': {'32' : 1.5625 * 10**(-6),
+                  '4': {'16' : 3.90625 * 10**(-7),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)},
-                  '6': {'32' : 1.5625 * 10**(-6),
+                  '6': {'16' : 3.90625 * 10**(-7),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)}}
@@ -304,48 +313,57 @@ instrnMem_area_dict = {'512' : 0.00108,
 
 # Xbar_inMem value dictionary (1 access means reading (dac_res) bits for each xbar row)
 # for computing average power of ima - scale dyn_pow down by xbar_size
-xbar_inMem_lat_dict = {'32'  : 1, # indexed with xbar size
+xbar_inMem_lat_dict = {'16'  : 1,
+		       '32'  : 1, # indexed with xbar size
                        '64'  : 1,
                        '128' : 1,
                        '256' : 1}
 
-xbar_inMem_pow_dyn_read_dict = {'32'  : 0.3,
+xbar_inMem_pow_dyn_read_dict = {'16'  : 0.3, #doesn't change much as we move from 32 to 16, because these are very small memories
+		       		'32'  : 0.3,
                                 '64'  : 0.7,
                                 '128' : 1.7,
                                 '256' : 4.7}
 
-xbar_inMem_pow_dyn_write_dict = {'32'  : 0.1,
+xbar_inMem_pow_dyn_write_dict = {'16'  : 0.1,
+		       		 '32'  : 0.1,
                                  '64'  : 0.1,
                                  '128' : 0.16,
                                  '256' : 0.2}
 
-xbar_inMem_pow_leak_dict = {'32'  : 0.009,
+xbar_inMem_pow_leak_dict = {'16'  : 0.009,
+		       	    '32'  : 0.009,
                             '64'  : 0.02,
                             '128' : 0.04,
                             '256' : 0.075}
 
-xbar_inMem_area_dict = {'32'  : 0.00015,
+xbar_inMem_area_dict = {'16'  : 0.00015,
+		       	'32'  : 0.00015,
                         '64'  : 0.00033,
                         '128' : 0.00078,
                         '256' : 0.0019}
 
 # Xbar_outMem value dictionary
-xbar_outMem_lat_dict = {'32'  : 1, # indexed with xbar size
+xbar_outMem_lat_dict = {'16'  : 1,
+		       '32'  : 1, # indexed with xbar size
                        '64'   : 1,
                        '128'  : 1,
                        '256'  : 1}
 
-xbar_outMem_pow_dyn_dict = {'32'  : 0.1,
+xbar_outMem_pow_dyn_dict = {'16'  : 0.1,
+		       	    '32'  : 0.1,
                            '64'   : 0.1,
                            '128'  : 0.16,
                            '256'  : 0.2}
 
-xbar_outMem_pow_leak_dict = {'32'  : 0.009,
+xbar_outMem_pow_leak_dict = {'16'  : 0.009,
+		       	    '32'  : 0.009,
                             '64'   : 0.02,
                             '128'  : 0.04,
                             '256'  : 0.075}
 
-xbar_outMem_area_dict = {'32'  : 0.00015,
+xbar_outMem_area_dict = {'16'  : 0.00015,
+		       	'32'  : 0.00015,
                         '64'   : 0.00033,
                         '128'  : 0.00078,
                         '256'  : 0.0019}
