@@ -6,7 +6,7 @@
 /test/coreMvm_test/
 /test/coreOther_test/
 /test/mlp_train_2layer/
-
+/test/utils/
 asplos_sims_raw_data/
 others/
 
