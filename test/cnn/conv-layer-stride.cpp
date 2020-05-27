@@ -19,14 +19,14 @@ int main(int argc, char** argv) {
 //    Model model = Model::create("conv3-layer");
 
     // Process parameter
-    unsigned int in_size_x ; 
-    unsigned int in_size_y ; 
-    unsigned int in_channels ;
-    unsigned int out_channels ;
-    unsigned int k_size_x ;
-    unsigned int k_size_y ;
-    unsigned int padding ;
-    unsigned int stride ;
+    unsigned int in_size_x=9 ; 
+    unsigned int in_size_y=9 ; 
+    unsigned int in_channels=128 ;
+    unsigned int out_channels=256 ;
+    unsigned int k_size_x=3 ;
+    unsigned int k_size_y=3 ;
+    unsigned int padding=1 ;
+    unsigned int stride=1 ;
 
     if(argc == 10) {
         in_size_x = atoi(argv[1]);
