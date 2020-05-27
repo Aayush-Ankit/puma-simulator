@@ -5,8 +5,14 @@
 cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
-inference = 1
+inference = 1       # For training change this flag
 training = not(inference)
+
+## Variable to define the type of MVMU
+# One of "Analog", "Digital_V1" or "Digital_V2" 
+# Digital_V1 has compressed inputs (Data+Offset style)
+# Digital_V2 has uncompressed inputs (Skips computations for 0 activation)
+MVMU_ver = "Digital_V2" 
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16

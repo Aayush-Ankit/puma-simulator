@@ -119,6 +119,182 @@ xbar_wr_lat = 351.0 * 1000 * (1/32.0)
 xbar_rd_pow = 208.0 * 1000 * (1/32.0) / xbar_rd_lat
 xbar_wr_pow = 676.0 * 1000 * (1/32.0) / xbar_rd_lat
 
+## Adding power area and latency for Digital MVMU V1 and V2
+Digital_xbar_lat_dict = {'Digital_V1': {'32': { '100':130, # first indexed by version then by xbar_size and then by % of non_0 values
+                                                '90': 114, # For V1 it is (4n+2)*T and for V2 it is (3n+2+xbar_size)*T
+                                                '80': 102, 
+                                                '70': 90, 
+                                                '60': 78, 
+                                                '50': 66, 
+                                                '40': 50, 
+                                                '30': 38, 
+                                                '20': 26, 
+                                                '10': 14},      
+                                        '64': { '100':258, 
+                                                '90': 230,
+                                                '80': 206, 
+                                                '70': 178, 
+                                                '60': 154, 
+                                                '50': 130, 
+                                                '40': 102, 
+                                                '30': 78, 
+                                                '20': 50, 
+                                                '10': 26},      
+                                        '128':{ '100':514,
+                                                '90': 462, 
+                                                '80': 410, 
+                                                '70': 358, 
+                                                '60': 306, 
+                                                '50': 258, 
+                                                '40': 206, 
+                                                '30': 154, 
+                                                '20': 102, 
+                                                '10': 50},     
+                                        '256':{ '100':1026, 
+                                                '90': 922,
+                                                '80': 818, 
+                                                '70': 718, 
+                                                '60': 614, 
+                                                '50': 514, 
+                                                '40': 410, 
+                                                '30': 306, 
+                                                '20': 206, 
+                                                '10': 102}},
+                         'Digital_V2': {'32' :{ '100':130,
+                                                '90': 118,
+                                                '80': 109, 
+                                                '70': 100, 
+                                                '60': 91, 
+                                                '50': 82, 
+                                                '40': 70, 
+                                                '30': 61, 
+                                                '20': 52, 
+                                                '10': 43},  
+                                        '64' :{ '100':258,
+                                                '90': 237,  
+                                                '80': 219, 
+                                                '70': 198, 
+                                                '60': 180, 
+                                                '50': 162, 
+                                                '40': 141, 
+                                                '30': 123, 
+                                                '20': 102, 
+                                                '10': 84},
+                                        '128':{ '100':514,
+                                                '90': 475,  
+                                                '80': 436, 
+                                                '70': 397, 
+                                                '60': 358, 
+                                                '50': 322, 
+                                                '40': 283, 
+                                                '30': 244, 
+                                                '20': 205, 
+                                                '10': 166},
+                                        '256':{ '100':1026,
+                                                '90': 948,  
+                                                '80': 870, 
+                                                '70': 795, 
+                                                '60': 717, 
+                                                '50': 642, 
+                                                '40': 564, 
+                                                '30': 486, 
+                                                '20': 411, 
+                                                '10': 333}}}
+
+Digital_xbar_area_dict = {'Digital_V1': { '32' : 0.16977,   # first indexed by version then by xbar_size
+                                          '64' : 0.27701,
+                                          '128': 1.74020,
+                                          '256': 7.29481},
+                          'Digital_V2': { '32' : 0.16949,  
+                                          '64' : 0.27645,
+                                          '128': 1.73908,
+                                          '256': 7.29257}}
+
+Digital_xbar_energy_dict = {'Digital_V1':{'32':{'100':5261.43744,  # first indexed by version then by xbar_size and then by % of non_0 values
+                                                '90': 4613.872832, # For V1 it is (4n+2)*T and for V2 it is (3n+2+xbar_size)*T
+                                                '80': 4128.199376, # in pJ
+                                                '70': 3642.52592, 
+                                                '60': 3156.852464, 
+                                                '50': 2671.179008, 
+                                                '40': 2023.6144, 
+                                                '30': 1537.940944, 
+                                                '20': 1052.267488, 
+                                                '10': 566.594032},      
+                                          '64':{'100':20844.00864, 
+                                                '90': 18581.86252,
+                                                '80': 16642.88014, 
+                                                '70': 14380.73402, 
+                                                '60': 12441.75163, 
+                                                '50': 10502.76925, 
+                                                '40': 8240.623131, 
+                                                '30': 6301.640745, 
+                                                '20': 4039.494628, 
+                                                '10': 2100.512242},      
+                                        '128':{'100': 83018.14464,
+                                                '90': 74619.39346, 
+                                                '80': 66220.64228, 
+                                                '70': 57821.8911, 
+                                                '60': 49423.13992, 
+                                                '50': 41670.44653, 
+                                                '40': 33271.69535, 
+                                                '30': 24872.94417, 
+                                                '20': 16474.19299, 
+                                                '10': 8075.441812},     
+                                        '256':{'100': 331639.0958, 
+                                                '90': 298022.5268,
+                                                '80': 264405.9578, 
+                                                '70': 232082.3337, 
+                                                '60': 198465.7647, 
+                                                '50': 166142.1407, 
+                                                '40': 132525.5717, 
+                                                '30': 98909.00265, 
+                                                '20': 66585.3786, 
+                                                '10': 32968.80959}},
+                            'Digital_V2':{'32':{'100':4466.744263,
+                                                '90': 4053.765767,
+                                                '80': 3744.031895, 
+                                                '70': 3434.298023, 
+                                                '60': 3124.564151, 
+                                                '50': 2814.830279, 
+                                                '40': 2401.851783, 
+                                                '30': 2092.117911, 
+                                                '20': 1782.384039, 
+                                                '10': 1472.650167},  
+                                          '64':{'100':17654.27322,
+                                                '90': 16216.06481,  
+                                                '80': 14983.31474, 
+                                                '70': 13545.10633, 
+                                                '60': 12312.35626, 
+                                                '50': 11079.6062, 
+                                                '40': 9641.397787, 
+                                                '30': 8408.647721, 
+                                                '20': 6970.439311, 
+                                                '10': 5737.689245},
+                                        '128':{'100': 70237.24474,
+                                                '90': 64904.19392,  
+                                                '80': 59571.14309, 
+                                                '70': 54238.09226, 
+                                                '60': 48905.04144, 
+                                                '50': 43982.22529, 
+                                                '40': 38649.17446, 
+                                                '30': 33316.12363, 
+                                                '20': 27983.07281, 
+                                                '10': 22650.02198},
+                                        '256':{'100': 280471.5471,
+                                                '90': 259128.5,  
+                                                '80': 237785.453, 
+                                                '70': 217263.2925, 
+                                                '60': 195920.2454, 
+                                                '50': 175398.0849, 
+                                                '40': 154055.0379, 
+                                                '30': 132711.9909, 
+                                                '20': 112189.8303, 
+                                                '10': 90846.78326}}}
+Digital_xbar_pow_leak_dict = {  '32' :5.575928889,          #in mW 
+                                '64' :12.82466678,
+                                '128':40.24037556,
+                                '256':120.2098611}
+
 # DAC - Discuss exact values with ISSAC authors
 dac_lat_dict = {'1' : 1,
                 '2' : 1,
@@ -145,27 +321,44 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
                  '16': 1.67 * 10**(-7)}
 
 # ADC - Discuss exact values with ISSAC authors
+# ADC Values for including sparsity
 adc_lat_dict = {'1' : 12.5,
                 '2' : 25,
+                '3' : 37.5,
                 '4' : 50,
+                '5' : 62.5,
+                '6' : 75,
+                '7' : 87.5,
                 '8' : 100,
                 '16': 200}
 
 adc_pow_dyn_dict = {'1' : 0.225,
                     '2' : 0.45,
+                    '3' : 0.675,
                     '4' : 0.9,
+                    '5' : 1.125,
+                    '6' : 1.35,
+                    '7' : 1.575,
                     '8' : 1.8,
                     '16': 3.6}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
+                     '3' : 0.075,
                      '4' : 0.1,
+                     '5' : 0.125,
+                     '6' : 0.15,
+                     '7' : 0.175,
                      '8' : 0.2,
                      '16': 0.4}
 
 adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
+                 '3' : 0.0012,
                  '4' : 0.0012,
+                 '5' : 0.0012,
+                 '6' : 0.0012,
+                 '7' : 0.0012,
                  '8' : 0.0012,
                  '16': 0.0012}
 
@@ -319,7 +512,19 @@ xbar_outMem_area_dict = {'32'  : 0.00015,
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
 #xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
-xbar_ip_lat = xbar_ip_lat
+# xbar_innerp_lat_dict = {'32':{'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0},
+#                         '64':{'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0},
+#                         '128':{'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0},
+#                         '256':{'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0}}
+xbar_ip_lat_dict = {'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0}
+if cfg.MVMU_ver == "Analog":
+      for key, value in xbar_ip_lat_dict.items():
+            xbar_ip_lat_dict[key] = xbar_ip_lat
+else:
+      xbar_ip_lat_dict = Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
+print("xbar_ip_lat_dict",xbar_ip_lat_dict)
+
+
 xbar_op_lat = xbar_op_lat
 xbar_rd_lat = xbar_rd_lat
 xbar_wr_lat = xbar_wr_lat
@@ -332,7 +537,10 @@ instrnMem_lat =  instrnMem_lat_dict[str(cfg.instrnMem_size)]
 dataMem_lat =  dataMem_lat_dict[str(cfg.dataMem_size)]
 
 # Chosen area based on config file - only for components whose latency is parameter dependent
-xbar_area = xbar_area_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+if cfg.MVMU_ver == "Analog":
+        xbar_area = xbar_area_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
+else:
+        xbar_area = Digital_xbar_area_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
 dac_area = dac_area_dict [str(cfg.dac_res)]
 adc_area = adc_area_dict [str(cfg.adc_res)]
 xbar_inMem_area = xbar_inMem_area_dict[str(cfg.xbar_size)]
@@ -354,8 +562,20 @@ xbar_outMem_pow_dyn = xbar_outMem_pow_dyn_dict[str(cfg.xbar_size)]
 instrnMem_pow_dyn =  instrnMem_pow_dyn_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
 dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(cfg.dataMem_size)]
 
+# Energy
+xbar_ip_energy_dict = {'100':0, '90':0, '80':0, '70':0, '60':0, '70':0, '50':0, '40':0, '30':0, '20':0, '10':0}
+if cfg.MVMU_ver == "Analog":
+        for key,value in xbar_ip_energy_dict.items():
+                xbar_ip_energy_dict[key] = xbar_ip_lat*xbar_ip_pow_dyn
+else:
+        xbar_ip_energy_dict = Digital_xbar_energy_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
+print('xbar_ip_energy_dict', xbar_ip_energy_dict)
+
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
-xbar_pow_leak = 0
+if cfg.MVMU_ver == "Analog":
+        xbar_pow_leak = 0
+else:
+        xbar_pow_leak = Digital_xbar_pow_leak_dict[str(cfg.xbar_size)]
 dac_pow_leak = dac_pow_leak_dict [str(cfg.dac_res)]
 adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)]
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
