@@ -793,7 +793,8 @@ class ima (object):
                     print("adccccc.adc_res", adccccc.adc_res)
                 print("---")
                 '''
-                latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))  #changed xbdata_width to input_prec
+                latency_ip = lat_temp * ((cfg.input_prec / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))*(math.ceil(cfg.weight_width/cfg.xbar_bits) / \
+				math.ceil(cfg.data_width/cfg.xbar_bits)) # last term to account for the effect of quantization on latency 
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
                 lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
