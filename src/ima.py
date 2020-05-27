@@ -39,6 +39,7 @@ class ima (object):
         self.matrix_list = [] # list of dicts of mvmu(s)
         self.xb_inMem_list = [] # list of dicts of xbar input memory
         self.xb_outMem_list = [] # list of dicts of xbar output memory
+        self.xbar_inMem_Sparsity_list = [] # list of sparsity od xbar in mem (may have to be removed if found redundant)
 
         for i in xrange(cfg.num_matrix):
             # each matrix represents three mvmus - 1 mvmu for fw, 1 mvmu for bw, 1 mvmu (2X width) for delta
@@ -465,7 +466,7 @@ class ima (object):
                 else:
                     assert (1==0), "xbar memory addressing failed"   
 
-	    return [num_matrix, xbar_type, mem_addr, xbar_addr]     
+	    return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
         # write to the xbar memory (in/out) space depending on the address
         def writeToXbarMem (self, data_addr, data):
@@ -594,12 +595,24 @@ class ima (object):
                     # reset the xb out memory before starting to accumulate
                     self.xb_outMem_list[mat_id][key].reset ()
 
+                    xbar_inMem = self.xb_inMem_list[mat_id][key].read_all ()
+                    # print ("xb_inMem", xbar_inMem)
+                    # calculate sparsity of xbar_in_mem
+                    non_0_val = 0
+                    for i in range(cfg.xbar_size):
+                        if xbar_inMem[i] != '0':
+                            non_0_val = non_0_val +1
+                    sparsity = (cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size
+                    # print ("non_0_val", non_0_val)
+                    # print ("Sparsity", sparsity)
+
                     ## Loop to cover all bits of inputs
                     for k in xrange (cfg.xbdata_width / cfg.dac_res):
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
-
+                        # print("out_xb_inMem", out_xb_inMem)
+                        
                         #*************************************** HACK *********************************************
                         ###### CAUTION: Not replicated exact "functional" circuit behaviour for analog parts
                         ###### Use propagate (not propagate_hack) for DAC, Xbar, TIA, SNH, ADC when above is done
@@ -614,7 +627,7 @@ class ima (object):
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
                             # compute dot-product
-                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac)        
+                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(non_0_val, out_dac)        
                             # do sampling and hold
                             out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy(out_xbar[m])
 
@@ -627,7 +640,7 @@ class ima (object):
                                 adc_id = (mat_id*num_xb + m) % cfg.num_adc
                                 out_mux1 = self.mux1_list[mat_id].propagate_dummy(out_snh[m][j]) # i is the ith xbar
                                 out_mux2 = self.mux2_list[mat_id % cfg.num_adc].propagate_dummy(out_mux1)
-                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2)
+                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2, non_0_val)
 
                                 # shift and add outputs from difefrent wt_bits
                                 alu_op = 'sna'
@@ -781,7 +794,7 @@ class ima (object):
                 lat_temp = 0
                 # We assume all ADCs in a matrix has the same resolution
                 adc_idx = idx*cfg.num_adc_per_matrix
-                lat_temp = self.adc_list[adc_idx].getLatency()
+                lat_temp = self.adc_list[adc_idx].getLatency(cfg.xbar_size)
                 '''
                 print("adc_idx", adc_idx)
                 print("lat_temp", lat_temp)
@@ -842,7 +855,25 @@ class ima (object):
 
                 elif (ex_op == 'mvm'):
                     mask_temp = self.de_xb_nma
-                    self.stage_latency[sId] = xbComputeLatency (self, mask_temp) # mask tells which of ip/op or both is occurring
+                    if (cfg.MVMU_ver == "Analog"):
+                        self.stage_latency[sId] = xbComputeLatency (self, mask_temp) # mask tells which of ip/op or both is occurring
+                    else:
+                        mvm_lat_temp = 0
+                        if (cfg.inference):
+                            for p in xrange(cfg.num_matrix):
+                                if self.de_xb_nma[p]:
+                                    xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
+                                    non_0_val = 0
+                                    for i in range(cfg.xbar_size):
+                                        if xbar_inMem[i] != '0':
+                                            non_0_val = non_0_val +1
+                                    print ("non_0_val", non_0_val)
+                                    nval_percent = int(non_0_val*100/128)
+                                    if (nval_percent%10!=0):
+                                        nval_percent = nval_percent + 10
+                                    mvm_lat_temp += param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)][str(nval_percent)]
+                        self.stage_latency[sId] = mvm_lat_temp
+                    print("MVM Latency", self.stage_latency[sId])
 
                 # Needs update - use xbar serial read latency
                 elif (ex_op == 'crs'):

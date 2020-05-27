@@ -11,12 +11,13 @@ import constants as param
 def compute_area (): #in mm2
     area = 0.0
     area += (cfg.num_matrix*3) * param.xbar_inMem_area # xbar_inMem one each for f/b/d xbars
-    area += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_area # 1 dac for input of f/b/d xbars, each phy xbar in d-xbar will have a dac_array, hence 8
+    if cfg.MVMU_ver == "Analog":
+        area += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_area # 1 dac for input of f/b/d xbars, each phy xbar in d-xbar will have a dac_array, hence 8
+        area += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_area # snh for f/b xbars
+        area += (cfg.num_matrix*2) * param.sna_area # sna for one each f/b xbars
+        area += cfg.num_adc * param.adc_area # adc
+        area += (cfg.num_matrix*3) * param.xbar_outMem_area # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     area += (cfg.num_matrix*4) * param.xbar_area # d-xbar has 2X xbars than f/b
-    area += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_area # snh for f/b xbars
-    area += cfg.num_adc * param.adc_area # adc
-    area += (cfg.num_matrix*2) * param.sna_area # sna for one each f/b xbars
-    area += (cfg.num_matrix*3) * param.xbar_outMem_area # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     area += param.instrnMem_area # instrnMem
     area += param.dataMem_area # dataMem
     area += param.alu_area # alu
@@ -35,12 +36,13 @@ def compute_area (): #in mm2
 def compute_pow_leak ():
     leak_pow = 0.0
     leak_pow += (cfg.num_matrix*3) * param.xbar_inMem_pow_leak # xbar_inMem
-    leak_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_leak # dac
+    if cfg.MVMU_ver == "Analog":
+        leak_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_leak # dac
+        leak_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_leak # snh
+        leak_pow += cfg.num_adc * param.adc_pow_leak # adc
+        leak_pow += (cfg.num_matrix*2) * param.sna_pow_leak # sna
+        leak_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_leak # xbar_outMem
     leak_pow += (cfg.num_matrix*4) * param.xbar_pow_leak # xbar area
-    leak_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_leak # snh
-    leak_pow += cfg.num_adc * param.adc_pow_leak # adc
-    leak_pow += (cfg.num_matrix*2) * param.sna_pow_leak # sna
-    leak_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_leak # xbar_outMem
     leak_pow += param.instrnMem_pow_leak # instrnMem
     leak_pow += param.dataMem_pow_leak # dataMem
     leak_pow += param.alu_pow_leak # alu
@@ -51,15 +53,16 @@ def compute_pow_leak ():
 # Peak dynamic power (assumes all components are being accessed in each cycle)
 def compute_pow_dyn ():
     dyn_pow = 0.0
-    dyn_pow += (cfg.num_matrix*3) * (param.xbar_inMem_pow_dyn_write + param.xbar_inMem_pow_dyn_read/cfg.xbar_size) # xbar_inMem - num_xbar * dac_res bits will be
+    if cfg.MVMU_ver == "Analog":
+        dyn_pow += (cfg.num_matrix*3) * (param.xbar_inMem_pow_dyn_write + param.xbar_inMem_pow_dyn_read/cfg.xbar_size) # xbar_inMem - num_xbar * dac_res bits will be
                     #   read from xb_inMem in an interval that equals xbar_access time
     # dyn_pow += cfg.num_xbar/2 * 1.2 # (adding dyn pow the way issac does for comparison)
-    dyn_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_dyn # dac
+        dyn_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_dyn # dac
+        dyn_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_dyn # snh
+        dyn_pow += cfg.num_adc * param.adc_pow_dyn # adc
+        dyn_pow += (cfg.num_matrix*2) * param.sna_pow_dyn # sna
+        dyn_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_dyn # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     dyn_pow += (cfg.num_matrix*4) * param.xbar_ip_pow_dyn # xbar ip power considred as ip>op power
-    dyn_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_dyn # snh
-    dyn_pow += cfg.num_adc * param.adc_pow_dyn # adc
-    dyn_pow += (cfg.num_matrix*2) * param.sna_pow_dyn # sna
-    dyn_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_dyn # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     dyn_pow += param.instrnMem_pow_dyn # instrnMem
     dyn_pow += param.dataMem_pow_dyn # dataMem
     dyn_pow += param.alu_pow_dyn # alu

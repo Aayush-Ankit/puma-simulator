@@ -15,7 +15,18 @@ from data_convert import *
 class xbar (object):
     def __init__ (self, xbar_size, xbar_value= 'nil' ):
         # define num_accesses for different operations
-        self.num_access = 0 # parallel reads (inner-product)
+        # parallel reads (inner-product)
+        self.num_access = { '100':0, \
+                            '90': 0, \
+                            '80': 0, \
+                            '70': 0, \
+                            '60': 0, \
+                            '50': 0, \
+                            '40': 0, \
+                            '30': 0, \
+                            '20': 0, \
+                            '10': 0} \
+
         self.num_access_rd = 0 # serial reads
         self.num_access_wr = 0 # serial writes
 
@@ -90,11 +101,36 @@ class xbar (object):
         return out
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp = 'nil'):
+    def propagate_dummy (self, n_val, inp = 'nil'):
         # data input is list of bit strings (of length dac_res) - fixed point binary
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
-        self.num_access += 1
+        
+        #Modification to accomodate sparsity and digital crossbars
+        if cfg.MVMU_ver == "Analog":
+            self.num_access['100'] += 1
+        else:
+            if n_val>cfg.xbar_size*9/10.0:
+                self.num_access['100'] += 1
+            elif n_val>cfg.xbar_size*8/10.0:
+                self.num_access['90'] += 1
+            elif n_val>cfg.xbar_size*7/10.0:
+                self.num_access['80'] += 1
+            elif n_val>cfg.xbar_size*6/10.0:
+                self.num_access['70'] += 1
+            elif n_val>cfg.xbar_size*5/10.0:
+                self.num_access['60'] += 1
+            elif n_val>cfg.xbar_size*4/10.0:
+                self.num_access['50'] += 1
+            elif n_val>cfg.xbar_size*3/10.0:
+                self.num_access['40'] += 1
+            elif n_val>cfg.xbar_size*2/10.0:
+                self.num_access['30'] += 1
+            elif n_val>cfg.xbar_size*1/10.0:
+                self.num_access['20'] += 1
+            else:
+                self.num_access['10'] += 1
+
         # convert input from fixed point binary (string) to float
         inp_float = [0.0] * self.xbar_size
         for i in range(len(inp)):
@@ -222,14 +258,23 @@ class dac_array (object):
 class adc (object):
     def __init__ (self, adc_res):
         # define num_access
-        self.num_access = 0
+        self.num_access = { 'n' :       0,
+                            'n/2':      0,
+                            '3n/4':     0,
+                            '7n/8':     0,
+                            '15n/16':   0,
+                            '31n/32':   0,
+                            '63n/64':   0,
+                            '127n/128': 0,
+                            '255n/256': 0}
 
         # define latency
-        self.latency = param.adc_lat_dict[str(adc_res)]
+        # self.latency = param.adc_lat_dict[str(adc_res)]
 
         self.adc_res = adc_res
 
-    def getLatency (self):
+    def getLatency (self, n_val):
+        self.latency = param.adc_lat_dict[str(self.adc_res)]
         return self.latency
 
     def real2bin (self, inp, num_bits):
@@ -246,8 +291,26 @@ class adc (object):
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp):
-        #self.num_access += 1
+    def propagate_dummy (self, inp, n_val):
+        if n_val>cfg.xbar_size/2.0:
+            self.num_access['n'] += 1
+        elif n_val>cfg.xbar_size/4.0:
+            self.num_access['n/2'] += 1
+        elif n_val>cfg.xbar_size/8.0:
+            self.num_access['3n/4'] += 1
+        elif n_val>cfg.xbar_size/16.0:
+            self.num_access['7n/8'] += 1
+        elif n_val>cfg.xbar_size/32.0:
+            self.num_access['15n/16'] += 1
+        elif n_val>cfg.xbar_size/64.0:
+            self.num_access['31n/32'] += 1
+        elif n_val>cfg.xbar_size/128.0:
+            self.num_access['63n/64'] += 1
+        elif n_val>cfg.xbar_size/256.0:
+            self.num_access['127n/128'] += 1
+        else:
+            self.num_access['255n/256'] += 1
+
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
@@ -510,6 +573,13 @@ class xb_inMem (object):
             #self.memfile[i] = '0'*num_bits + value[:-1*num_bits]
             self.memfile[i] = value[-1*num_bits:] + value[:-1*num_bits]
             out_list.append(value[-1*num_bits:])
+        return out_list
+
+    def read_all (self):
+        out_list = []
+        for i in xrange(self.xbar_size):
+            value = self.memfile[i]
+            out_list.append(value)
         return out_list
 
     def write (self, addr, data):
