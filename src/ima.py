@@ -598,7 +598,7 @@ class ima (object):
                     self.xb_outMem_list[mat_id][key].reset ()
 
                     ## Loop to cover all bits of inputs
-                    for k in xrange (cfg.input_prec / cfg.dac_res): #quantization affects the # of streams
+                    for k in xrange (int(math.ceil(cfg.input_prec / cfg.dac_res))): #quantization affects the # of streams
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
@@ -612,7 +612,7 @@ class ima (object):
                         out_dac = self.dacArray_list[mat_id][key].propagate_dummy(out_xb_inMem) #pass through
 
                         # Do for (data_width/xbar_bits) xbars
-                        num_xb = math.ceil(cfg.weight_width / cfg.xbar_bits)  # # of XBs change with quantization
+                        num_xb = int(math.ceil(cfg.weight_width / cfg.xbar_bits))  # # of XBs change with quantization
                         out_xbar = [[] for x in range(num_xb)]
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
