@@ -468,7 +468,7 @@ tile_instrnMem_area_dict = {'512' : 0.00108,
 
 tile_instrnMem_size_max =  '2048'
 if str(cfg.tile_instrnMem_size) in tile_instrnMem_lat_dict:
-      tile_instrnMem_size_max =  str(cfg.instrnMem_size)
+      tile_instrnMem_size_max =  str(cfg.tile_instrnMem_size)
 else:
       print("Warning: No values for tile instruction memory size provided. Using values for 2048 instead.")
 
