@@ -612,7 +612,7 @@ class ima (object):
                         out_dac = self.dacArray_list[mat_id][key].propagate_dummy(out_xb_inMem) #pass through
 
                         # Do for (data_width/xbar_bits) xbars
-                        num_xb = int(math.ceil(cfg.weight_width / cfg.xbar_bits))  # # of XBs change with quantization
+                        num_xb = int(math.ceil(float(cfg.weight_width) / cfg.xbar_bits))  # # of XBs change with quantization
                         out_xbar = [[] for x in range(num_xb)]
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
@@ -793,8 +793,8 @@ class ima (object):
                     print("adccccc.adc_res", adccccc.adc_res)
                 print("---")
                 '''
-                latency_ip = lat_temp * ((cfg.input_prec / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))*(math.ceil(cfg.weight_width/cfg.xbar_bits) / \
-				math.ceil(cfg.data_width/cfg.xbar_bits)) # last term to account for the effect of quantization on latency 
+                latency_ip = lat_temp * ((cfg.input_prec / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))*(math.ceil(float(cfg.weight_width)/ \
+                cfg.xbar_bits) /math.ceil(float(cfg.data_width)/cfg.xbar_bits)) # last term to account for the effect of quantization on latency
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
                 lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
