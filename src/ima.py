@@ -693,7 +693,7 @@ class ima (object):
                         mask_temp = self.de_xb_nma[i]
                         if (mask_temp[0] == '1'):
                         # foward xbar operation
-                            print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MVM")
+                            #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MVM")
                             inner_product (i, 'f')
                         if (mask_temp[1] == '1'):
                         #print ("ima_id: " + str(self.ima_id) + " mat_id: "  + str(i) + " MTVM")
@@ -705,7 +705,7 @@ class ima (object):
                 if (cfg.inference):
                    for i in xrange(cfg.num_matrix):
                        if self.de_xb_nma[i]:
-                           print ("ima_id: " +str(self.ima_id) + " mat_id: "  +str(i) + " MVM")
+                           #print ("ima_id: " +str(self.ima_id) + " mat_id: "  +str(i) + " MVM")
                            inner_product(i,'f')
 
             elif (ex_op == 'crs'):
@@ -766,7 +766,7 @@ class ima (object):
             d_found = 0
             latency_out_list = []
             for idx, temp in enumerate(mask):
-                print("idx", idx)
+                #print("idx", idx)
                 # if cfg.training:
                 if ((temp[0] == '1') or (temp[1] == '1')):
                     fb_found += 1
@@ -806,10 +806,10 @@ class ima (object):
                 latency_op = lat_temp * num_phase * float(int(d_found>0))
                 ## output latency should be the max of ip/op operation
                 latency_out = max(latency_ip, latency_op)
-                print ("Mask", mask)
-                print ("Latency IP", latency_ip)
-                print ("Latency OP", latency_op)
-                print ("latency_out", latency_out)
+                #print ("Mask", mask)
+                #print ("Latency IP", latency_ip)
+                #print ("Latency OP", latency_op)
+                #print ("latency_out", latency_out)
                 latency_out_list.append(latency_out)
             return max(latency_out_list)
 
