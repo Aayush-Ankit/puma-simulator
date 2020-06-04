@@ -184,7 +184,7 @@ def get_hw_stats (fid, node_dut, cycle, net):
             'cycles':0,
             'time':0.0,
             'network_packet_injection_rate':'',
-            'number of tiles mapped':0, 
+            'number_of_tiles_mapped':0, 
             'network_name':''}
 
     metric_dict['network_name'] = net
