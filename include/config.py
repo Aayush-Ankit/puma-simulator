@@ -45,7 +45,7 @@ num_adc = num_adc_per_matrix * num_matrix
 
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
-# NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
+# NOTE: For latency computation only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed to be equal to 0 and 2.
 adc_res_new = {
                 'matrix_adc_0' : 8,
                 'matrix_adc_1' : 8,
