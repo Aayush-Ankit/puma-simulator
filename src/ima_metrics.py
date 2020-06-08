@@ -14,7 +14,11 @@ def compute_area (): #in mm2
     area += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_area # 1 dac for input of f/b/d xbars, each phy xbar in d-xbar will have a dac_array, hence 8
     area += (cfg.num_matrix*4) * param.xbar_area # d-xbar has 2X xbars than f/b
     area += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_area # snh for f/b xbars
-    area += cfg.num_adc * param.adc_area # adc
+    
+    #area += cfg.num_adc * param.adc_area # adc
+    for k in range (cfg.num_adc):
+        area += param.adc_area_dict[str( cfg.adc_res_new[str('matrix_adc_'+str(k))] )]        
+    
     area += (cfg.num_matrix*2) * param.sna_area # sna for one each f/b xbars
     area += (cfg.num_matrix*3) * param.xbar_outMem_area # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     area += param.instrnMem_area # instrnMem
@@ -38,7 +42,11 @@ def compute_pow_leak ():
     leak_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_leak # dac
     leak_pow += (cfg.num_matrix*4) * param.xbar_pow_leak # xbar area
     leak_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_leak # snh
-    leak_pow += cfg.num_adc * param.adc_pow_leak # adc
+    
+    #leak_pow += cfg.num_adc * param.adc_pow_leak # adc
+    for k in range (cfg.num_adc):
+        leak_pow += param.adc_pow_leak_dict[str( cfg.adc_res_new[str('matrix_adc_'+str(k))] )]    
+
     leak_pow += (cfg.num_matrix*2) * param.sna_pow_leak # sna
     leak_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_leak # xbar_outMem
     leak_pow += param.instrnMem_pow_leak # instrnMem
@@ -57,7 +65,11 @@ def compute_pow_dyn ():
     dyn_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_dyn # dac
     dyn_pow += (cfg.num_matrix*4) * param.xbar_ip_pow_dyn # xbar ip power considred as ip>op power
     dyn_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_dyn # snh
-    dyn_pow += cfg.num_adc * param.adc_pow_dyn # adc
+
+    #dyn_pow += cfg.num_adc * param.adc_pow_dyn # adc
+    for k in range (cfg.num_adc):
+        dyn_pow += param.adc_pow_dyn_dict[str( cfg.adc_res_new[str('matrix_adc_'+str(k))] )]
+        
     dyn_pow += (cfg.num_matrix*2) * param.sna_pow_dyn # sna
     dyn_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_dyn # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
     dyn_pow += param.instrnMem_pow_dyn # instrnMem

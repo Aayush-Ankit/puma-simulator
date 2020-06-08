@@ -7,7 +7,6 @@ import node_metrics
 import tile_metrics
 import ima_metrics
 
-
 ns = 10 ** (-9)
 mw = 10 ** (-3)
 nj = 10 ** (-9)
@@ -18,7 +17,7 @@ hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':
                   'xbar_mtvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat,
         'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, 'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
         'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
-        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, 'adc':param.adc_pow_dyn, \
+        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, \
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
         'alu_sna': param.sna_pow_dyn, \
@@ -33,16 +32,19 @@ hw_comp_energy = {'xbar_mvm':param.xbar_ip_pow_dyn*param.xbar_ip_lat, 'xbar_op':
         'core_control':param.ccu_pow,
         'tile_control':param.tcu_pow
         }
+# 'adc':param.adc_pow_dyn, 
+for k in range (cfg.num_adc):
+    hw_comp_energy['adc_'+str(k)] = param.adc_pow_dyn_dict[str(cfg.adc_res_new[str('matrix_adc_'+str(k))])]
 
 # Used to calculate dynamic energy consumption and other metrics (area/time/total_power/peak_power)
-def get_hw_stats (fid, node_dut, cycle):
+def get_hw_stats (fid, node_dut, cycle, net):
 
     # List of all components that dissipate power
     hw_comp_access = {'xbar_mvm':0, 'xbar_op':0,
                       'xbar_mtvm':0,
             'xbar_rd':0, 'xbar_wr':0,
             'dac':0, 'snh':0, \
-            'mux1':0, 'mux2':0, 'adc':0, \
+            'mux1':0, 'mux2':0, \
             'alu_div':0, 'alu_mul':0, \
             'alu_act':0, 'alu_other':0, \
             'alu_sna':0, \
@@ -54,6 +56,8 @@ def get_hw_stats (fid, node_dut, cycle):
             'noc_intra':0, 'noc_inter':0, \
             'core_control':0, 'tile_control': 0 \
             }
+    for k in range (cfg.num_adc):
+        hw_comp_access['adc_'+str(k)] = 0
 
     # traverse components to populate dict (hw_comp_access)
     hw_comp_access['noc_intra'] += node_dut.noc.num_cycles_intra
@@ -118,7 +122,7 @@ def get_hw_stats (fid, node_dut, cycle):
                 hw_comp_access['mux2'] += node_dut.tile_list[i].ima_list[j].mux1_list[k].num_access
 
             for k in range (cfg.num_adc):
-                hw_comp_access['adc'] += node_dut.tile_list[i].ima_list[j].adc_list[k].num_access
+                hw_comp_access['adc_'+str(k)] += node_dut.tile_list[i].ima_list[j].adc_list[k].num_access
 
             for k in range (cfg.num_ALU):
                 hw_comp_access['alu_div'] += node_dut.tile_list[i].ima_list[j].alu_list[k].num_access_div + \
@@ -178,8 +182,13 @@ def get_hw_stats (fid, node_dut, cycle):
             'tile_area':0.0,
             'core_area':0.0,
             'cycles':0,
-            'time':0.0}
+            'time':0.0,
+            'network_packet_injection_rate':'',
+            'number_of_tiles_mapped':0, 
+            'network_name':''}
 
+    metric_dict['network_name'] = net
+    metric_dict['number_tiles_mapped'] = cfg.num_tile_compute
     metric_dict['leakage_power'] = node_metrics.compute_pow_leak () # in mW
     metric_dict['peak_power'] = node_metrics.compute_pow_peak () # in mW
     metric_dict['node_area'] = node_metrics.compute_area () # in mm2
@@ -200,6 +209,9 @@ def get_hw_stats (fid, node_dut, cycle):
     fid.write ('network packet injection rate: ' + str(packet_inj_rate) + '\n')
     fid.write ('number of tiles mapped: ' + str(cfg.num_tile_compute))
 
+    metric_dict['network_packet_injection_rate'] = packet_inj_rate
+
     return metric_dict
+
 
 

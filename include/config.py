@@ -28,9 +28,11 @@ frac_bits = num_bits - int_bits
 # Fixed parameters
 addr_width = 22 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
 data_width = num_bits # (in bits)
-xbdata_width = data_width # (in bits)
+xbdata_width = data_width # (in bits), equivalent to input_prec
 instrn_width = 48 # (in bits)
-
+# Input and Weight parameters
+input_prec = 16
+weight_width = 16
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
 num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, and 1 delta logical xbar for training. Each logical xbar for inference is 8-fw physical xbar and for training  8-fw, 8-bw and 16-delta physical xbars.
@@ -43,18 +45,18 @@ num_adc = num_adc_per_matrix * num_matrix
 
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
-# NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
+# NOTE: For latency computation only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed to be equal to 0 and 2.
 adc_res_new = {
                 'matrix_adc_0' : 8,
-                'matrix_adc_1' : 4,
+                'matrix_adc_1' : 8,
                 'matrix_adc_2' : 8,
-                'matrix_adc_3' : 4
+                'matrix_adc_3' : 8
               }
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 512 #in entries
+dataMem_size = 4096 # 2048 is larger than num_matrix*(6*xbar_size)
+instrnMem_size = 8192 #in entries
 
 # This depends on above parameters
 if (training):
@@ -85,8 +87,8 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 64 # in Kilobytes (64 KB - same as issac)
-tile_instrnMem_size = 2048 # in entries
+edram_size = 2048 # in Kilobytes (64 KB - same as issac)
+tile_instrnMem_size = 4096 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile

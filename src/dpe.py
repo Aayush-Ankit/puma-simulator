@@ -25,6 +25,7 @@ import sys
 import getopt
 import os
 import argparse
+import csv_util
 
 
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -183,8 +184,11 @@ class DPE:
         # Dump the harwdare access traces (For now - later upgrade to actual energy numbers)
         hwtrace_file = self.tracepath + 'harwdare_stats.txt'
         fid = open(hwtrace_file, 'w')
-        metric_dict = get_hw_stats(fid, node_dut, cycle)
+        metric_dict = get_hw_stats(fid, node_dut, cycle, net)
         fid.close()
+
+        hw_metrics_csv = self.tracepath + 'hw_metrics_csv.csv'
+        csv_util.hw_stats_metric_to_csv_file(metric_dict, hw_metrics_csv)
         print('Success: Hardware results compiled!!')
 
 

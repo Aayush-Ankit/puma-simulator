@@ -2,6 +2,7 @@
 ## It also holds power, area and latency numbers of different component used in DPE design
 import config as cfg
 import math
+
 # Limits the number of cycles an IMA runs in case it doesn't halt
 infinity = 100000
 
@@ -109,7 +110,8 @@ xbar_op_pow = 4.44 * 3.27 / (12.8)
 
 xbar_ip_lat = 100.0
 #xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
-xbar_ip_pow = (1.37*2.0) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
+# Note: removed 2.0 factor for inference because we are using only 16bit
+xbar_ip_pow = (1.37) - 1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object)
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
@@ -145,25 +147,23 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
                  '16': 1.67 * 10**(-7)}
 
 # ADC - Discuss exact values with ISSAC authors
-adc_lat_dict = {'1' : 12.5,
-                '2' : 25,
-                '4' : 50,
-		'5' : 62.5,			
-		'6' : 75,
-		'7' : 87.5,
-                '8' : 100,
-		'9' : 112.5,
-                '16': 200}
+adc_lat_dict = {'1' : 128*0.091093117,
+                '2' : 128*0.182186235,
+                '4' : 128*0.364372470,
+                '6' : 128*0.546558704,
+                '8' : 128*0.728744939,
+                '9' : 128*0.819838057,
+                '16': 128*1.728744939}
+# the number in the table * 128 (columns)
+# Better to be able to use any number of bit (not only power of 2) (max 16 bit)
 
-adc_pow_dyn_dict = {'1' : 0.225,
-                    '2' : 0.45,
-                    '4' : 0.9,
-		    '5' : 1.125,			
-		    '6' : 1.35,
-		    '7' : 1.575,
-                    '8' : 1.8,
-		    '9' : 2.025,
-                    '16': 3.6}
+adc_pow_dyn_dict = {'1' : 0.018131034,
+                  '2' : 0.072524136,
+                  '4' : 0.290096543,
+                  '6' : 0.652717222,
+                  '8' : 1.160386173,
+                  '9' : 1.46861375,
+                  '16': 2.160386173}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
@@ -350,6 +350,17 @@ xbar_outMem_area_dict = {'32'  : 0.00015,
                         '128'  : 0.00078,
                         '256'  : 0.0019}
 
+dataMem_size_max =  '2048'
+if str(cfg.dataMem_size) in dataMem_lat_dict:
+      dataMem_size_max =  str(cfg.dataMem_size)
+else:
+      print("Warning: No values for core data memory size provided. Using values for 2048 instead.")
+
+instrnMem_size_max =  '2048'
+if str(cfg.instrnMem_size) in instrnMem_lat_dict:
+      instrnMem_size_max =  str(cfg.instrnMem_size)
+else:
+      print("Warning: No values for core instruction memory size provided. Using values for 2048 instead.")
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
 #xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
@@ -362,8 +373,8 @@ dac_lat = dac_lat_dict [str(cfg.dac_res)]
 adc_lat = adc_lat_dict [str(cfg.adc_res)]
 xbar_inMem_lat = xbar_inMem_lat_dict[str(cfg.xbar_size)]
 xbar_outMem_lat = xbar_outMem_lat_dict[str(cfg.xbar_size)]
-instrnMem_lat =  instrnMem_lat_dict[str(cfg.instrnMem_size)]
-dataMem_lat =  dataMem_lat_dict[str(cfg.dataMem_size)]
+instrnMem_lat =  instrnMem_lat_dict[instrnMem_size_max]
+dataMem_lat =  dataMem_lat_dict[str(dataMem_size_max)]
 
 # Chosen area based on config file - only for components whose latency is parameter dependent
 xbar_area = xbar_area_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
@@ -371,8 +382,8 @@ dac_area = dac_area_dict [str(cfg.dac_res)]
 adc_area = adc_area_dict [str(cfg.adc_res)]
 xbar_inMem_area = xbar_inMem_area_dict[str(cfg.xbar_size)]
 xbar_outMem_area = xbar_outMem_area_dict[str(cfg.xbar_size)]
-instrnMem_area =  instrnMem_area_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_area =  dataMem_area_dict[str(cfg.dataMem_size)]
+instrnMem_area =  instrnMem_area_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
+dataMem_area =  dataMem_area_dict[str(dataMem_size_max)]
 
 # Chosen dyn_power based on config file - only for components whose latency is parameter dependent
 #xbar_pow_dyn = xbar_pow_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
@@ -381,21 +392,21 @@ xbar_op_pow_dyn = xbar_op_pow
 xbar_rd_pow_dyn = xbar_rd_pow
 xbar_wr_pow_dyn = xbar_wr_pow
 dac_pow_dyn = dac_pow_dyn_dict [str(cfg.dac_res)]
-adc_pow_dyn = adc_pow_dyn_dict [str(cfg.adc_res)]
+adc_pow_dyn = 0 #adc_pow_dyn_dict [str(cfg.adc_res)]
 xbar_inMem_pow_dyn_read = xbar_inMem_pow_dyn_read_dict[str(cfg.xbar_size)]
 xbar_inMem_pow_dyn_write = xbar_inMem_pow_dyn_write_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_dyn = xbar_outMem_pow_dyn_dict[str(cfg.xbar_size)]
-instrnMem_pow_dyn =  instrnMem_pow_dyn_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(cfg.dataMem_size)]
+instrnMem_pow_dyn =  instrnMem_pow_dyn_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
+dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(dataMem_size_max)]
 
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
 xbar_pow_leak = 0
 dac_pow_leak = dac_pow_leak_dict [str(cfg.dac_res)]
-adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)]
+adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)] / 9.0 # took a constant ratio between dynamic and leakage (9:1), i.e. 10% being leakage power
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
 xbar_outMem_pow_leak = xbar_outMem_pow_leak_dict[str(cfg.xbar_size)]
-instrnMem_pow_leak =  instrnMem_pow_leak_dict[str(cfg.instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
-dataMem_pow_leak =  dataMem_pow_leak_dict[str(cfg.dataMem_size)]
+instrnMem_pow_leak =  instrnMem_pow_leak_dict[instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
+dataMem_pow_leak =  dataMem_pow_leak_dict[str(dataMem_size_max)]
 
 # Core Control unit (control unit and pipeline registers)
 ccu_pow = 1.25*0.2 #0.2 for activvity
@@ -459,6 +470,18 @@ tile_instrnMem_area_dict = {'512' : 0.00108,
 			    '4096': 0.0041}
 
 
+tile_instrnMem_size_max =  '2048'
+if str(cfg.tile_instrnMem_size) in tile_instrnMem_lat_dict:
+      tile_instrnMem_size_max =  str(cfg.tile_instrnMem_size)
+else:
+      print("Warning: No values for tile instruction memory size provided. Using values for 2048 instead.")
+
+edram_size_max =  '128'
+if str(cfg.edram_size) in edram_lat_dict:
+      edram_size_max =  str(cfg.edram_size)
+else:
+      print("Warning: No values for edram size provided. Using values for 128 instead.")
+
 # counter storage (2048 Byte Scratch RAM - 1 counter entry shared by 256 bits of data (16 neurons))
 # area scaling (X8)
 counter_buff_lat = 1 * math.sqrt(8)
@@ -487,20 +510,20 @@ receive_buffer_area = 0.0022 *math.sqrt(4)
 
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
-edram_lat = edram_lat_dict[str(cfg.edram_size)]
-tile_instrnMem_lat = tile_instrnMem_lat_dict[str(cfg.tile_instrnMem_size)]
+edram_lat = edram_lat_dict[edram_size_max]
+tile_instrnMem_lat = tile_instrnMem_lat_dict[tile_instrnMem_size_max]
 
 # Chosen area based on config file - only for components whose area is parameter dependent
-edram_area = edram_area_dict[str(cfg.edram_size)]
-tile_instrnMem_area = tile_instrnMem_area_dict[str(cfg.tile_instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
+edram_area = edram_area_dict[edram_size_max]
+tile_instrnMem_area = tile_instrnMem_area_dict[tile_instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
 
 # Chosen dynamic power based on config file - only for components whose dynamic power is parameter dependent
-edram_pow_dyn = edram_pow_dyn_dict[str(cfg.edram_size)]
-tile_instrnMem_pow_dyn = tile_instrnMem_pow_dyn_dict[str(cfg.tile_instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
+edram_pow_dyn = edram_pow_dyn_dict[edram_size_max]
+tile_instrnMem_pow_dyn = tile_instrnMem_pow_dyn_dict[tile_instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
 
 # Chosen leakage power based on config file - only for components whose leakage power is parameter dependent
-edram_pow_leak = edram_pow_leak_dict[str(cfg.edram_size)]
-tile_instrnMem_pow_leak = tile_instrnMem_pow_leak_dict[str(cfg.tile_instrnMem_size)] * math.sqrt(8) #area scaling for 8 bytes per instruction
+edram_pow_leak = edram_pow_leak_dict[edram_size_max]
+tile_instrnMem_pow_leak = tile_instrnMem_pow_leak_dict[tile_instrnMem_size_max] * math.sqrt(8) #area scaling for 8 bytes per instruction
 
 # Tile Control unit
 tcu_pow = 0.25*0.2
