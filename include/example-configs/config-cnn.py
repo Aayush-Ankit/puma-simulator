@@ -39,24 +39,28 @@ num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, 
 xbar_size = 128
 dac_res = 1
 # ADC configuration
-adc_res = 8 # around 4 to 8. this value should be
+adc_res = 9 # around 4 to 8. this value should be
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
+#uncomment this line for homogeneous ADC precision
+adc_res_new ={}
+
+#uncomment adc_res_new for heterogenous adcs
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 # NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
-adc_res_new = {
-                'matrix_adc_0' : 8,
-                'matrix_adc_1' : 4,
-                'matrix_adc_2' : 8,
-                'matrix_adc_3' : 4
-              }
-
+#adc_res_new = {
+#                'matrix_adc_0' : 8,
+#                'matrix_adc_1' : 4,
+#                'matrix_adc_2' : 8,
+#                'matrix_adc_3' : 4
+#              }
+#emtpy dict
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 4096 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 8192 #in entries
+dataMem_size = 8192#4096 # 2048 is larger than num_matrix*(6*xbar_size)
+instrnMem_size = 262144 #262144 #32768 #8192 #in entries
 
 # This depends on above parameters
 if (training):
@@ -87,7 +91,7 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 2048 # in Kilobytes (64 KB - same as issac)
+edram_size = 4096 #2048 # in Kilobytes (64 KB - same as issac)
 tile_instrnMem_size = 4096 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
