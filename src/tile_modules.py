@@ -191,7 +191,6 @@ class edram_controller (object):
                         self.valid[addr+i] = 0
             # read the data and send to ima - if found is 0, ramload is junk
             ramload = self.mem.read (addr, rd_width_list[idx])
-            print('len ramload:{}, width:{}, found:{}'.format(len(ramload), rd_width_list[idx], found))
             return [found, idx, ramload]
 
         else: # ST instruction
