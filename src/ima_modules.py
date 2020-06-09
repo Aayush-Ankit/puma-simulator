@@ -247,7 +247,7 @@ class adc (object):
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp):
-        #self.num_access += 1
+        self.num_access += 1  
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
@@ -698,4 +698,3 @@ class mem_interface (object):
 
         ## For DEBUG of IMA only
         #self.ramload = self.edram.memfile[addr]
-
