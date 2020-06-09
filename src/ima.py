@@ -501,6 +501,9 @@ class ima (object):
                 # check if data is a list
                 if (type(data) != list):
                     data = ['0'*cfg.data_width]*self.de_r2
+                elif (len(data)<self.de_r2):
+                    data = data + ['0'*cfg.data_width]*(self.de_r2-len(data))
+                    print('Warning: Number of elements in Ramload list less than expected')
                 for i in range (self.de_r2):
                     dst_addr = data_addr + i
                     if (dst_addr >= datamem_off):
@@ -1011,4 +1014,3 @@ class ima (object):
 
             if (self.halt == 1):
                 fid.write ('IMA halted at ' + str(cycle) + ' cycles')
-
