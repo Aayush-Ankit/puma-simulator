@@ -56,7 +56,7 @@ adc_res_new ={}
 #                'matrix_adc_2' : 8,
 #                'matrix_adc_3' : 4
 #              }
-#emtpy dict
+
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 8192#4096 # 2048 is larger than num_matrix*(6*xbar_size)
