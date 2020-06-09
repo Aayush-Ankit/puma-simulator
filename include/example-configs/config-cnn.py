@@ -39,7 +39,7 @@ num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, 
 xbar_size = 128
 dac_res = 1
 # ADC configuration
-adc_res = 9 # around 4 to 8. this value should be
+adc_res = 8 # around 4 to 8. this value should be
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
