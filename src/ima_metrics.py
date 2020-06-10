@@ -10,14 +10,16 @@ import constants as param
 # Area is computed as the summation of all component area (doesn't consider physical layout)
 def compute_area (): #in mm2
     area = 0.0
-    area += (cfg.num_matrix*3) * param.xbar_inMem_area # xbar_inMem one each for f/b/d xbars
     if cfg.MVMU_ver == "Analog":
         area += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_area # 1 dac for input of f/b/d xbars, each phy xbar in d-xbar will have a dac_array, hence 8
         area += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_area # snh for f/b xbars
         area += (cfg.num_matrix*2) * param.sna_area # sna for one each f/b xbars
         area += cfg.num_adc * param.adc_area # adc
         area += (cfg.num_matrix*3) * param.xbar_outMem_area # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
-    area += (cfg.num_matrix*4) * param.xbar_area # d-xbar has 2X xbars than f/b
+        area += (cfg.num_matrix*4) * cfg.phy2log_ratio * param.xbar_area # d-xbar has 2X xbars than f/b
+    else:
+        area += (cfg.num_matrix*2) * param.xbar_area # d-xbar are not needed in Digital MVMUs xbars than f/b
+    area += (cfg.num_matrix*3) * param.xbar_inMem_area # xbar_inMem one each for f/b/d xbars
     area += param.instrnMem_area # instrnMem
     area += param.dataMem_area # dataMem
     area += param.alu_area # alu
