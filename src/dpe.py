@@ -168,8 +168,8 @@ class DPE:
         if (cfg.debug):
             node_dump(node_dut, self.tracepath)
 
-        if (cfg.xbar_record):
-            record_xbar(node_dut)
+        #if (cfg.xbar_record):
+        #    record_xbar(node_dut)
 
         # Dump the contents of output tile (DNN output) to output file (output.txt)
         output_file = self.tracepath + 'output.txt'

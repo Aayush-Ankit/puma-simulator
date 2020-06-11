@@ -285,7 +285,8 @@ class ima (object):
             # instruction specific (for eg: ld_dec - load's decode stage)
             if (dec_op == 'ld'):
                 assert (self.fd_instrn['r1'] >= datamem_off), 'load address for tile memory comes from data memory'
-                self.de_r1 = bin2int(self.dataMem.read(self.fd_instrn['r1']), cfg.num_bits) # absolute mem addr
+                self.de_r1 = bin2int(self.dataMem.read(self.fd_instrn['r1']), cfg.addr_width) # absolute mem addr
+		assert (self.de_r1 >=0) # mem addr for load should be non negative
                 self.de_d1 = self.fd_instrn['d1']
                 self.de_r2 = self.fd_instrn['imm'] # used for incrementing/decrementing counter for edram entries
                 self.de_vec = self.fd_instrn['vec']
@@ -299,7 +300,8 @@ class ima (object):
 
             elif (dec_op == 'st'):
                 assert (self.fd_instrn['d1'] >= datamem_off), 'store address for tile memory comes from data memory'
-                self.de_d1 = bin2int(self.dataMem.read(self.fd_instrn['d1']), cfg.num_bits) #absolute mem addr
+                self.de_d1 = bin2int(self.dataMem.read(self.fd_instrn['d1']), cfg.addr_width) #absolute mem addr
+		assert (self.de_d1 >=0) # mem addr for store should be non negative
                 self.de_r1 = self.fd_instrn['r1'] # reg addr
                 self.de_vec = self.fd_instrn['vec']
                 # source value will be read in execute stage
@@ -515,8 +517,9 @@ class ima (object):
                     # write to dataMem - check if addr is a valid datamem address
                     dst_addr = self.de_d1 + i
                     if (dst_addr >= datamem_off):
-                        self.dataMem.write (dst_addr, self.de_val1)
+                        self.dataMem.write(addr=dst_addr, data=self.de_val1, type_t='addr') #Updated for separate data_width and addr_width
                     else:
+			assert (1==0) # Set instructions cannot write to MVMU storage
                         writeToXbarMem (self, dst_addr, self.de_val1)
 
             elif (ex_op == 'cp'):
@@ -607,7 +610,7 @@ class ima (object):
                     # print ("Sparsity", sparsity)
 
                     ## Loop to cover all bits of inputs
-                    for k in xrange (cfg.xbdata_width / cfg.dac_res):
+                    for k in xrange (int(math.ceil(cfg.input_prec / cfg.dac_res))): #quantization affects the # of streams
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
@@ -622,7 +625,7 @@ class ima (object):
                         out_dac = self.dacArray_list[mat_id][key].propagate_dummy(out_xb_inMem) #pass through
 
                         # Do for (data_width/xbar_bits) xbars
-                        num_xb = cfg.data_width / cfg.xbar_bits
+                        num_xb = int(math.ceil(float(cfg.weight_width) / cfg.xbar_bits))  # # of XBs change with quantization
                         out_xbar = [[] for x in range(num_xb)]
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
@@ -803,7 +806,8 @@ class ima (object):
                     print("adccccc.adc_res", adccccc.adc_res)
                 print("---")
                 '''
-                latency_ip = lat_temp * ((cfg.xbdata_width / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))
+                latency_ip = lat_temp * ((cfg.input_prec / cfg.dac_res) + num_stage - 1) * float(int(fb_found>0))*(math.ceil(float(cfg.weight_width)/ \
+                cfg.xbar_bits) /math.ceil(float(cfg.data_width)/cfg.xbar_bits)) # last term to account for the effect of quantization on latency
                 ## MVM outer product occurs in 4 cycles to take care of all i/o polarities (++, +-, -+, --)
                 num_phase = 4
                 lat_temp = self.matrix_list[0]['f'][0].getOpLatency()
