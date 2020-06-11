@@ -240,95 +240,71 @@ dataMem_lat_dict = {'256' : 1,
                     '512' : 1,
                     '1024': 1,
                     '2048': 1,
-		    '4096':1}
+		                '4096':1}
 
 dataMem_pow_dyn_dict = {'256' : 0.16,
                         '512' : 0.24,
                         '1024': 0.33,
                         '2048': 0.57,
-			'4096': 0.57}
+			                  '4096': 0.57}
 
 dataMem_pow_leak_dict = {'256' : 0.044,
                          '512' : 0.078,
                          '1024': 0.147,
                          '2048': 0.33,
-			 '4096': 0.33}
+			                   '4096': 0.33}
 
 dataMem_area_dict = {'256' : 0.00056,
                      '512' : 0.00108,
                      '1024': 0.00192,
                      '2048': 0.00392,
-		     '4096': 0.00392}
-
-dataMem_lat_dict = {'256' : 1,
-                    '512' : 1,
-                    '1024': 1,
-                    '2048': 1,
-		    '4096':1}
-
-dataMem_pow_dyn_dict = {'256' : 0.16,
-                        '512' : 0.24,
-                        '1024': 0.33,
-                        '2048': 0.57,
-			'4096': 0.57}
-
-dataMem_pow_leak_dict = {'256' : 0.044,
-                         '512' : 0.078,
-                         '1024': 0.147,
-                         '2048': 0.33,
-			 '4096': 0.33}
-
-dataMem_area_dict = {'256' : 0.00056,
-                     '512' : 0.00108,
-                     '1024': 0.00192,
-                     '2048': 0.00392,
-		     '4096': 0.00392}
+		                 '4096': 0.00392}
 
 # Instruction Memory value dictionary
 instrnMem_lat_dict = {'512' : 1,
                       '1024': 1,
                       '2048': 1,
-		      '4096': 1}
+		                  '4096': 1}
 
 instrnMem_pow_dyn_dict = {'512' : 0.46,
                           '1024': 0.53,
                           '2048': 0.65,
-		      	  '4096': 0.65}
+		      	              '4096': 0.65}
 
 instrnMem_pow_leak_dict = {'512' : 0.078,
                            '1024': 0.147,
                            '2048': 0.33,
-		           '4096': 0.33}
+		                       '4096': 0.33}
 
 
 instrnMem_area_dict = {'512' : 0.00108,
                        '1024': 0.00192,
                        '2048': 0.0041,
-		       '4096': 0.0041}
+		                   '4096': 0.0041}
 
 
 # Xbar_inMem value dictionary (1 access means reading (dac_res) bits for each xbar row)
 # for computing average power of ima - scale dyn_pow down by xbar_size
 xbar_inMem_lat_dict = {'16'  : 1,
-		       '32'  : 1, # indexed with xbar size
+		                   '32'  : 1, # indexed with xbar size
                        '64'  : 1,
                        '128' : 1,
                        '256' : 1}
 
 xbar_inMem_pow_dyn_read_dict = {'16'  : 0.3, #doesn't change much as we move from 32 to 16, because these are very small memories
-		       		'32'  : 0.3,
+		       		                  '32'  : 0.3,
                                 '64'  : 0.7,
                                 '128' : 1.7,
                                 '256' : 4.7}
 
 xbar_inMem_pow_dyn_write_dict = {'16'  : 0.1,
-		       		 '32'  : 0.1,
+		       		                   '32'  : 0.1,
                                  '64'  : 0.1,
                                  '128' : 0.16,
                                  '256' : 0.2}
 
 xbar_inMem_pow_leak_dict = {'16'  : 0.009,
-		       	    '32'  : 0.009,
+		       	                '32'  : 0.009,
                             '64'  : 0.02,
                             '128' : 0.04,
                             '256' : 0.075}
@@ -444,44 +420,44 @@ memInterface_lat = infinity # infinite latency
 edram_lat_dict = {'8'   : 2,
                   '64'  : 2, #edram access width is constant = 256 bits
                   '128' : 2,
-		  '2048': 2}
+		              '2048': 2}
 
 edram_pow_dyn_dict = {'8'   : 17.2/2,
                       '64'  : 17.2/2, # (0.0172 nJ with 2 cycles access latency)
                       '128' : 25.35/2,
-		      '2048': 25.35/2}
+		                  '2048': 25.35/2}
 
 edram_pow_leak_dict = {'8'   : 0.46,
                        '64'  : 0.46,
                        '128' : 0.77,
-		       '2048': 0.77}
+		                   '2048': 0.77}
 
 edram_area_dict = {'8'   : 0.086,
                    '64'  : 0.086,
                    '128' : 0.121,
-		   '2048': 0.121}
+		               '2048': 0.121}
 
 # Tile Instruction Memory value dictionary
 tile_instrnMem_lat_dict = {'512': 1,
                           '1024': 1,
                           '2048': 1,
-			  '4096': 1}
+			                    '4096': 1}
 
 tile_instrnMem_pow_dyn_dict = {'512' : 0.46,
                                '1024': 0.53,
                                '2048': 0.65,
-			       '4096': 0.65}
+			                         '4096': 0.65}
 
 tile_instrnMem_pow_leak_dict = {'512' : 0.078,
                                 '1024': 0.147,
                                 '2048': 0.33,
-			        '4096': 0.33}
+			                          '4096': 0.33}
 
 
 tile_instrnMem_area_dict = {'512' : 0.00108,
                             '1024': 0.00192,
                             '2048': 0.0041,
-			    '4096': 0.0041}
+			                      '4096': 0.0041}
 
 
 edram_size_max =  '2048'
