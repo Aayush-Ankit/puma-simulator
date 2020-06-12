@@ -37,14 +37,16 @@ def compute_area (): #in mm2
 # Leakage power is computed as sum of leakage powers of all components
 def compute_pow_leak ():
     leak_pow = 0.0
-    leak_pow += (cfg.num_matrix*3) * param.xbar_inMem_pow_leak # xbar_inMem
     if cfg.MVMU_ver == "Analog":
         leak_pow += (cfg.num_matrix*11) * cfg.xbar_size * param.dac_pow_leak # dac
         leak_pow += (cfg.num_matrix*2) * cfg.xbar_size * param.snh_pow_leak # snh
         leak_pow += cfg.num_adc * param.adc_pow_leak # adc
         leak_pow += (cfg.num_matrix*2) * param.sna_pow_leak # sna
         leak_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_leak # xbar_outMem
-    leak_pow += (cfg.num_matrix*4) * param.xbar_pow_leak # xbar area
+        leak_pow += (cfg.num_matrix*4) * param.xbar_pow_leak # xbar area
+    else:
+        leak_pow += (cfg.num_matrix*2) * param.xbar_pow_leak # xbar area
+    leak_pow += (cfg.num_matrix*3) * param.xbar_inMem_pow_leak # xbar_inMem
     leak_pow += param.instrnMem_pow_leak # instrnMem
     leak_pow += param.dataMem_pow_leak # dataMem
     leak_pow += param.alu_pow_leak # alu
