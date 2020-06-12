@@ -6,8 +6,8 @@
 import sys
 
 import numpy as np
-import include.constants as param
-import include.config as cfg
+import constants as param
+import config as cfg
 import math
 from data_convert import *
 
