@@ -256,25 +256,25 @@ class adc (object):
 
     # HACK - until propagate doesn't have correct analog functionality
     def propagate_dummy (self, inp, sparsity = 0):
-        if sparsity>50:
+        if sparsity<50:
             self.num_access['n'] += 1
             self.adc_res = cfg.adc_res
-        elif sparsity>25:
+        elif sparsity<75:
             self.num_access['n/2'] += 1
             self.adc_res = cfg.adc_res-1
-        elif sparsity>12.5:
+        elif sparsity<87.5:
             self.num_access['n/4'] += 1
             self.adc_res = cfg.adc_res-2
-        elif sparsity>6.25:
+        elif sparsity<93.75:
             self.num_access['n/8'] += 1
             self.adc_res = cfg.adc_res-3
-        elif sparsity>3.125:
+        elif sparsity<96.875:
             self.num_access['n/16'] += 1
             self.adc_res = cfg.adc_res-4
-        elif sparsity>1.5625:
+        elif sparsity<98.4375:
             self.num_access['n/32'] += 1
             self.adc_res = cfg.adc_res-5
-        elif sparsity>0.78125:
+        elif sparsity<99.21875:
             self.num_access['n/64'] += 1
             self.adc_res = cfg.adc_res-6
         else:

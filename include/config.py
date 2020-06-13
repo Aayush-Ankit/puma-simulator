@@ -13,7 +13,7 @@ sparse_opt = 1 # Flag for Sparsity optimisaton (Make it 0 for only dense computa
 # One of "Analog", "Digital_V1" or "Digital_V2" 
 # Digital_V1 has compressed inputs (Data+Offset style)
 # Digital_V2 has uncompressed inputs (Skips computations for 0 activation)
-MVMU_ver = "Digital_V2"
+MVMU_ver = "Analog"
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16
