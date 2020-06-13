@@ -9,6 +9,7 @@ import math
 import include.config as cfg
 #import include.configTest as cfg
 import include.constants as param
+import constants_digital as digi_param
 import src.ima_modules as imod
 
 from data_convert import *
@@ -39,7 +40,6 @@ class ima (object):
         self.matrix_list = [] # list of dicts of mvmu(s)
         self.xb_inMem_list = [] # list of dicts of xbar input memory
         self.xb_outMem_list = [] # list of dicts of xbar output memory
-        self.xbar_inMem_Sparsity_list = [] # list of sparsity od xbar in mem (may have to be removed if found redundant)
 
         for i in xrange(cfg.num_matrix):
             # each matrix represents three mvmus - 1 mvmu for fw, 1 mvmu for bw, 1 mvmu (2X width) for delta
@@ -505,9 +505,9 @@ class ima (object):
                 for i in range (self.de_r2):
                     dst_addr = data_addr + i
                     if (dst_addr >= datamem_off):
-                      self.dataMem.write (dst_addr, data[i])
+                        self.dataMem.write (dst_addr, data[i])
                     else:
-                      writeToXbarMem (self, dst_addr, data[i])
+                        writeToXbarMem (self, dst_addr, data[i])
 
             elif (ex_op == 'st'): #nothing to be done by ima for st here
                 return 1
@@ -599,22 +599,23 @@ class ima (object):
                     self.xb_outMem_list[mat_id][key].reset ()
 
                     xbar_inMem = self.xb_inMem_list[mat_id][key].read_all ()
-                    # print ("xb_inMem", xbar_inMem)
-                    # calculate sparsity of xbar_in_mem
                     non_0_val = 0
                     for i in range(cfg.xbar_size):
-                        if xbar_inMem[i] != '0':
+                        if xbar_inMem[i] != '0000000000000000':
                             non_0_val = non_0_val +1
-                    sparsity = (cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size
-                    # print ("non_0_val", non_0_val)
-                    # print ("Sparsity", sparsity)
+                    sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                    sparsity_adc = sparsity
+                    if (sparsity%10!=0):
+                        sparsity = sparsity-(sparsity%10)
+                    else:
+                        if (sparsity == 100):
+                            sparsity = sparsity-10
 
                     ## Loop to cover all bits of inputs
                     for k in xrange (int(math.ceil(cfg.input_prec / cfg.dac_res))): #quantization affects the # of streams
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
-                        # print("out_xb_inMem", out_xb_inMem)
                         
                         #*************************************** HACK *********************************************
                         ###### CAUTION: Not replicated exact "functional" circuit behaviour for analog parts
@@ -630,7 +631,7 @@ class ima (object):
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
                             # compute dot-product
-                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(non_0_val, out_dac)        
+                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac, sparsity)        
                             # do sampling and hold
                             out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy(out_xbar[m])
 
@@ -643,7 +644,7 @@ class ima (object):
                                 adc_id = (mat_id*num_xb + m) % cfg.num_adc
                                 out_mux1 = self.mux1_list[mat_id].propagate_dummy(out_snh[m][j]) # i is the ith xbar
                                 out_mux2 = self.mux2_list[mat_id % cfg.num_adc].propagate_dummy(out_mux1)
-                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2, non_0_val)
+                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2, sparsity_adc)
 
                                 # shift and add outputs from difefrent wt_bits
                                 alu_op = 'sna'
@@ -772,8 +773,8 @@ class ima (object):
             # do nothing for nop instruction
 
 
-        # Computes the latency for mvm instruction based on DPE configuration
-        def xbComputeLatency (self, mask):
+        # Computes the latency for Analog mvm instruction based on DPE configuration
+        def xbComputeLatency_Analog (self, mask):
             latency_out_list = []
             fb_found = 0
             d_found = 0
@@ -797,7 +798,7 @@ class ima (object):
                 lat_temp = 0
                 # We assume all ADCs in a matrix has the same resolution
                 adc_idx = idx*cfg.num_adc_per_matrix
-                lat_temp = self.adc_list[adc_idx].getLatency(cfg.xbar_size)
+                lat_temp = self.adc_list[adc_idx].getLatency()
                 '''
                 print("adc_idx", adc_idx)
                 print("lat_temp", lat_temp)
@@ -821,6 +822,26 @@ class ima (object):
                 print ("latency_out", latency_out)
                 latency_out_list.append(latency_out)
             return max(latency_out_list)
+
+        # Computes the latency for Analog mvm instruction based on DPE configuration
+        def xbComputeLatency_Digital (self):
+            mvm_lat_temp = 0
+            if (cfg.inference):
+                for p in xrange(cfg.num_matrix):
+                    if self.de_xb_nma[p]:
+                        xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
+                        non_0_val = 0
+                        for i in range(cfg.xbar_size):
+                            if xbar_inMem[i] != '0000000000000000':
+                                non_0_val = non_0_val +1
+                        sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                        if (sparsity%10!=0):
+                            sparsity = sparsity-(sparsity%10)
+                        else:
+                            if (sparsity == 100):
+                                sparsity = sparsity-10
+                        mvm_lat_temp += digi_param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)][str(sparsity)]
+            return mvm_lat_temp
 
         # State machine runs only if the stage is non-empty
         # Describe the functionality on a cycle basis
@@ -860,24 +881,9 @@ class ima (object):
                 elif (ex_op == 'mvm'):
                     mask_temp = self.de_xb_nma
                     if (cfg.MVMU_ver == "Analog"):
-                        self.stage_latency[sId] = xbComputeLatency (self, mask_temp) # mask tells which of ip/op or both is occurring
+                        self.stage_latency[sId] = xbComputeLatency_Analog (self, mask_temp) # mask tells which of ip/op or both is occurring
                     else:
-                        mvm_lat_temp = 0
-                        if (cfg.inference):
-                            for p in xrange(cfg.num_matrix):
-                                if self.de_xb_nma[p]:
-                                    xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
-                                    non_0_val = 0
-                                    for i in range(cfg.xbar_size):
-                                        if xbar_inMem[i] != '0':
-                                            non_0_val = non_0_val +1
-                                    print ("non_0_val", non_0_val)
-                                    nval_percent = int(non_0_val*100/128)
-                                    if (nval_percent%10!=0):
-                                        nval_percent = nval_percent + 10
-                                    mvm_lat_temp += param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)][str(nval_percent)]
-                        self.stage_latency[sId] = mvm_lat_temp
-                    print("MVM Latency", self.stage_latency[sId])
+                        self.stage_latency[sId] = xbComputeLatency_Digital(self)
 
                 # Needs update - use xbar serial read latency
                 elif (ex_op == 'crs'):
@@ -1014,7 +1020,7 @@ class ima (object):
                 update_ready = self.stage_done[i+1]
 
             # run the stage based on its update_ready argument
-
+           
             stage_function[i] (update_ready, fid)
 
         # If specified, print thetrace (pipeline stage information)

@@ -25,8 +25,8 @@ def mem_dump (fid, memfile, name, node = '', tile_id = ''):
             #temp_val = bin2int (memfile[addr], cfg.num_bits)
             if (name == 'EDRAM' and (node != '') and (tile_id != '')): # for EDRAM also show counter/valid
                 fid.write ('valid: ' + str(node.tile_list[tile_id].edram_controller.valid[addr]) \
-                    + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
-                fid.write(str(temp_val) + '\n')
+                        + ' | counter: ' + str(node.tile_list[tile_id].edram_controller.counter[addr]) + ' | ')
+            fid.write(str(temp_val) + '\n')
         else: # not printing zero values for ease of view
             temp_val = 0.0
         if (name != 'EDRAM'):

@@ -16,16 +16,7 @@ class xbar (object):
     def __init__ (self, xbar_size, xbar_value= 'nil' ):
         # define num_accesses for different operations
         # parallel reads (inner-product)
-        self.num_access = { '100':0, \
-                            '90': 0, \
-                            '80': 0, \
-                            '70': 0, \
-                            '60': 0, \
-                            '50': 0, \
-                            '40': 0, \
-                            '30': 0, \
-                            '20': 0, \
-                            '10': 0} \
+        self.num_access = { '0':0, '90': 0,'80': 0,'70': 0,'60': 0,'50': 0,'40': 0,'30': 0,'20': 0,'10': 0}
 
         self.num_access_rd = 0 # serial reads
         self.num_access_wr = 0 # serial writes
@@ -101,35 +92,16 @@ class xbar (object):
         return out
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, n_val, inp = 'nil'):
+    def propagate_dummy (self, inp = 'nil', sparsity = 0):
         # data input is list of bit strings (of length dac_res) - fixed point binary
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
         
         #Modification to accomodate sparsity and digital crossbars
         if cfg.MVMU_ver == "Analog":
-            self.num_access['100'] += 1
+            self.num_access['0'] += 1
         else:
-            if n_val>cfg.xbar_size*9/10.0:
-                self.num_access['100'] += 1
-            elif n_val>cfg.xbar_size*8/10.0:
-                self.num_access['90'] += 1
-            elif n_val>cfg.xbar_size*7/10.0:
-                self.num_access['80'] += 1
-            elif n_val>cfg.xbar_size*6/10.0:
-                self.num_access['70'] += 1
-            elif n_val>cfg.xbar_size*5/10.0:
-                self.num_access['60'] += 1
-            elif n_val>cfg.xbar_size*4/10.0:
-                self.num_access['50'] += 1
-            elif n_val>cfg.xbar_size*3/10.0:
-                self.num_access['40'] += 1
-            elif n_val>cfg.xbar_size*2/10.0:
-                self.num_access['30'] += 1
-            elif n_val>cfg.xbar_size*1/10.0:
-                self.num_access['20'] += 1
-            else:
-                self.num_access['10'] += 1
+            self.num_access[str(sparsity)] +=1
 
         # convert input from fixed point binary (string) to float
         inp_float = [0.0] * self.xbar_size
@@ -159,7 +131,7 @@ class xbar_op (xbar):
     # add function for outer_product computation
     def propagate_op_dummy (self, inp1 = 'nil', inp2 = 'nil', lr=1, in1_bit=cfg.dac_res, in2_bit=cfg.xbar_bits):
         # inner-product and outer_product functions should have different energies (and other metrics) - NEEDS UPDATE
-        self.num_access += 1
+        self.num_access['0'] += 1
         # check both data inputs
         assert (inp1 != 'nil' and inp2 != 'nil'), 'propagate needs a non-nil inputs'
         assert ((len(inp1) == self.xbar_size) and (len(inp1[0]) == in1_bit)), 'inp1 size mismatch - should be \
@@ -258,22 +230,14 @@ class dac_array (object):
 class adc (object):
     def __init__ (self, adc_res):
         # define num_access
-        self.num_access = { 'n' :       0,
-                            'n/2':      0,
-                            '3n/4':     0,
-                            '7n/8':     0,
-                            '15n/16':   0,
-                            '31n/32':   0,
-                            '63n/64':   0,
-                            '127n/128': 0,
-                            '255n/256': 0}
-
+        self.num_access = { 'n':0, 'n/2': 0,'n/4': 0,'n/8': 0,'n/16': 0,'n/32': 0,'n/64': 0,'n/128': 0}
+        
         # define latency
-        # self.latency = param.adc_lat_dict[str(adc_res)]
+        self.latency = param.adc_lat_dict[str(adc_res)]
 
         self.adc_res = adc_res
 
-    def getLatency (self, n_val):
+    def getLatency (self):
         self.latency = param.adc_lat_dict[str(self.adc_res)]
         return self.latency
 
@@ -285,31 +249,39 @@ class adc (object):
         return ('0'*(num_bits - len(bin_value)) + bin_value)
 
     def propagate (self, inp):
-        #self.num_access += 1
+        self.num_access += 1
         assert (type(inp) in [float, np.float32, np.float64]), 'adc input type mismatch (float, np.float32, np.float64 expected)'
         num_bits = self.adc_res
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp, n_val):
-        if n_val>cfg.xbar_size/2.0:
+    def propagate_dummy (self, inp, sparsity):
+        if sparsity>50:
             self.num_access['n'] += 1
-        elif n_val>cfg.xbar_size/4.0:
+            self.adc_res = cfg.adc_res
+        elif sparsity>25:
             self.num_access['n/2'] += 1
-        elif n_val>cfg.xbar_size/8.0:
-            self.num_access['3n/4'] += 1
-        elif n_val>cfg.xbar_size/16.0:
-            self.num_access['7n/8'] += 1
-        elif n_val>cfg.xbar_size/32.0:
-            self.num_access['15n/16'] += 1
-        elif n_val>cfg.xbar_size/64.0:
-            self.num_access['31n/32'] += 1
-        elif n_val>cfg.xbar_size/128.0:
-            self.num_access['63n/64'] += 1
-        elif n_val>cfg.xbar_size/256.0:
-            self.num_access['127n/128'] += 1
+            self.adc_res = cfg.adc_res-1
+        elif sparsity>12.5:
+            self.num_access['n/4'] += 1
+            self.adc_res = cfg.adc_res-2
+        elif sparsity>6.25:
+            self.num_access['n/8'] += 1
+            self.adc_res = cfg.adc_res-3
+        elif sparsity>3.125:
+            self.num_access['n/16'] += 1
+            self.adc_res = cfg.adc_res-4
+        elif sparsity>1.5625:
+            self.num_access['n/32'] += 1
+            self.adc_res = cfg.adc_res-5
+        elif sparsity>0.78125:
+            self.num_access['n/64'] += 1
+            self.adc_res = cfg.adc_res-6
         else:
-            self.num_access['255n/256'] += 1
+            self.num_access['n/128'] += 1
+            self.adc_res = cfg.adc_res-7
+        if(self.adc_res<0):
+            self.adc_res = 1
 
         return inp
 

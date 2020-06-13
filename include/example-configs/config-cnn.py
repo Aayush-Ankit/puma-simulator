@@ -7,6 +7,7 @@ debug = 1
 xbar_record = 1
 inference = 1
 training = not(inference)
+sparse_opt = 1 # Flag for Sparsity optimisaton (Make it 0 for only dense computations)
 
 ## Variable to define the type of MVMU
 # One of "Analog", "Digital_V1" or "Digital_V2" 

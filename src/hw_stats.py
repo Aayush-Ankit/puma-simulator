@@ -14,7 +14,7 @@ nj = 10 ** (-9)
 
 # Copied from /include/constants.py file
 # Enlists components at core, tile, and node levels
-hw_comp_energy = {'xbar_mvm':{  '100':param.xbar_ip_energy_dict['100'], \
+hw_comp_energy = {'xbar_mvm':{  '0':param.xbar_ip_energy_dict['0'], \
                                 '90': param.xbar_ip_energy_dict['90'], \
                                 '80': param.xbar_ip_energy_dict['80'], \
                                 '70': param.xbar_ip_energy_dict['70'], \
@@ -24,37 +24,20 @@ hw_comp_energy = {'xbar_mvm':{  '100':param.xbar_ip_energy_dict['100'], \
                                 '30': param.xbar_ip_energy_dict['30'], \
                                 '20': param.xbar_ip_energy_dict['20'], \
                                 '10': param.xbar_ip_energy_dict['10']}, \
-                  'xbar_op':{  '100': param.xbar_ip_energy_dict['100'], \
-                                '90': param.xbar_ip_energy_dict['90'], \
-                                '80': param.xbar_ip_energy_dict['80'], \
-                                '70': param.xbar_ip_energy_dict['70'], \
-                                '60': param.xbar_ip_energy_dict['60'], \
-                                '50': param.xbar_ip_energy_dict['50'], \
-                                '40': param.xbar_ip_energy_dict['40'], \
-                                '30': param.xbar_ip_energy_dict['30'], \
-                                '20': param.xbar_ip_energy_dict['20'], \
-                                '10': param.xbar_ip_energy_dict['10']}, \
-                  'xbar_mtvm':{ '100':param.xbar_ip_energy_dict['100'], \
-                                '90': param.xbar_ip_energy_dict['90'], \
-                                '80': param.xbar_ip_energy_dict['80'], \
-                                '70': param.xbar_ip_energy_dict['70'], \
-                                '60': param.xbar_ip_energy_dict['60'], \
-                                '50': param.xbar_ip_energy_dict['50'], \
-                                '40': param.xbar_ip_energy_dict['40'], \
-                                '30': param.xbar_ip_energy_dict['30'], \
-                                '20': param.xbar_ip_energy_dict['20'], \
-                                '10': param.xbar_ip_energy_dict['10']}, \
-        'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, 'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
+        'xbar_op':param.xbar_ip_energy_dict['0'], \
+        'xbar_mtvm':param.xbar_ip_energy_dict['0'], \
+        'xbar_rd':param.xbar_rd_pow_dyn*param.xbar_rd_lat, \
+        'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
         'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
-        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, 'adc':{ 'n' :       param.adc_pow_dyn_dict[str(cfg.adc_res)], \
-                                                                    'n/2':      param.adc_pow_dyn_dict[str(cfg.adc_res-1)], \
-                                                                    '3n/4':     param.adc_pow_dyn_dict[str(cfg.adc_res-2)], \
-                                                                    '7n/8':     param.adc_pow_dyn_dict[str(cfg.adc_res-3)], \
-                                                                    '15n/16':   param.adc_pow_dyn_dict[str(cfg.adc_res-4)], \
-                                                                    '31n/32':   param.adc_pow_dyn_dict[str(cfg.adc_res-5)], \
-                                                                    '63n/64':   param.adc_pow_dyn_dict[str(cfg.adc_res-6)], \
-                                                                    '127n/128': param.adc_pow_dyn_dict[str(cfg.adc_res-7)], \
-                                                                    '255n/256': param.adc_pow_dyn_dict[str(cfg.adc_res-7)]}, \
+        'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, \
+        'adc':{ 'n' :       param.adc_pow_dyn_dict[str(cfg.adc_res)], \
+                'n/2':      param.adc_pow_dyn_dict[str(cfg.adc_res-1)], \
+                'n/4':     param.adc_pow_dyn_dict[str(cfg.adc_res-2)], \
+                'n/8':     param.adc_pow_dyn_dict[str(cfg.adc_res-3)], \
+                'n/16':   param.adc_pow_dyn_dict[str(cfg.adc_res-4)], \
+                'n/32':   param.adc_pow_dyn_dict[str(cfg.adc_res-5)], \
+                'n/64':   param.adc_pow_dyn_dict[str(cfg.adc_res-6)], \
+                'n/128': param.adc_pow_dyn_dict[str(cfg.adc_res-7)]}, \
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
         'alu_sna': param.sna_pow_dyn, \
@@ -74,47 +57,18 @@ hw_comp_energy = {'xbar_mvm':{  '100':param.xbar_ip_energy_dict['100'], \
 def get_hw_stats (fid, node_dut, cycle):
 
     # List of all components that dissipate power
-    hw_comp_access = {'xbar_mvm':{  '100':0, \
-                                    '90': 0, \
-                                    '80': 0, \
-                                    '70': 0, \
-                                    '60': 0, \
-                                    '50': 0, \
-                                    '40': 0, \
-                                    '30': 0, \
-                                    '20': 0, \
-                                    '10': 0}, \
-                    'xbar_op':{     '100':0, \
-                                    '90': 0, \
-                                    '80': 0, \
-                                    '70': 0, \
-                                    '60': 0, \
-                                    '50': 0, \
-                                    '40': 0, \
-                                    '30': 0, \
-                                    '20': 0, \
-                                    '10': 0}, \
-                    'xbar_mtvm':{  '100':0,  \
-                                    '90': 0, \
-                                    '80': 0, \
-                                    '70': 0, \
-                                    '60': 0, \
-                                    '50': 0, \
-                                    '40': 0, \
-                                    '30': 0, \
-                                    '20': 0, \
-                                    '10': 0}, \
+    hw_comp_access = {'xbar_mvm':{  '0':0, '90': 0,'80': 0,'70': 0,'60': 0,'50': 0,'40': 0,'30': 0,'20': 0,'10': 0}, \
+            'xbar_op':0, 'xbar_mtvm':0, \
             'xbar_rd':0, 'xbar_wr':0, \
             'dac':0, 'snh':0, \
-            'mux1':0, 'mux2':0, 'adc':{ 'n' :       0, \
-                                        'n/2':      0, \
-                                        '3n/4':     0, \
-                                        '7n/8':     0, \
-                                        '15n/16':   0, \
-                                        '31n/32':   0, \
-                                        '63n/64':   0, \
-                                        '127n/128': 0, \
-                                        '255n/256': 0}, \
+            'mux1':0, 'mux2':0, 'adc':{ 'n' :    0, \
+                                        'n/2':   0, \
+                                        'n/4':   0, \
+                                        'n/8':   0, \
+                                        'n/16':  0, \
+                                        'n/32':  0, \
+                                        'n/64':  0, \
+                                        'n/128': 0}, \
             'alu_div':0, 'alu_mul':0, \
             'alu_act':0, 'alu_other':0, \
             'alu_sna':0, \
@@ -159,11 +113,9 @@ def get_hw_stats (fid, node_dut, cycle):
                     if cfg.MVMU_ver == "Analog":
                         for m in range(cfg.phy2log_ratio):
                             if (mvmu_t == 'd'):
-                                for key,value in hw_comp_access['xbar_op'].items():
-                                    hw_comp_access['xbar_op'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access[key]
+                                hw_comp_access['xbar_op'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access['0']
                             elif (mvmu_t == 'b'):
-                                for key,value in hw_comp_access['xbar_mtvm'].items():
-                                    hw_comp_access['xbar_mtvm'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access[key]
+                                hw_comp_access['xbar_mtvm'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access['0']
                             else:
                                 for key,value in hw_comp_access['xbar_mvm'].items():
                                     hw_comp_access['xbar_mvm'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][m].num_access[key]
@@ -174,11 +126,9 @@ def get_hw_stats (fid, node_dut, cycle):
                     
                     else:
                         if (mvmu_t == 'd'):
-                            for key,value in hw_comp_access['xbar_op'].items():
-                                hw_comp_access['xbar_op'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][0].num_access[key]
+                            hw_comp_access['xbar_op'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][0].num_access['0']
                         elif (mvmu_t == 'b'):
-                            for key,value in hw_comp_access['xbar_mtvm'].items():
-                                hw_comp_access['xbar_mtvm'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][0].num_access[key]
+                            hw_comp_access['xbar_mtvm'] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][0].num_access['0']
                         else:
                             for key,value in hw_comp_access['xbar_mvm'].items():
                                 hw_comp_access['xbar_mvm'][key] += node_dut.tile_list[i].ima_list[j].matrix_list[k][mvmu_t][0].num_access[key]
@@ -245,10 +195,6 @@ def get_hw_stats (fid, node_dut, cycle):
     total_adc_access = 0
     total_mvm_energy = 0
     total_mvm_access = 0
-    total_mtvm_access = 0
-    total_mtvm_energy = 0
-    total_op_access = 0
-    total_op_energy = 0
     # Compute the total dynamic energy consumption
     if cfg.MVMU_ver == "Analog":
         for key, value in hw_comp_access.items():
@@ -262,16 +208,6 @@ def get_hw_stats (fid, node_dut, cycle):
                     total_energy += value1*hw_comp_energy['xbar_mvm'][key1]
                     total_mvm_energy +=  value1*hw_comp_energy['xbar_mvm'][key1] # Not needed for function but for output visualisation
                     total_mvm_access += value1
-            elif key == 'xbar_mtvm':
-                for key1, value1 in hw_comp_access['xbar_mtvm'].items():
-                    total_energy += value1*hw_comp_energy['xbar_mtvm'][key1]
-                    total_mvm_energy +=  value1*hw_comp_energy['xbar_mtvm'][key1] # Not needed for function but for output visualisation
-                    total_mvm_access += value1
-            elif key == 'xbar_op':
-                for key1, value1 in hw_comp_access['xbar_op'].items():
-                    total_energy += value1*hw_comp_energy['xbar_op'][key1]
-                    total_op_energy +=  value1*hw_comp_energy['xbar_op'][key1] # Not needed for function but for output visualisation
-                    total_op_access += value1
             else:
                 total_energy += value * hw_comp_energy[key]
     else:
@@ -286,16 +222,6 @@ def get_hw_stats (fid, node_dut, cycle):
                     total_energy += (value1/16)*hw_comp_energy['xbar_mvm'][key1]
                     total_mvm_energy +=  (value1/16)*hw_comp_energy['xbar_mvm'][key1] # Not needed for function but for output visualisation
                     total_mvm_access += (value1/16)
-            elif key == 'xbar_mtvm':
-                for key1, value1 in hw_comp_access['xbar_mtvm'].items():
-                    total_energy += (value1/16)*hw_comp_energy['xbar_mtvm'][key1]
-                    total_mvm_energy +=  (value1/16)*hw_comp_energy['xbar_mtvm'][key1] # Not needed for function but for output visualisation
-                    total_mvm_access += (value1/16)
-            elif key == 'xbar_op':
-                for key1, value1 in hw_comp_access['xbar_op'].items():
-                    total_energy += (value1/16)*hw_comp_energy['xbar_op'][key1]
-                    total_op_energy +=  (value1/16)*hw_comp_energy['xbar_op'][key1] # Not needed for function but for output visualisation
-                    total_op_access += (value1/16)
             else:
                 total_energy += value * hw_comp_energy[key]
 
@@ -315,14 +241,6 @@ def get_hw_stats (fid, node_dut, cycle):
             bl_spc2 = (22-len(str(total_mvm_access))) * ' '
             fid.write (key + bl_spc1 + str(total_mvm_access) + bl_spc2 +\
                         (str(total_mvm_energy/total_energy*100))[0:4] + ' %\n')
-        elif key == 'xbar_mtvm':
-            bl_spc2 = (22-len(str(total_mtvm_access))) * ' '
-            fid.write (key + bl_spc1 + str(total_mtvm_access) + bl_spc2 +\
-                        (str(total_mtvm_energy/total_energy*100))[0:4] + ' %\n')
-        elif key == 'xbar_op':
-            bl_spc2 = (22-len(str(total_op_access))) * ' '
-            fid.write (key + bl_spc1 + str(total_op_access) + bl_spc2 +\
-                        (str(total_op_energy/total_energy*100))[0:4] + ' %\n')
         else:
             bl_spc2 = (22-len(str(value))) * ' '
             fid.write (key + bl_spc1 + str(value) + bl_spc2 +\
@@ -358,14 +276,10 @@ def get_hw_stats (fid, node_dut, cycle):
     metric_dict['core_area'] = ima_metrics.compute_area ()# in mm2
     metric_dict['cycles'] = cycle
     metric_dict['time'] = cycle * param.cycle_time * (10**(-9)) # in sec
+    metric_dict['dynamic_energy'] = total_energy * ns * mw # in joule
     #metric_dict['leakage_enegy'] = metric_dict['leakage_power'] * mw * metric_dict['time'] # in joule
     metric_dict['leakage_energy'] =  leakage_energy * ns * mw # in joule
-    # if cfg.MVMU_ver == "Analog":
-    metric_dict['dynamic_energy'] = total_energy * ns * mw # in joule
     metric_dict['total_energy'] = metric_dict['dynamic_energy'] + metric_dict['leakage_energy']
-    # else:
-    #     metric_dict['total_energy'] = total_energy * ns * mw # in joule
-    #     metric_dict['dynamic_energy'] = metric_dict['total_energy']
     metric_dict['average_power'] = metric_dict['total_energy'] / metric_dict['time'] * (10**(3)) # in mW
 
     for key, value in metric_dict.items():
