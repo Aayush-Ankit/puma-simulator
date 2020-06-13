@@ -29,3 +29,4 @@ class dnn_wt:
                             node_dut.tile_list[i].ima_list[j].matrix_list[k]['f'][l].program(wt_temp)
                             node_dut.tile_list[i].ima_list[j].matrix_list[k]['b'][l].program(wt_temp)
 
+
