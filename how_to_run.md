@@ -85,7 +85,6 @@ cp -R <example> puma-simulator/test/testasm/
 Use the appropriate config file from ```puma-simulator/include/example-configs/(config file name)```.
 For example: for mlp use ```config-mlp.py```.
 Copy the file to ```puma-simulator/include/``` and rename it to ```config.py```. 
-Config file - ```puma-simulator/include/config.py```.
 
 Update ```num_tile_compute``` in config file based on the number of tiles generated in your ```<example>``` model.
 
