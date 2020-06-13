@@ -255,7 +255,7 @@ class adc (object):
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp, sparsity):
+    def propagate_dummy (self, inp, sparsity = 0):
         if sparsity>50:
             self.num_access['n'] += 1
             self.adc_res = cfg.adc_res

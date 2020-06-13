@@ -351,7 +351,7 @@ class ima (object):
                 assert (self.fd_instrn['r2'] >= datamem_off), 'operand2 for beq comes from data memory'
                 self.de_val1 = self.dataMem.read(self.fd_instrn['r1'])
                 self.de_val2 = self.dataMem.read(self.fd_instrn['r2'])
-                
+
             elif (dec_op == 'alu_int'):
                 self.de_aluop = self.fd_instrn['aluop']
                 self.de_d1 = self.fd_instrn['d1'] # addr for rf
@@ -359,7 +359,7 @@ class ima (object):
                 assert (self.fd_instrn['r2'] >= datamem_off), 'operand2 for alu_int comes from data memory'
                 self.de_val1 = self.dataMem.read(self.fd_instrn['r1'])
                 self.de_val2 = self.dataMem.read(self.fd_instrn['r2'])
-               
+
             # do nothing for halt/jmp in decode (just propagate to ex when applicable)
 
 
@@ -598,18 +598,21 @@ class ima (object):
                     # reset the xb out memory before starting to accumulate
                     self.xb_outMem_list[mat_id][key].reset ()
 
-                    xbar_inMem = self.xb_inMem_list[mat_id][key].read_all ()
-                    non_0_val = 0
-                    for i in range(cfg.xbar_size):
-                        if xbar_inMem[i] != '0000000000000000':
-                            non_0_val = non_0_val +1
-                    sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
-                    sparsity_adc = sparsity
-                    if (sparsity%10!=0):
-                        sparsity = sparsity-(sparsity%10)
-                    else:
-                        if (sparsity == 100):
-                            sparsity = sparsity-10
+                    sparsity=0
+                    sparsity_adc=0
+                    if cfg.sparse_opt:
+                        xbar_inMem = self.xb_inMem_list[mat_id][key].read_all ()
+                        non_0_val = 0
+                        for i in range(cfg.xbar_size):
+                            if xbar_inMem[i] != '0000000000000000':
+                                non_0_val = non_0_val +1
+                        sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                        sparsity_adc = sparsity
+                        if (sparsity%10!=0):
+                            sparsity = sparsity-(sparsity%10)
+                        else:
+                            if (sparsity == 100):
+                                sparsity = sparsity-10
 
                     ## Loop to cover all bits of inputs
                     for k in xrange (int(math.ceil(cfg.input_prec / cfg.dac_res))): #quantization affects the # of streams
@@ -829,17 +832,19 @@ class ima (object):
             if (cfg.inference):
                 for p in xrange(cfg.num_matrix):
                     if self.de_xb_nma[p]:
-                        xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
-                        non_0_val = 0
-                        for i in range(cfg.xbar_size):
-                            if xbar_inMem[i] != '0000000000000000':
-                                non_0_val = non_0_val +1
-                        sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
-                        if (sparsity%10!=0):
-                            sparsity = sparsity-(sparsity%10)
-                        else:
-                            if (sparsity == 100):
-                                sparsity = sparsity-10
+                        sparsity=0
+                        if cfg.sparse_opt:
+                            xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
+                            non_0_val = 0
+                            for i in range(cfg.xbar_size):
+                                if xbar_inMem[i] != '0000000000000000':
+                                    non_0_val = non_0_val +1
+                            sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                            if (sparsity%10!=0):
+                                sparsity = sparsity-(sparsity%10)
+                            else:
+                                if (sparsity == 100):
+                                    sparsity = sparsity-10
                         mvm_lat_temp += digi_param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)][str(sparsity)]
             return mvm_lat_temp
 

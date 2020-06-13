@@ -66,7 +66,7 @@ def compute_pow_dyn ():
         dyn_pow += (cfg.num_matrix*3) * param.xbar_outMem_pow_dyn # xbar_outMem (1 OR for 8 xbars - 16 bit weights, 2 bit xbars)
         dyn_pow += (cfg.num_matrix*4) * param.xbar_ip_pow_dyn # xbar ip power considred as ip>op power
     else:
-        dyn_pow += (cfg.num_matrix*2) * param.xbar_ip_pow_dyn # xbar ip power considred as ip>op power
+        dyn_pow += (cfg.num_matrix*2) * param.xbar_ip_pow_dyn # xbar ip power considred as ip>op power # d-xbar are not needed in Digital MVMUs only f and b are there
     dyn_pow += (cfg.num_matrix*3) * (param.xbar_inMem_pow_dyn_write + param.xbar_inMem_pow_dyn_read/cfg.xbar_size) # xbar_inMem - num_xbar * dac_res bits will be
         #   read from xb_inMem in an interval that equals xbar_access time
     dyn_pow += param.instrnMem_pow_dyn # instrnMem

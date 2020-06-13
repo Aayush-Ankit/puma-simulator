@@ -358,6 +358,7 @@ xbar_outMem_area_dict = {'32'  : 0.00015,
 
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
+#xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
 xbar_ip_lat_dict = {'0':0, '90':0, '80':0, '70':0, '60':0, '50':0, '40':0, '30':0, '20':0, '10':0}
 if cfg.MVMU_ver == "Analog":
       for key, value in xbar_ip_lat_dict.items():
