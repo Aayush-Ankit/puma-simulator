@@ -1,6 +1,6 @@
 *.pyc
 *.sw*
-
+*.log
 /test/testasm/
 /test/traces/
 /test/coreMvm_test/

@@ -16,7 +16,7 @@ def record_xbar (node):
         print ('Dumping xbar currents from tile num: ', i)
         for j in range (len(node.tile_list[0].ima_list)):
             for k in range (len(node.tile_list[0].ima_list[0].matrix_list)):
-                for l in node.tile_list[i].ima_list[j].matrix_list[k]['f']:
+                for l in (node.tile_list[i].ima_list[j].matrix_list[k]['f']):
                 # check for empty list
                     if (l.xb_record != []):
                         xbar_currents.append(l.xb_record)
