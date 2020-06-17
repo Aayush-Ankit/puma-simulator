@@ -183,3 +183,9 @@ number of tiles mapped: 23
 ### 10. To run Regression tests after running with weights for inference, go to simulator/test/val.
 
 ```python reg_test_1.py -n mlp```
+
+### 11. Quantization:
+ ```
+ Change the ```input_prec``` and ```weight_width``` parameters in config file to see the effects of quantization.
+ ```
+
