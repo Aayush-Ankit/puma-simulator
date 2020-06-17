@@ -15,7 +15,9 @@ from data_convert import *
 class xbar (object):
     def __init__ (self, xbar_size, xbar_value= 'nil' ):
         # define num_accesses for different operations
-        self.num_access = 0 # parallel reads (inner-product)
+        # parallel reads (inner-product)
+        self.num_access = { '0':0, '90': 0,'80': 0,'70': 0,'60': 0,'50': 0,'40': 0,'30': 0,'20': 0,'10': 0}
+
         self.num_access_rd = 0 # serial reads
         self.num_access_wr = 0 # serial writes
 
@@ -90,11 +92,17 @@ class xbar (object):
         return out
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp = 'nil'):
+    def propagate_dummy (self, inp = 'nil', sparsity = 0):
         # data input is list of bit strings (of length dac_res) - fixed point binary
         assert (inp != 'nil'), 'propagate needs a non-nil input'
         assert (len(inp) == self.xbar_size), 'xbar input size mismatch'
-        self.num_access += 1
+        
+        #Modification to accomodate sparsity and digital crossbars
+        if cfg.MVMU_ver == "Analog":
+            self.num_access['0'] += 1
+        else:
+            self.num_access[str(sparsity)] +=1
+
         # convert input from fixed point binary (string) to float
         inp_float = [0.0] * self.xbar_size
         for i in range(len(inp)):
@@ -123,7 +131,7 @@ class xbar_op (xbar):
     # add function for outer_product computation
     def propagate_op_dummy (self, inp1 = 'nil', inp2 = 'nil', lr=1, in1_bit=cfg.dac_res, in2_bit=cfg.xbar_bits):
         # inner-product and outer_product functions should have different energies (and other metrics) - NEEDS UPDATE
-        self.num_access += 1
+        self.num_access['0'] += 1
         # check both data inputs
         assert (inp1 != 'nil' and inp2 != 'nil'), 'propagate needs a non-nil inputs'
         assert ((len(inp1) == self.xbar_size) and (len(inp1[0]) == in1_bit)), 'inp1 size mismatch - should be \
@@ -222,14 +230,15 @@ class dac_array (object):
 class adc (object):
     def __init__ (self, adc_res):
         # define num_access
-        self.num_access = 0
-
+        self.num_access = { 'n':0, 'n/2': 0,'n/4': 0,'n/8': 0,'n/16': 0,'n/32': 0,'n/64': 0,'n/128': 0}
+        
         # define latency
         self.latency = param.adc_lat_dict[str(adc_res)]
 
         self.adc_res = adc_res
 
     def getLatency (self):
+        self.latency = param.adc_lat_dict[str(self.adc_res)]
         return self.latency
 
     def real2bin (self, inp, num_bits):
@@ -246,8 +255,34 @@ class adc (object):
         return self.real2bin (inp, num_bits)
 
     # HACK - until propagate doesn't have correct analog functionality
-    def propagate_dummy (self, inp):
-        self.num_access += 1  
+    def propagate_dummy (self, inp, sparsity = 0):
+        if sparsity<50:
+            self.num_access['n'] += 1
+            self.adc_res = cfg.adc_res
+        elif sparsity<75:
+            self.num_access['n/2'] += 1
+            self.adc_res = cfg.adc_res-1
+        elif sparsity<87.5:
+            self.num_access['n/4'] += 1
+            self.adc_res = cfg.adc_res-2
+        elif sparsity<93.75:
+            self.num_access['n/8'] += 1
+            self.adc_res = cfg.adc_res-3
+        elif sparsity<96.875:
+            self.num_access['n/16'] += 1
+            self.adc_res = cfg.adc_res-4
+        elif sparsity<98.4375:
+            self.num_access['n/32'] += 1
+            self.adc_res = cfg.adc_res-5
+        elif sparsity<99.21875:
+            self.num_access['n/64'] += 1
+            self.adc_res = cfg.adc_res-6
+        else:
+            self.num_access['n/128'] += 1
+            self.adc_res = cfg.adc_res-7
+        if(self.adc_res<0):
+            self.adc_res = 1
+
         return inp
 
 # Doesn't replicate the exact (sample and hold) functionality (just does hold)
@@ -522,6 +557,13 @@ class xb_inMem (object):
             out_list.append(value[-1*num_bits:])
         return out_list
 
+    def read_all (self):
+        out_list = []
+        for i in xrange(self.xbar_size):
+            value = self.memfile[i]
+            out_list.append(value)
+        return out_list
+
     def write (self, addr, data):
         self.num_access_write += 1
         assert (type(addr) == int), 'addr type should be int'
@@ -666,7 +708,7 @@ class mem_interface (object):
         self.rd_width = 0
         self.addr = 0 # add sent by ima to mem controller
         self.ramload = 0 # data (for LD) sent by edram to ima
-        self.ramstore = 0 # data (for ST) sent by ima to men controller
+        self.ramstore = 0 # data (for ST) sent by ima to mem controller
 
         ## For DEBUG of IMA only - define a memory element and preload some values
         #self.edram = memory (cfg.dataMem_size, 0)

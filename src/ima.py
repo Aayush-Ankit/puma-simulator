@@ -9,6 +9,7 @@ import math
 import include.config as cfg
 #import include.configTest as cfg
 import include.constants as param
+import constants_digital as digi_param
 import src.ima_modules as imod
 
 from data_convert import *
@@ -465,9 +466,9 @@ class ima (object):
                 if (temp_val1 < cfg.xbar_size):
                     xbar_type = 'f'
                 else:
-                    assert (1==0), "xbar memory addressing failed"        
+                    assert (1==0), "xbar memory addressing failed"   
 
-            return [num_matrix, xbar_type, mem_addr, xbar_addr]
+	    return [num_matrix, xbar_type, mem_addr, xbar_addr]
 
         # write to the xbar memory (in/out) space depending on the address
         def writeToXbarMem (self, data_addr, data):
@@ -595,17 +596,33 @@ class ima (object):
                 ## Define function to perform inner-product on specified mvmu
                 # Note: Inner product with shift and add (shift-sub with last bit), works for 2s complement
                 # representation for positive and negative numbers
-                
+
                 def inner_product (mat_id, key):
                     # reset the xb out memory before starting to accumulate
                     self.xb_outMem_list[mat_id][key].reset ()
+
+                    sparsity=0
+                    sparsity_adc=0
+                    if cfg.sparse_opt:
+                        xbar_inMem = self.xb_inMem_list[mat_id][key].read_all ()
+                        non_0_val = 0
+                        for i in range(cfg.xbar_size):
+                            if xbar_inMem[i] != '0000000000000000':
+                                non_0_val = non_0_val +1
+                        sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                        sparsity_adc = sparsity
+                        if (sparsity%10!=0):
+                            sparsity = sparsity-(sparsity%10)
+                        else:
+                            if (sparsity == 100):
+                                sparsity = sparsity-10
 
                     ## Loop to cover all bits of inputs
                     for k in xrange (int(math.ceil(cfg.input_prec / cfg.dac_res))): #quantization affects the # of streams
                     #for k in xrange (1):
                         # read the values from the xbar's input register
                         out_xb_inMem = self.xb_inMem_list[mat_id][key].read (cfg.dac_res)
-
+                        
                         #*************************************** HACK *********************************************
                         ###### CAUTION: Not replicated exact "functional" circuit behaviour for analog parts
                         ###### Use propagate (not propagate_hack) for DAC, Xbar, TIA, SNH, ADC when above is done
@@ -620,7 +637,7 @@ class ima (object):
                         out_snh = [[] for x in range(num_xb)]
                         for m in range (num_xb):
                             # compute dot-product
-                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac)        
+                            out_xbar[m] = self.matrix_list[mat_id][key][m].propagate_dummy(out_dac, sparsity)        
                             # do sampling and hold
                             out_snh[m] = self.snh_list[mat_id*num_xb+m].propagate_dummy(out_xbar[m])
 
@@ -633,7 +650,7 @@ class ima (object):
                                 adc_id = (mat_id*num_xb + m) % cfg.num_adc
                                 out_mux1 = self.mux1_list[mat_id].propagate_dummy(out_snh[m][j]) # i is the ith xbar
                                 out_mux2 = self.mux2_list[mat_id % cfg.num_adc].propagate_dummy(out_mux1)
-                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2)
+                                out_adc = self.adc_list[adc_id].propagate_dummy(out_mux2, sparsity_adc)
 
                                 # shift and add outputs from difefrent wt_bits
                                 alu_op = 'sna'
@@ -762,8 +779,8 @@ class ima (object):
             # do nothing for nop instruction
 
 
-        # Computes the latency for mvm instruction based on DPE configuration
-        def xbComputeLatency (self, mask):
+        # Computes the latency for Analog mvm instruction based on DPE configuration
+        def xbComputeLatency_Analog (self, mask):
             latency_out_list = []
             fb_found = 0
             d_found = 0
@@ -812,6 +829,28 @@ class ima (object):
                 latency_out_list.append(latency_out)
             return max(latency_out_list)
 
+        # Computes the latency for Analog mvm instruction based on DPE configuration
+        def xbComputeLatency_Digital (self):
+            mvm_lat_temp = 0
+            if (cfg.inference):
+                for p in xrange(cfg.num_matrix):
+                    if self.de_xb_nma[p]:
+                        sparsity=0
+                        if cfg.sparse_opt:
+                            xbar_inMem = self.xb_inMem_list[p]['f'].read_all ()
+                            non_0_val = 0
+                            for i in range(cfg.xbar_size):
+                                if xbar_inMem[i] != '0000000000000000':
+                                    non_0_val = non_0_val +1
+                            sparsity = int((cfg.xbar_size-non_0_val)*100.0/cfg.xbar_size)
+                            if (sparsity%10!=0):
+                                sparsity = sparsity-(sparsity%10)
+                            else:
+                                if (sparsity == 100):
+                                    sparsity = sparsity-10
+                        mvm_lat_temp += digi_param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)][str(sparsity)]
+            return mvm_lat_temp
+
         # State machine runs only if the stage is non-empty
         # Describe the functionality on a cycle basis
         if (self.stage_empty[sId] != 1):
@@ -849,7 +888,10 @@ class ima (object):
 
                 elif (ex_op == 'mvm'):
                     mask_temp = self.de_xb_nma
-                    self.stage_latency[sId] = xbComputeLatency (self, mask_temp) # mask tells which of ip/op or both is occurring
+                    if (cfg.MVMU_ver == "Analog"):
+                        self.stage_latency[sId] = xbComputeLatency_Analog (self, mask_temp) # mask tells which of ip/op or both is occurring
+                    else:
+                        self.stage_latency[sId] = xbComputeLatency_Digital(self)
 
                 # Needs update - use xbar serial read latency
                 elif (ex_op == 'crs'):

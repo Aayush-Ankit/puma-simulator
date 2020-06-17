@@ -82,7 +82,9 @@ cp -R <example> puma-simulator/test/testasm/
 
 #### 6.1 - Setup config file :
 
-Config file - ```puma-simulator/include/config.py```.
+Use the appropriate config file from ```puma-simulator/include/example-configs/(config file name)```.
+For example: for mlp use ```config-mlp.py```.
+Copy the file to ```puma-simulator/include/``` and rename it to ```config.py```. 
 
 Update ```num_tile_compute``` in config file based on the number of tiles generated in your ```<example>``` model.
 
@@ -97,6 +99,11 @@ num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output 
 # Do not change this - total number of tiles
 num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute -- (Line 95)
 ```
+#### 6.2 - Setup constants file:
+
+Use the appropriate constants file from ```puma-simulator/include/example-constants/(constant file name)```
+For example: for 128x128 crossbar use ```constants-128.py```
+Copy the file to ```puma-simulator/include/``` and rename it to ```constants.py```
 
 ### 7. Run your model, in this example, the ```lstm-layer.cpp```:
 

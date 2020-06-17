@@ -13,7 +13,7 @@ sparse_opt = 1 # Flag for Sparsity optimisaton (Make it 0 for only dense computa
 # One of "Analog", "Digital_V1" or "Digital_V2" 
 # Digital_V1 has compressed inputs (Data+Offset style)
 # Digital_V2 has uncompressed inputs (Skips computations for 0 activation)
-MVMU_ver = "Digital_V2"
+MVMU_ver = "Analog"
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16
@@ -35,7 +35,7 @@ frac_bits = num_bits - int_bits
 # Fixed parameters
 addr_width = 22 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
 data_width = num_bits # (in bits)
-xbdata_width = data_width # (in bits), equivalent to input_prec
+xbdata_width = data_width # (in bits)
 instrn_width = 48 # (in bits)
 # Input and Weight parameters
 input_prec = 16
@@ -50,24 +50,20 @@ adc_res = 8 # around 4 to 8. this value should be
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
-#uncomment this line for homogeneous ADC precision
-adc_res_new ={}
-
-#uncomment adc_res_new for heterogenous adcs
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 # NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
-#adc_res_new = {
-#                'matrix_adc_0' : 8,
-#                'matrix_adc_1' : 4,
-#                'matrix_adc_2' : 8,
-#                'matrix_adc_3' : 4
-#              }
+adc_res_new = {
+                'matrix_adc_0' : 8,
+                'matrix_adc_1' : 4,
+                'matrix_adc_2' : 8,
+                'matrix_adc_3' : 4
+              }
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 8192 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 4096 #in entries
+dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
+instrnMem_size = 512 #in entries
 
 # This depends on above parameters
 if (training):
@@ -98,8 +94,8 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 4096 # in Kilobytes (64 KB - same as issac)
-tile_instrnMem_size = 4096 # in entries
+edram_size = 64 # in Kilobytes (64 KB - same as issac)
+tile_instrnMem_size = 2048 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile
