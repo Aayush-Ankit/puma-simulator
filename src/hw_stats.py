@@ -30,14 +30,14 @@ hw_comp_energy = {'xbar_mvm':{  '0':param.xbar_ip_energy_dict['0'], \
         'xbar_wr':param.xbar_wr_pow_dyn*param.xbar_wr_lat,
         'dac':param.dac_pow_dyn, 'snh':param.snh_pow_dyn, \
         'mux1':param.mux_pow_dyn, 'mux2':param.mux_pow_dyn, \
-        'adc':{ 'n' :       param.adc_pow_dyn_dict[str(cfg.adc_res)], \
-                'n/2':      param.adc_pow_dyn_dict[str(cfg.adc_res-1)], \
-                'n/4':     param.adc_pow_dyn_dict[str(cfg.adc_res-2)], \
-                'n/8':     param.adc_pow_dyn_dict[str(cfg.adc_res-3)], \
-                'n/16':   param.adc_pow_dyn_dict[str(cfg.adc_res-4)], \
-                'n/32':   param.adc_pow_dyn_dict[str(cfg.adc_res-5)], \
-                'n/64':   param.adc_pow_dyn_dict[str(cfg.adc_res-6)], \
-                'n/128': param.adc_pow_dyn_dict[str(cfg.adc_res-7)]}, \
+        'adc':{ 'n' :    param.adc_pow_dyn_dict[str(cfg.adc_res)]   if cfg.adc_res>0   else 0, \
+                'n/2':   param.adc_pow_dyn_dict[str(cfg.adc_res-1)] if cfg.adc_res-1>0 else 0, \
+                'n/4':   param.adc_pow_dyn_dict[str(cfg.adc_res-2)] if cfg.adc_res-2>0 else 0, \
+                'n/8':   param.adc_pow_dyn_dict[str(cfg.adc_res-3)] if cfg.adc_res-3>0 else 0, \
+                'n/16':  param.adc_pow_dyn_dict[str(cfg.adc_res-4)] if cfg.adc_res-4>0 else 0, \
+                'n/32':  param.adc_pow_dyn_dict[str(cfg.adc_res-5)] if cfg.adc_res-5>0 else 0, \
+                'n/64':  param.adc_pow_dyn_dict[str(cfg.adc_res-6)] if cfg.adc_res-6>0 else 0, \
+                'n/128': param.adc_pow_dyn_dict[str(cfg.adc_res-7)] if cfg.adc_res-7>0 else 0}, \
         'alu_div': param.alu_pow_div_dyn, 'alu_mul':param.alu_pow_mul_dyn, \
         'alu_act': param.act_pow_dyn, 'alu_other':param.alu_pow_others_dyn, \
         'alu_sna': param.sna_pow_dyn, \
