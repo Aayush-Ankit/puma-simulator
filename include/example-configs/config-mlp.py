@@ -60,7 +60,7 @@ adc_res_new ={}
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 512 #in entries
+instrnMem_size = 512 #512 #in entries
 
 # This depends on above parameters
 if (training):
