@@ -7,13 +7,13 @@ debug = 1
 xbar_record = 1
 inference = 1
 training = not(inference)
-sparse_opt = 1 # Flag for Sparsity optimisaton (Make it 0 for only dense computations)
+sparse_opt = 0 # Flag for Sparsity optimisaton (Make it 0 for only dense computations)
 
 ## Variable to define the type of MVMU
 # One of "Analog", "Digital_V1" or "Digital_V2" 
 # Digital_V1 has compressed inputs (Data+Offset style)
 # Digital_V2 has uncompressed inputs (Skips computations for 0 activation)
-MVMU_ver = "Digital_V2"
+MVMU_ver = "Analog"
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16
@@ -67,7 +67,7 @@ adc_res_new ={}
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
 dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
-instrnMem_size = 512 #512 #in entries
+instrnMem_size = 512 #in entries
 
 # This depends on above parameters
 if (training):
