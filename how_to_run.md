@@ -185,7 +185,6 @@ number of tiles mapped: 23
 ```python reg_test_1.py -n mlp```
 
 ### 11. Quantization:
- ```
- Change the ```input_prec``` and ```weight_width``` parameters in config file to see the effects of quantization.
- ```
+Change the ```input_prec``` and ```weight_width``` parameters in config file to see the effects of quantization.
+
 
