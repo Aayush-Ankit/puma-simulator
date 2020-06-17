@@ -187,4 +187,8 @@ number of tiles mapped: 23
 ### 11. Quantization:
 Change the ```input_prec``` and ```weight_width``` parameters in config file to see the effects of quantization.
 
-
+```
+# Input and Weight parameters
+input_prec = 16
+weight_width = 16
+```
