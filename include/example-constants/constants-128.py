@@ -2,6 +2,7 @@
 ## It also holds power, area and latency numbers of different component used in DPE design
 import config as cfg
 import math
+import constants_digital as digi_param
 # Limits the number of cycles an IMA runs in case it doesn't halt
 infinity = 100000
 
@@ -154,42 +155,47 @@ dac_area_dict = {'1' : 1.67 * 10**(-7),
                  '16': 1.67 * 10**(-7)}
 
 # ADC - Discuss exact values with ISSAC authors
+# ADC Values for including sparsity
 adc_lat_dict = {'1' : 12.5,
                 '2' : 25,
+                '3' : 37.5,
                 '4' : 50,
-		'5' : 62.5,			
-		'6' : 75,
-		'7' : 87.5,
+                '5' : 62.5,
+                '6' : 75,
+                '7' : 87.5,
                 '8' : 100,
 		'9' : 112.5,
                 '16': 200}
 
 adc_pow_dyn_dict = {'1' : 0.225,
                     '2' : 0.45,
+                    '3' : 0.675,
                     '4' : 0.9,
-		    '5' : 1.125,			
-		    '6' : 1.35,
-		    '7' : 1.575,
+                    '5' : 1.125,
+                    '6' : 1.35,
+                    '7' : 1.575,
                     '8' : 1.8,
 		    '9' : 2.025,
                     '16': 3.6}
 
 adc_pow_leak_dict = {'1' : 0.025,
                      '2' : 0.05,
+                     '3' : 0.075,
                      '4' : 0.1,
-		     '5' : 0.125,			
-		     '6' : 0.150,
-		     '7' : 0.175,
+                     '5' : 0.125,
+                     '6' : 0.15,
+                     '7' : 0.175,
                      '8' : 0.2,
 		     '9' : 0.225,
                      '16': 0.4}
 
 adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
+                 '3' : 0.0012,
                  '4' : 0.0012,
-		 '5' : 0.0012,			
-		 '6' : 0.0012,
-		 '7' : 0.0012,
+                 '5' : 0.0012,
+                 '6' : 0.0012,
+                 '7' : 0.0012,
                  '8' : 0.0012,
 		 '9' : 0.0012,
                  '16': 0.0012}
@@ -346,7 +352,12 @@ else:
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
 #xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
-xbar_ip_lat = xbar_ip_lat
+xbar_ip_lat_dict = {'0':0, '90':0, '80':0, '70':0, '60':0, '50':0, '40':0, '30':0, '20':0, '10':0}
+if cfg.MVMU_ver == "Analog":
+      for key, value in xbar_ip_lat_dict.items():
+            xbar_ip_lat_dict[key] = xbar_ip_lat
+else:
+      xbar_ip_lat_dict = digi_param.Digital_xbar_lat_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
 xbar_op_lat = xbar_op_lat
 xbar_rd_lat = xbar_rd_lat
 xbar_wr_lat = xbar_wr_lat
@@ -359,7 +370,10 @@ instrnMem_lat =  instrnMem_lat_dict[str(instrnMem_size_max)]
 dataMem_lat =  dataMem_lat_dict[str(dataMem_size_max)]
 
 # Chosen area based on config file - only for components whose latency is parameter dependent
-xbar_area = xbar_area_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+if cfg.MVMU_ver == "Analog":
+        xbar_area = xbar_area_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
+else:
+        xbar_area = digi_param.Digital_xbar_area_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
 dac_area = dac_area_dict [str(cfg.dac_res)]
 adc_area = adc_area_dict [str(cfg.adc_res)]
 xbar_inMem_area = xbar_inMem_area_dict[str(cfg.xbar_size)]
@@ -381,8 +395,20 @@ xbar_outMem_pow_dyn = xbar_outMem_pow_dyn_dict[str(cfg.xbar_size)]
 instrnMem_pow_dyn =  instrnMem_pow_dyn_dict[str(instrnMem_size_max)] * math.sqrt(8) #area scaling for 8 bytes per instruction
 dataMem_pow_dyn =  dataMem_pow_dyn_dict[str(dataMem_size_max)]
 
+# Energy
+xbar_ip_energy_dict = {'0':0, '90':0, '80':0, '70':0, '60':0, '50':0, '40':0, '30':0, '20':0, '10':0}
+if cfg.MVMU_ver == "Analog":
+        for key,value in xbar_ip_energy_dict.items():
+                xbar_ip_energy_dict[key] = xbar_ip_lat*xbar_ip_pow_dyn
+else:
+        xbar_ip_energy_dict = digi_param.Digital_xbar_energy_dict[cfg.MVMU_ver][str(cfg.xbar_size)]
+print('xbar_ip_energy_dict', xbar_ip_energy_dict)
+
 # Chosen leak_power based on config file - only for components whose latency is parameter dependent
-xbar_pow_leak = 0
+if cfg.MVMU_ver == "Analog":
+        xbar_pow_leak = 0
+else:
+        xbar_pow_leak = digi_param.Digital_xbar_pow_leak_dict[str(cfg.xbar_size)]
 dac_pow_leak = dac_pow_leak_dict [str(cfg.dac_res)]
 adc_pow_leak = adc_pow_leak_dict [str(cfg.adc_res)]
 xbar_inMem_pow_leak = xbar_inMem_pow_leak_dict[str(cfg.xbar_size)]
