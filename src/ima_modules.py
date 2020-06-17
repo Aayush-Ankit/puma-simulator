@@ -280,7 +280,7 @@ class adc (object):
         else:
             self.num_access['n/128'] += 1
             self.adc_res = cfg.adc_res-7
-        if(self.adc_res<0):
+        if(self.adc_res<=0):
             self.adc_res = 1
 
         return inp
