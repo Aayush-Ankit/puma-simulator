@@ -189,8 +189,10 @@ class edram_controller (object):
                     self.counter[addr+i] = self.counter[addr+i] - 1
                     if (self.counter[addr+i] <= 0): #modified
                         self.valid[addr+i] = 0
-            # read the data and send to ima - if found is 0, ramload is junk
-            ramload = self.mem.read (addr, rd_width_list[idx])
+                # read the data and send to ima - if found is 0, ramload is junk
+                ramload = self.mem.read (addr, rd_width_list[idx])
+            else:
+                ramload = 0  #if found=0 implies set ramload as dummy 0 
             return [found, idx, ramload]
 
         else: # ST instruction
