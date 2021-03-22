@@ -105,7 +105,6 @@ def get_hw_stats (fid, node_dut, cycle):
 
         for j in range (cfg.num_ima):
             sum_num_cycle_ima += node_dut.tile_list[i].ima_list[j].cycle_count # used for leakage energy of imas
-
             mvmu_type = ['f', 'b', 'd']
             for k in range (cfg.num_matrix):
                 for mvmu_t in mvmu_type:
@@ -187,8 +186,8 @@ def get_hw_stats (fid, node_dut, cycle):
             hw_comp_access['dmem'] += node_dut.tile_list[i].ima_list[j].dataMem.num_access
 
     # Added for core and tile control units
-    hw_comp_access['core_control'] = sum_num_cycle_tile
-    hw_comp_access['tile_control'] = sum_num_cycle_ima
+    hw_comp_access['core_control'] = sum_num_cycle_ima
+    hw_comp_access['tile_control'] = sum_num_cycle_tile
 
     total_energy = 0
     total_adc_energy = 0
