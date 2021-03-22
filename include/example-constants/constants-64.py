@@ -117,9 +117,15 @@ xbar_area_dict = {'2': {'16' : 3.90625 * 10**(-7),
 xbar_op_lat = 20.0*12.8 # with 4 VFUs
 xbar_op_pow = 4.44 * 3.27 / (12.8)
 
-xbar_ip_lat = 100.0
+#hardcoded value
+#xbar_ip_lat = 100.0
+#value depending on xb size
+xbar_ip_lat = xbar_lat_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
+
 #xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
-xbar_ip_pow = (1.37*2.0) - 1.04 if cfg.training else 1.37-1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object), 
+#xbar_ip_pow = (1.37*2.0) - 1.04 if cfg.training else 1.37-1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object), 
+#xbar inner product power dependence on xbar size
+xbar_ip_pow = xbar_pow_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
@@ -193,9 +199,9 @@ adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
                  '3' : 0.0012,
                  '4' : 0.0012,
-                 '5' : 0.0012,
-                 '6' : 0.0012,
-                 '7' : 0.0012,
+                 '5' : 0.00075,
+                 '6' : 0.0009,
+                 '7' : 0.00105,
                  '8' : 0.0012,
 		 '9' : 0.0012,
                  '16': 0.0012}
