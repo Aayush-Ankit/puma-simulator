@@ -16,7 +16,7 @@ This emulator was created as part of the PUMA work presented at ASPLOS 2019.
 
 Paper: https://dl.acm.org/citation.cfm?id=3304049 (see details on architecture and compiler here).
 
-Slides: https://www.dropbox.com/s/mszdkbhwzv0yv4q/slides-puma-asplos19.pptx?dl=0
+Slides: https://drive.google.com/file/d/1NyQP1dKjgB1mt3y7OHMb75ik02rWp3EY/view?usp=sharing
 
 Lightning Talk:https://www.youtube.com/watch?v=x3dAPgkQFOg
 
