@@ -2,7 +2,7 @@
 ## All user specified parameters are provided by this file only
 
 ## Debug - 0 (1): dpe simulation will (won't) produce ima/tile traces while simulating
-cycles_max = 5000000 #20000000 # Put both these to very large numbers (when design is bug-free)!
+cycles_max = 5000000 # Put both these to very large numbers (when design is bug-free)!
 debug = 1
 xbar_record = 1
 inference = 1
@@ -33,7 +33,7 @@ frac_bits = num_bits - int_bits
 # instrnMem_size: (in Bytes) - 512, 1024, 2048
 
 # Fixed parameters
-addr_width = 24 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
+addr_width = 22 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
 data_width = num_bits # (in bits)
 xbdata_width = data_width # (in bits), equivalent to input_prec
 instrn_width = 48 # (in bits)
@@ -42,8 +42,8 @@ input_prec = 16
 weight_width = 16
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
-num_matrix = 128 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, and 1 delta logical xbar for training. Each logical xbar for inference is 8-fw physical xbar and for training  8-fw, 8-bw and 16-delta physical xbars.
-xbar_size = 16
+num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, and 1 delta logical xbar for training. Each logical xbar for inference is 8-fw physical xbar and for training  8-fw, 8-bw and 16-delta physical xbars.
+xbar_size = 128
 dac_res = 1
 # ADC configuration
 adc_res = 8 # around 4 to 8. this value should be
@@ -66,7 +66,7 @@ adc_res_new ={}
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
-dataMem_size = 2048 #131072 # 2048 is larger than num_matrix*(6*xbar_size)
+dataMem_size = 2048 # 2048 is larger than num_matrix*(6*xbar_size)
 instrnMem_size = 512 #262144 #in entries
 
 # This depends on above parameters
@@ -98,8 +98,8 @@ receive_buffer_width =  edram_buswidth / num_bits # size of receive buffeer entr
 
 # Change here - Specify the Tile parameters here
 num_ima = 8
-edram_size = 64 #8192 # in Kilobytes (64 KB - same as issac)
-tile_instrnMem_size = 2048 #262144 # in entries
+edram_size = 64 # in Kilobytes (64 KB - same as issac)
+tile_instrnMem_size = 2048 # in entries
 
 ## Node configurable parameters (permissible values for each parameter provided here)
 ## Instruction generation - affected by num_tile
