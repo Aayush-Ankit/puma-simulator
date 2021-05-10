@@ -43,7 +43,7 @@ weight_width = 16
 # Change here - Specify the IMA parameters here
 xbar_bits = 2
 num_matrix = 2 # each matrix is 1-fw logical xbar for inference and 1-fw, 1-bw, and 1 delta logical xbar for training. Each logical xbar for inference is 8-fw physical xbar and for training  8-fw, 8-bw and 16-delta physical xbars.
-xbar_size = 16
+xbar_size = 128
 dac_res = 1
 # ADC configuration
 adc_res = 8 # around 4 to 8. this value should be
