@@ -502,7 +502,12 @@ class ima (object):
                 # check if data is a list
                 if (type(data) != list):
                     data = ['0'*cfg.data_width]*self.de_r2
+                elif (len(data)<self.de_r2):
+                    data = data + ['0'*cfg.data_width]*(self.de_r2-len(data))
+                    print('Warning: Number of elements in Ramload list less than expected')
+                #print ('de_r2:',self.de_r2)
                 for i in range (self.de_r2):
+                #for i in range(len(data)): 
                     dst_addr = data_addr + i
                     if (dst_addr >= datamem_off):
                         self.dataMem.write (dst_addr, data[i])
@@ -721,7 +726,8 @@ class ima (object):
 
                 if (cfg.inference):
                    for i in xrange(cfg.num_matrix):
-                       if self.de_xb_nma[i]:
+                       if int(self.de_xb_nma[i]):
+                       #if self.de_xb_nma[i]:
                            print ("ima_id: " +str(self.ima_id) + " mat_id: "  +str(i) + " MVM")
                            inner_product(i,'f')
 

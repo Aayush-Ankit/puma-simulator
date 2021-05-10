@@ -109,7 +109,7 @@ class tile (object):
     def tile_compute (self, cycle):
         
         ## Simulate a cycle if IMA(s) that haven't halted
-        if (not all(self.halt_list)): # A tile halts whwn all IMAs (within the tile) halt
+        if (not all(self.halt_list)): # A tile halts when all IMAs (within the tile) halt
             for i in range (cfg.num_ima):
                 if ((not self.halt_list[i]) and self.ima_nma_list[i]):
                     self.ima_list[i].pipe_run (cycle, self.fid_list[i])

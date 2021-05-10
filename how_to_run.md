@@ -99,6 +99,11 @@ num_tile_compute = 23 # number of tiles mapped by dnn (leaving input and output 
 # Do not change this - total number of tiles
 num_tile = num_node * num_tile_compute + 2 # +1 for first tile (I/O tile) - dummy, others - compute -- (Line 95)
 ```
+#### 6.2 - Setup constants file:
+
+Use the appropriate constants file from ```puma-simulator/include/example-constants/(constant file name)```
+For example: for 128x128 crossbar use ```constants-128.py```
+Copy the file to ```puma-simulator/include/``` and rename it to ```constants.py```
 
 ### 7. Run your model, in this example, the ```lstm-layer.cpp```:
 
@@ -185,3 +190,12 @@ number of tiles mapped: 23
 ### 10. To run Regression tests after running with weights for inference, go to simulator/test/val.
 
 ```python reg_test_1.py -n mlp```
+
+### 11. Quantization:
+Change the ```input_prec``` and ```weight_width``` parameters in config file to see the effects of quantization.
+
+```
+# Input and Weight parameters
+input_prec = 16
+weight_width = 16
+```

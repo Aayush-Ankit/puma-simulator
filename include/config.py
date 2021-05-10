@@ -35,7 +35,7 @@ frac_bits = num_bits - int_bits
 # Fixed parameters
 addr_width = 22 # Added to address larger address space for conv layers (#TODO: Compiler needs to fix shared memory reuse)
 data_width = num_bits # (in bits)
-xbdata_width = data_width # (in bits)
+xbdata_width = data_width # (in bits), equivalent to input_prec
 instrn_width = 48 # (in bits)
 # Input and Weight parameters
 input_prec = 16
@@ -50,15 +50,19 @@ adc_res = 8 # around 4 to 8. this value should be
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
+#uncomment this line for homogeneous ADC precision
+adc_res_new ={}
+
+#uncomment adc_res_new for heterogenous adcs
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 # NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
-adc_res_new = {
-                'matrix_adc_0' : 8,
-                'matrix_adc_1' : 4,
-                'matrix_adc_2' : 8,
-                'matrix_adc_3' : 4
-              }
+#adc_res_new = {
+#                'matrix_adc_0' : 8,
+#                'matrix_adc_1' : 4,
+#                'matrix_adc_2' : 8,
+#                'matrix_adc_3' : 4
+#              }
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)

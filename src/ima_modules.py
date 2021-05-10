@@ -740,4 +740,3 @@ class mem_interface (object):
 
         ## For DEBUG of IMA only
         #self.ramload = self.edram.memfile[addr]
-

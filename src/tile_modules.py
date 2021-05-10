@@ -92,8 +92,12 @@ class edram (ima_modules.memory):
         # returns  a list of entries (list has one entry - Typical case)
         assert (width < cfg.edram_buswidth/cfg.data_width+1), \
                 'read edram width exceeds'
-        return self.memfile[(addr - self.addr_start) : \
-                (addr - self.addr_start + width)][:]
+        data = self.memfile[(addr - self.addr_start) : \
+				(addr - self.addr_start + width)][:]
+        assert (len(data) == width), 'data length not same as requested width'
+        return data
+#        return self.memfile[(addr - self.addr_start) : \
+#                (addr - self.addr_start + width)][:]
 
     # redefine the write assertion
     def write (self, addr, data, width = 1): # write (edram_buswidth/data_width) to continuous writes to edram
@@ -185,8 +189,10 @@ class edram_controller (object):
                     self.counter[addr+i] = self.counter[addr+i] - 1
                     if (self.counter[addr+i] <= 0): #modified
                         self.valid[addr+i] = 0
-            # read the data and send to ima - if found is 0, ramload is junk
-            ramload = self.mem.read (addr, rd_width_list[idx])
+                # read the data and send to ima - if found is 0, ramload is junk
+                ramload = self.mem.read (addr, rd_width_list[idx])
+            else:
+                ramload = 0  #if found=0 implies set ramload as dummy 0 
             return [found, idx, ramload]
 
         else: # ST instruction

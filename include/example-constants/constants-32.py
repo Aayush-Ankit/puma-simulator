@@ -65,49 +65,49 @@ last_stage = 'ex'
 # IMA component latency/power/area dictionary (all values in ns, mw, mm2)
 # XBAR - Models from ISAAC paper
 xbar_lat_dict = {'2': {'16' : 16,
-		                   '32' : 32,   # first indexed by xbar_bits then by xbar_size
+		       '32' : 32,   # first indexed by xbar_bits then by xbar_size
                        '64' : 64,
                        '128': 128,
                        '256': 256},
                  '4': {'16' : 16,
-		                   '32' : 32,
+		       '32' : 32,
                        '64' : 64,
                        '128': 128,
                        '256': 256},
                  '6': {'16' : 16,
-		                   '32' : 32,
+		       '32' : 32,
                        '64' : 64,
                        '128': 128,
                        '256': 256}}
 
 xbar_pow_dict = {'2': {'16' : 0.0046875,
-		                   '32' : 0.01875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2},
                  '4': {'16' : 0.0046875,
-		                   '32' : 0.01875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2},
                  '6': {'16' : 0.0046875,
-		                   '32' : 0.01875,
+		       '32' : 0.01875,
                        '64' : 0.075,
                        '128': 0.3,
                        '256': 1.2}}
 
 xbar_area_dict = {'2': {'16' : 3.90625 * 10**(-7),
-		                    '32' : 1.5625 * 10**(-6),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)},
                   '4': {'16' : 3.90625 * 10**(-7),
-		                    '32' : 1.5625 * 10**(-6),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)},
                   '6': {'16' : 3.90625 * 10**(-7),
-		                    '32' : 1.5625 * 10**(-6),
+		       '32' : 1.5625 * 10**(-6),
                        '64' : 6.25 * 10**(-6),
                        '128': 2.5 * 10**(-5),
                        '256': 1.0 * 10**(-4)}}
@@ -117,9 +117,16 @@ xbar_area_dict = {'2': {'16' : 3.90625 * 10**(-7),
 xbar_op_lat = 20.0*12.8 # with 4 VFUs
 xbar_op_pow = 4.44 * 3.27 / (12.8)
 
-xbar_ip_lat = 100.0
+#hardcoded value
+#xbar_ip_lat = 100.0
+#value depending on xb size
+xbar_ip_lat = xbar_lat_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
+
 #xbar_ip_pow = (1.37*2.0) # xbar_ip_pow (includes all mvmu)
-xbar_ip_pow = (1.37*2.0) - 1.04 if cfg.training else 1.37-1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object), 
+#xbar_ip_pow = (1.37*2.0) - 1.04 if cfg.training else 1.37-1.04 # xbar_ip_pow (includes all mvmu except ADC - uncomment num_access for ADC object), 
+
+#xbar inner product power dependence on xbar size
+xbar_ip_pow = xbar_pow_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
 
 # Note the read and write lat/pow are for entire xbar
 xbar_rd_lat = 328.0 * 1000 * (1/32.0)
@@ -193,9 +200,9 @@ adc_area_dict = {'1' : 0.0012,
                  '2' : 0.0012,
                  '3' : 0.0012,
                  '4' : 0.0012,
-                 '5' : 0.0012,
-                 '6' : 0.0012,
-                 '7' : 0.0012,
+                 '5' : 0.00075,
+                 '6' : 0.0009,
+                 '7' : 0.00105,
                  '8' : 0.0012,
 		 '9' : 0.0012,
                  '16': 0.0012}
@@ -245,40 +252,56 @@ mux_area = 0
 dataMem_lat_dict = {'256' : 1,
                     '512' : 1,
                     '1024': 1,
-                    '2048': 1}
+                    '2048': 1,
+                    '4096':1,
+                    '16384':1}
 
 dataMem_pow_dyn_dict = {'256' : 0.16,
                         '512' : 0.24,
                         '1024': 0.33,
-                        '2048': 0.57}
+                        '2048': 0.57,
+                        '4096': 0.74,
+                        '16384':1.6}
 
 dataMem_pow_leak_dict = {'256' : 0.044,
                          '512' : 0.078,
                          '1024': 0.147,
-                         '2048': 0.33}
+                         '2048': 0.33,
+                         '4096': 0.489,
+                         '16384':1.28}
 
 dataMem_area_dict = {'256' : 0.00056,
                      '512' : 0.00108,
                      '1024': 0.00192,
-                     '2048': 0.00392}
+                     '2048': 0.00392,
+                     '4096': 0.020691,
+                     '16384':0.0666}
 
 # Instruction Memory value dictionary
 instrnMem_lat_dict = {'512' : 1,
                       '1024': 1,
-                      '2048': 1}
+                      '2048': 1,
+                      '4096':1,
+                      '16384':1}
 
 instrnMem_pow_dyn_dict = {'512' : 0.46,
                           '1024': 0.53,
-                          '2048': 0.65}
+                          '2048': 0.65,
+                          '4096':0.74,
+                          '16384':1.6}
 
 instrnMem_pow_leak_dict = {'512' : 0.078,
                            '1024': 0.147,
-                           '2048': 0.33}
+                           '2048': 0.33,
+                           '4096':0.489,
+                           '16384':1.28}
 
 
 instrnMem_area_dict = {'512' : 0.00108,
                        '1024': 0.00192,
-                       '2048': 0.0041}
+                       '2048': 0.0041,
+                       '4096':0.020691,
+                       '16384':0.0666}
 
 
 # Xbar_inMem value dictionary (1 access means reading (dac_res) bits for each xbar row)
@@ -338,13 +361,13 @@ xbar_outMem_area_dict = {'16'  : 0.00015,
                         '128'  : 0.00078,
                         '256'  : 0.0019}
 
-dataMem_size_max = '2048'
+dataMem_size_max =  '16384'
 if str(cfg.dataMem_size) in dataMem_lat_dict:
       dataMem_size_max =  str(cfg.dataMem_size)
 else:
       print("Warning: No values for core data memory size provided. Using values for 2048 instead.")
 
-instrnMem_size_max = '2048'
+instrnMem_size_max =  '16384'
 if str(cfg.instrnMem_size) in instrnMem_lat_dict:
       instrnMem_size_max =  str(cfg.instrnMem_size)
 else:
@@ -352,6 +375,7 @@ else:
 
 # Chosen latency based on config file - only for components whose latency is parameter dependent
 #xbar_lat = xbar_lat_dict [str(cfg.xbar_bits)][str(cfg.xbar_size)]
+#xbar_ip_lat = xbar_ip_lat
 xbar_ip_lat_dict = {'0':0, '90':0, '80':0, '70':0, '60':0, '50':0, '40':0, '30':0, '20':0, '10':0}
 if cfg.MVMU_ver == "Analog":
       for key, value in xbar_ip_lat_dict.items():
@@ -369,7 +393,7 @@ xbar_outMem_lat = xbar_outMem_lat_dict[str(cfg.xbar_size)]
 instrnMem_lat =  instrnMem_lat_dict[str(instrnMem_size_max)]
 dataMem_lat =  dataMem_lat_dict[str(dataMem_size_max)]
 
-# Chosen area based on config file - only for components whose latency is parameter dependent
+# Chosen area based on config file - only for components whose area is parameter dependent
 if cfg.MVMU_ver == "Analog":
         xbar_area = xbar_area_dict[str(cfg.xbar_bits)][str(cfg.xbar_size)]
 else:
@@ -560,7 +584,7 @@ noc_pow_dyn_dict = {'4': 16.13,
 noc_pow_leak_dict = {'4': 0.41,
                        '8': 1.04}
 
-# Enter component latency (Based on the above NOC topological parameters)
+# Enter component latency (Based on teh above NOC topological parameters)
 # Inter-node Noc (router & channel)
 assert (cfg.noc_inj_rate <= noc_inj_rate_max), 'Oops: reconsider NOC design and or DNN mapping, with this inj_rate, NOC data transfer throughput \
 will be terrible!'

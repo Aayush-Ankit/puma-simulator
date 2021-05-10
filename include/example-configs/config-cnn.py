@@ -7,13 +7,13 @@ debug = 1
 xbar_record = 1
 inference = 1
 training = not(inference)
-sparse_opt = 1 # Flag for Sparsity optimisaton (Make it 0 for only dense computations)
+sparse_opt = 0 # Flag for Sparsity optimisaton (Make it 0 for only dense computations)
 
 ## Variable to define the type of MVMU
 # One of "Analog", "Digital_V1" or "Digital_V2" 
 # Digital_V1 has compressed inputs (Data+Offset style)
 # Digital_V2 has uncompressed inputs (Skips computations for 0 activation)
-MVMU_ver = "Digital_V2"
+MVMU_ver = "Analog"
 
 ## Operand precision (fixed point allowed only): num_bits = int_bits + frac_bits
 num_bits = 16
@@ -50,15 +50,19 @@ adc_res = 8 # around 4 to 8. this value should be
 num_adc_per_matrix = 2
 num_adc = num_adc_per_matrix * num_matrix
 
+#uncomment this line for homogeneous ADC precision
+adc_res_new ={}
+
+#uncomment adc_res_new for heterogenous adcs
 # The idea is to have different ADC resolution value for each ADC.
 # The number of ADC if defined by num_adc property. Currently it is 2 * num_matrix(2) = 4
 # NOTE: Only taking in account indexes 0 and 2, 1 and 3 are ignored, because ADCs 1 and 3 are assumed t be equal to 0 and 2. 
-adc_res_new = {
-                'matrix_adc_0' : 8,
-                'matrix_adc_1' : 4,
-                'matrix_adc_2' : 8,
-                'matrix_adc_3' : 4
-              }
+#adc_res_new = {
+#                'matrix_adc_0' : 8,
+#                'matrix_adc_1' : 4,
+#                'matrix_adc_2' : 8,
+#                'matrix_adc_3' : 4
+#              }
 
 num_ALU = num_matrix*2
 #dataMem_size = num_matrix*(6*xbar_size) # 4 for 4 input spaces within matrix (1 for f/b each, 2 for d)
