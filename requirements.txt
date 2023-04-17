@@ -24,3 +24,4 @@ PyYAML==3.12
 six==1.11.0
 subprocess32==3.2.7
 Werkzeug==0.13
+cryptography==3.3.2
