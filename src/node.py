@@ -31,7 +31,7 @@ class node (object):
         # Instantiate the NOC
         self.noc = nmod.noc ()
 
-        # Some book-keeping variables (Can have harwdare correspondance)
+        # Some book-keeping variables (Can have harwdare correspondence)
         self.node_halt = 0
         self.tile_halt_list = [0] * cfg.num_tile
         self.tile_fid_list = []
@@ -133,4 +133,3 @@ class node (object):
             for tr_id in self.tile_fid_list:
                 tr_id.close ()
             print ('cycle: ' + str (cycle) + ' Node Halted')
-
